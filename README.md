@@ -22,6 +22,16 @@ Run the full local check before opening a pull request:
 rtk scripts/check.sh
 ```
 
+## Continuous Integration
+
+GitHub Actions runs the same check used locally:
+
+```bash
+scripts/check.sh
+```
+
+The CI workflow resolves the project-managed Swift tools, runs SwiftFormat in lint mode, runs SwiftLint, and builds the iPhone app without code signing.
+
 ## Project Structure
 
 `AlertaApp/App/` contains the application entry point and root composition. Keep this folder small. It should wire the app together, not contain feature logic.
