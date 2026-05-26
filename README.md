@@ -13,13 +13,13 @@ AlertaApp is an iPhone-first SwiftUI project. The repository is organized so fea
 Resolve the project-managed developer tools:
 
 ```bash
-rtk scripts/bootstrap.sh
+scripts/bootstrap.sh
 ```
 
 Run the full local check before opening a pull request:
 
 ```bash
-rtk scripts/check.sh
+scripts/check.sh
 ```
 
 ## Continuous Integration
@@ -108,17 +108,17 @@ AwarenessView -> AVAudioSession
 Format Swift files:
 
 ```bash
-rtk scripts/format.sh
+scripts/format.sh
 ```
 
 Lint Swift files:
 
 ```bash
-rtk scripts/lint.sh
+scripts/lint.sh
 ```
 
 Build without code signing:
 
 ```bash
-rtk xcodebuild build -project AlertaApp.xcodeproj -scheme AlertaApp -configuration Debug -destination generic/platform=iOS CODE_SIGNING_ALLOWED=NO
+xcodebuild build -project AlertaApp.xcodeproj -scheme AlertaApp -configuration Debug -destination generic/platform=iOS CODE_SIGNING_ALLOWED=NO
 ```
