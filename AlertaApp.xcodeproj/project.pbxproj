@@ -6,23 +6,38 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		1199A37D2FC80DC1007B1E7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A2BB0BC52FC5682D007B9484 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A2BB0BCC2FC5682D007B9484;
+			remoteInfo = AlertaApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1199A3792FC80DC1007B1E7B /* AlertaAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AlertaAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlertaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		A2BB0BDD2FC5682F007B9484 /* Exceptions for "AlertaApp" folder in "AlertaApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Core/Extensions/.gitkeep,
-				Core/Services/.gitkeep,
 				Core/Utilities/.gitkeep,
 			);
 			target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileReference section */
-		A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlertaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-/* End PBXFileReference section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		1199A37A2FC80DC1007B1E7B /* AlertaAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AlertaAppTests;
+			sourceTree = "<group>";
+		};
 		A2BB0BCF2FC5682D007B9484 /* AlertaApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -34,6 +49,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1199A3762FC80DC1007B1E7B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2BB0BCA2FC5682D007B9484 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -48,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				A2BB0BCF2FC5682D007B9484 /* AlertaApp */,
+				1199A37A2FC80DC1007B1E7B /* AlertaAppTests */,
 				A2BB0BCE2FC5682D007B9484 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */,
+				1199A3792FC80DC1007B1E7B /* AlertaAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -63,6 +87,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1199A3782FC80DC1007B1E7B /* AlertaAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1199A37F2FC80DC1007B1E7B /* Build configuration list for PBXNativeTarget "AlertaAppTests" */;
+			buildPhases = (
+				1199A3752FC80DC1007B1E7B /* Sources */,
+				1199A3762FC80DC1007B1E7B /* Frameworks */,
+				1199A3772FC80DC1007B1E7B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1199A37E2FC80DC1007B1E7B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1199A37A2FC80DC1007B1E7B /* AlertaAppTests */,
+			);
+			name = AlertaAppTests;
+			packageProductDependencies = (
+			);
+			productName = AlertaAppTests2;
+			productReference = 1199A3792FC80DC1007B1E7B /* AlertaAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A2BB0BCC2FC5682D007B9484 /* AlertaApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A2BB0BDA2FC5682F007B9484 /* Build configuration list for PBXNativeTarget "AlertaApp" */;
@@ -95,6 +142,10 @@
 				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					1199A3782FC80DC1007B1E7B = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = A2BB0BCC2FC5682D007B9484;
+					};
 					A2BB0BCC2FC5682D007B9484 = {
 						CreatedOnToolsVersion = 26.5;
 					};
@@ -115,11 +166,19 @@
 			projectRoot = "";
 			targets = (
 				A2BB0BCC2FC5682D007B9484 /* AlertaApp */,
+				1199A3782FC80DC1007B1E7B /* AlertaAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1199A3772FC80DC1007B1E7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2BB0BCB2FC5682D007B9484 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -130,6 +189,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1199A3752FC80DC1007B1E7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2BB0BC92FC5682D007B9484 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -139,7 +205,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1199A37E2FC80DC1007B1E7B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
+			targetProxy = 1199A37D2FC80DC1007B1E7B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		1199A3802FC80DC1007B1E7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 235Y6894DR;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimas.AlertaAppTests2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AlertaApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AlertaApp";
+			};
+			name = Debug;
+		};
+		1199A3812FC80DC1007B1E7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 235Y6894DR;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimas.AlertaAppTests2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AlertaApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AlertaApp";
+			};
+			name = Release;
+		};
 		A2BB0BD82FC5682F007B9484 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -268,7 +386,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QHL64K2LPL;
+				DEVELOPMENT_TEAM = 235Y6894DR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -299,7 +417,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QHL64K2LPL;
+				DEVELOPMENT_TEAM = 235Y6894DR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -326,6 +444,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1199A37F2FC80DC1007B1E7B /* Build configuration list for PBXNativeTarget "AlertaAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1199A3802FC80DC1007B1E7B /* Debug */,
+				1199A3812FC80DC1007B1E7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A2BB0BC82FC5682D007B9484 /* Build configuration list for PBXProject "AlertaApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

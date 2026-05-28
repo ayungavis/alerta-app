@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "29193E53-B120-4C3C-969D-10134882AC54",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:AlertaApp.xcodeproj",
+      "identifier" : "A2BB0BCC2FC5682D007B9484",
+      "name" : "AlertaApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:AlertaApp.xcodeproj",
+        "identifier" : "115F7BB32FC7FAC800FD997A",
+        "name" : "AlertaAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}
