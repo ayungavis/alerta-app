@@ -9,13 +9,13 @@ enum AppError: Error, Equatable {
     var message: String {
         switch self {
         case let .unavailableFeature(name):
-            return "\(name) is not available in this build."
+            "\(name) is not available in this build."
         case let .hapticEngineCreationFails(errorMsg):
-            return "Failed to create haptic engine: \(errorMsg)"
+            "Failed to create haptic engine: \(errorMsg)"
         case let .hapticEngineStartFails(errorMsg):
-            return "Failed to start haptic engine: \(errorMsg)"
+            "Failed to start haptic engine: \(errorMsg)"
         case let .hapticPlaybackFails(errorMsg):
-            return "Failed to play haptic pattern: \(errorMsg)"
+            "Failed to play haptic pattern: \(errorMsg)"
         }
     }
 }

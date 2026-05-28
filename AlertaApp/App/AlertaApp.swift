@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreHaptics
+import SwiftUI
 
 @main
 struct AlertaApp: App {
@@ -7,9 +7,8 @@ struct AlertaApp: App {
 
     init() {
         let hapticService: HapticFeedbackProviding
-        
+
         if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
-            
             let defaultPatterns: [AlertUrgency: HapticPatternConfig] = [
                 .low: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticTransient, parameters: [
@@ -17,21 +16,21 @@ struct AlertaApp: App {
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.3)
                     ], relativeTime: 0)
                 ]),
-                
+
                 .medium: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticContinuous, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.6),
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
                     ], relativeTime: 0, duration: 0.5)
                 ]),
-                
+
                 .high: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticContinuous, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.7)
                     ], relativeTime: 0, duration: 1.0)
                 ]),
-                
+
                 .critical: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticContinuous, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
@@ -39,13 +38,13 @@ struct AlertaApp: App {
                     ], relativeTime: 0, duration: 2.0)
                 ])
             ]
-            
+
             hapticService = CoreHapticsService(patternMap: defaultPatterns)
-            
+
         } else {
             hapticService = FallbackHapticService()
         }
-        
+
         _awarenessViewModel = State(initialValue: AwarenessViewModel(
             initialState: AwarenessSessionState.initial,
             hapticService: hapticService
