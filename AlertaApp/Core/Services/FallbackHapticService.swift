@@ -1,3 +1,11 @@
+//
+//  FallbackHapticService.swift
+//  AlertaApp
+//
+//  Created by Kyky on 28/05/26.
+//
+
+
 import Foundation
 import UIKit
 
@@ -7,7 +15,7 @@ class FallbackHapticService: HapticFeedbackProviding {
     
     func prepare() {
         isMonitoring = true
-        generator.prepare() // Keep warm
+        generator.prepare()
     }
     
     func playHaptic(for urgency: AlertUrgency) {

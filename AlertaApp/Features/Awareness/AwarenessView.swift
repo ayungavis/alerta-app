@@ -25,10 +25,10 @@ struct AwarenessView: View {
     }
 }
 
-#Preview {
-    AwarenessView(
-        viewModel: AwarenessViewModel(
-            initialState: AwarenessSessionState.initial
-        )
-    )
-}
+//#Preview {
+//    AwarenessView(
+//        viewModel: AwarenessViewModel(
+//            initialState: AwarenessSessionState.initial
+//        )
+//    )
+//}
