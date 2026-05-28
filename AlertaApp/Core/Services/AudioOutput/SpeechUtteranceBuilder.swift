@@ -25,13 +25,13 @@ struct SpeechUtteranceBuilder {
     private func announcementText(for event: DetectionEvent) -> String {
         switch event.urgency {
         case .critical:
-            return "Warning. \(event.label) detected immediately ahead."
+            "Warning. \(event.label) detected immediately ahead."
         case .high:
-            return "\(event.label) detected ahead."
+            "\(event.label) detected ahead."
         case .medium:
-            return "\(event.label) nearby."
+            "\(event.label) nearby."
         case .low:
-            return event.label
+            event.label
         }
     }
 
@@ -49,28 +49,28 @@ struct SpeechUtteranceBuilder {
 
     private func speechRate(for urgency: AlertUrgency) -> Float {
         switch urgency {
-        case .critical: return AVSpeechUtteranceDefaultSpeechRate
-        case .high: return AVSpeechUtteranceDefaultSpeechRate
-        case .medium: return AVSpeechUtteranceDefaultSpeechRate
-        case .low: return AVSpeechUtteranceDefaultSpeechRate
+        case .critical: AVSpeechUtteranceDefaultSpeechRate
+        case .high: AVSpeechUtteranceDefaultSpeechRate
+        case .medium: AVSpeechUtteranceDefaultSpeechRate
+        case .low: AVSpeechUtteranceDefaultSpeechRate
         }
     }
 
     private func pitchMultiplier(for urgency: AlertUrgency) -> Float {
         switch urgency {
-        case .critical: return 1.3
-        case .high: return 1.15
-        case .medium: return 1.0
-        case .low: return 0.9
+        case .critical: 1.3
+        case .high: 1.15
+        case .medium: 1.0
+        case .low: 0.9
         }
     }
 
     private func preDelay(for urgency: AlertUrgency) -> TimeInterval {
         switch urgency {
-        case .critical: return 0.05
-        case .high: return 0.10
-        case .medium: return 0.15
-        case .low: return 0.20
+        case .critical: 0.05
+        case .high: 0.10
+        case .medium: 0.15
+        case .low: 0.20
         }
     }
 }

@@ -5,15 +5,14 @@
 //  Created by Dimas Nugraha on 28/05/26.
 //
 
-import AVFoundation
 import AudioToolbox
+import AVFoundation
 
 /// Concrete audio output service.
 /// Uses `AudioServicesPlaySystemSound` for brief chime feedback and `AVSpeechSynthesizer` for TTS announcements.
 /// - No SwiftUI imports — safe to instantiate in any layer.
 /// - Marked `final` so the compiler can devirtualise calls.
 final class AudioOutputService: NSObject {
-
     private let synthesiser: AVSpeechSynthesizer
     private let utteranceBuilder: SpeechUtteranceBuilder
 
@@ -93,15 +92,15 @@ extension AudioOutputService: AVSpeechSynthesizerDelegate {
     }
 }
 
-extension SystemSoundID {
+private extension SystemSoundID {
     /// Maps urgency levels to built-in system sound IDs.
     /// IDs sourced from the iOS System Sound library (uidialog subset).
-    fileprivate static func id(for urgency: AlertUrgency) -> SystemSoundID {
+    static func id(for urgency: AlertUrgency) -> SystemSoundID {
         switch urgency {
-        case .critical: return 1005  // SIMToolkitNegativeACK — sharp, attention-grabbing
-        case .high: return 1003  // SIMToolkitPositiveACK — firm double-tap feel
-        case .medium: return 1016  // tweet — neutral mid-priority chime
-        case .low: return 1519  // Tock — subtle, non-disruptive
+        case .critical: 1005 // SIMToolkitNegativeACK — sharp, attention-grabbing
+        case .high: 1003 // SIMToolkitPositiveACK — firm double-tap feel
+        case .medium: 1016 // tweet — neutral mid-priority chime
+        case .low: 1519 // Tock — subtle, non-disruptive
         }
     }
 }

@@ -24,8 +24,8 @@ enum AppError: Error {
 extension AppError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .unavailableFeature(let e): return e.localizedDescription
-        case .audioOutput(let e): return e.localizedDescription
+        case let .unavailableFeature(e): e.localizedDescription
+        case let .audioOutput(e): e.localizedDescription
         }
     }
 }
@@ -33,8 +33,8 @@ extension AppError: LocalizedError {
 extension AppError.UnavailableFeatureError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .unavailableFeature(let name):
-            return "\(name) is not available in this build."
+        case let .unavailableFeature(name):
+            "\(name) is not available in this build."
         }
     }
 }
@@ -42,12 +42,12 @@ extension AppError.UnavailableFeatureError: LocalizedError {
 extension AppError.AudioOutputError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .sessionActivationFailed(let e):
-            return "Audio session activation failed: \(e.localizedDescription)"
-        case .systemSoundUnavailable(let id):
-            return "System sound \(id) is unavailable on this device."
-        case .utteranceRejected(let reason):
-            return "Speech utterance rejected: \(reason)"
+        case let .sessionActivationFailed(e):
+            "Audio session activation failed: \(e.localizedDescription)"
+        case let .systemSoundUnavailable(id):
+            "System sound \(id) is unavailable on this device."
+        case let .utteranceRejected(reason):
+            "Speech utterance rejected: \(reason)"
         }
     }
 }

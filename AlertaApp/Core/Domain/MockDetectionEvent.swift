@@ -1,5 +1,5 @@
 //
-//  DetectionEvent.swift
+//  MockDetectionEvent.swift
 //  AlertaApp
 //
 //  Created by Dimas Nugraha on 28/05/26.
@@ -19,9 +19,9 @@ struct DetectionEvent {
         confidence: Float = 1.0,
         timestamp: Date = .now
     ) {
-        self.label      = label
-        self.urgency    = urgency
+        self.label = label
+        self.urgency = urgency
         self.confidence = confidence
-        self.timestamp  = timestamp
+        self.timestamp = timestamp
     }
 }
