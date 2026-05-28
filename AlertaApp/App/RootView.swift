@@ -1,15 +1,18 @@
 import SwiftUI
 
 struct RootView: View {
+    var viewModel: AwarenessViewModel
+    
     var body: some View {
-        AwarenessView(
-            viewModel: AwarenessViewModel(
-                initialState: AwarenessSessionState.initial
-            )
-        )
+        AwarenessView(viewModel: viewModel)
     }
 }
 
 #Preview {
-    RootView()
+    RootView(
+        viewModel: AwarenessViewModel(
+            initialState: AwarenessSessionState.initial,
+            hapticService: FallbackHapticService()
+        )
+    )
 }
