@@ -1,6 +1,6 @@
 //
 //  SoundAnalysisClassifier.swift
-//  ExprimentApp
+//  AlertaApp
 //
 //  Created by Wahyu Kurniawan on 21/05/26.
 //
@@ -66,9 +66,10 @@ final class SoundAnalysisClassifier: NSObject, SNResultsObserving {
             )
         }
 
-        let debugText = candidates
-            .map { "\($0.identifier): \(Int($0.confidence * 100))%" }
-            .joined(separator: " | ")
+        let debugText =
+            candidates
+                .map { "\($0.identifier): \(Int($0.confidence * 100))%" }
+                .joined(separator: " | ")
 
         print("Top sound candidates:", debugText)
 
@@ -87,7 +88,9 @@ final class SoundAnalysisClassifier: NSObject, SNResultsObserving {
         print("Sound analysis completed")
     }
 
-    private func mapCandidatesToEvent(_ candidates: [SoundClassificationCandidate]) -> SoundClassificationMatch? {
+    private func mapCandidatesToEvent(_ candidates: [SoundClassificationCandidate])
+        -> SoundClassificationMatch?
+    {
         let minimumSpecificConfidence = configuration.minimumSpecificConfidence
         let minimumFallbackConfidence = configuration.minimumFallbackConfidence
 
@@ -120,26 +123,38 @@ final class SoundAnalysisClassifier: NSObject, SNResultsObserving {
     private func mapIdentifierToSpecificEvent(_ identifier: String) -> SoundEvent? {
         let label = normalizedLabel(identifier)
 
-        if containsAny(label, keywords: ["siren", "emergency vehicle", "ambulance", "police car", "fire engine"]) {
+        if containsAny(
+            label,
+            keywords: ["siren", "emergency vehicle", "ambulance", "police car", "fire engine"]
+        ) {
             return .siren
         }
 
-        if containsAny(label, keywords: ["horn", "honking", "vehicle horn", "car horn", "air horn"]) {
+        if containsAny(
+            label, keywords: ["horn", "honking", "vehicle horn", "car horn", "air horn"]
+        ) {
             return .horn
         }
 
         if containsAny(
             label,
-            keywords: ["car", "truck", "bus", "vehicle", "motorcycle", "motor vehicle", "engine", "traffic"]
+            keywords: [
+                "car", "truck", "bus", "vehicle", "motorcycle", "motor vehicle", "engine",
+                "traffic"
+            ]
         ) {
             return .approachingVehicle
         }
 
-        if containsAny(label, keywords: ["bicycle", "bike", "scooter", "bicycle bell", "skateboard"]) {
+        if containsAny(
+            label, keywords: ["bicycle", "bike", "scooter", "bicycle bell", "skateboard"]
+        ) {
             return .bicycleOrScooter
         }
 
-        if containsAny(label, keywords: ["footstep", "walking", "running", "person", "speech", "crowd"]) {
+        if containsAny(
+            label, keywords: ["footstep", "walking", "running", "person", "speech", "crowd"]
+        ) {
             return .nearbyPersonMovement
         }
 
@@ -151,7 +166,9 @@ final class SoundAnalysisClassifier: NSObject, SNResultsObserving {
 
         return containsAny(
             label,
-            keywords: ["noise", "sound", "bang", "slam", "thump", "crash", "explosion", "outside", "urban"]
+            keywords: [
+                "noise", "sound", "bang", "slam", "thump", "crash", "explosion", "outside", "urban"
+            ]
         )
     }
 

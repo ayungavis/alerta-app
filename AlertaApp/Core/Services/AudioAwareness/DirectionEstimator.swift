@@ -1,6 +1,6 @@
 //
 //  DirectionEstimator.swift
-//  ExprimentApp
+//  AlertaApp
 //
 //  Created by Wahyu Kurniawan on 20/05/26.
 //
@@ -8,7 +8,9 @@
 import AVFoundation
 
 struct DirectionEstimator {
-    func estimateDirection(from buffer: AVAudioPCMBuffer, threshold: Float, headYaw: Double? = nil) -> SoundDirection {
+    func estimateDirection(from buffer: AVAudioPCMBuffer, threshold: Float, headYaw: Double? = nil)
+        -> SoundDirection
+    {
         guard let channelData = buffer.floatChannelData else {
             return .unknown
         }
