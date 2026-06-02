@@ -17,7 +17,6 @@ final class AwarenessViewModel {
     private(set) var latestSpectrum: FrequencySpectrum = .zero
     private(set) var latestDirection: SoundDirection = .unknown
     private(set) var baselineProfile: FrequencyProfile?
-    private(set) var statusMessage: String = "Ready"
     private(set) var rawDetectedSound: String = "No sound detected yet"
     private(set) var calibrationState: CalibrationState = .notStarted
 
@@ -46,7 +45,6 @@ final class AwarenessViewModel {
         let hasPermission = await permissionProvider.requestPermission()
 
         guard hasPermission else {
-            statusMessage = "Microphone permission is required."
             return
         }
 
@@ -59,11 +57,10 @@ final class AwarenessViewModel {
                     self?.calibrationState = state
                     switch state {
                     case .calibrating:
-                        self?.statusMessage = "Calibrating..."
+                        break
                     case let .complete(profile):
                         self?.isRunning = true
                         self?.baselineProfile = profile
-                        self?.statusMessage = "Listening"
                     case .notStarted:
                         break
                     }
@@ -82,11 +79,7 @@ final class AwarenessViewModel {
                     self?.feedbackService.playHapticCue(for: event)
                 }
                 .store(in: &cancellables)
-
-            statusMessage = "Calibrating..."
-        } catch {
-            statusMessage = "Unable to start awareness session."
-        }
+        } catch {}
     }
 
     func stop() {
@@ -95,6 +88,5 @@ final class AwarenessViewModel {
         isRunning = false
         baselineProfile = nil
         calibrationState = .notStarted
-        statusMessage = "Stopped"
     }
 }

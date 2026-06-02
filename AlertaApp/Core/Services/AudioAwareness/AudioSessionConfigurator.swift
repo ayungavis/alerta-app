@@ -8,10 +8,6 @@
 import AVFoundation
 
 struct AudioSessionConfigurator {
-    func requestMicrophonePermission() async -> Bool {
-        await AVAudioApplication.requestRecordPermission()
-    }
-
     func configureSession() throws {
         let session = AVAudioSession.sharedInstance()
 
@@ -36,13 +32,6 @@ struct AudioSessionConfigurator {
         }
 
         try session.setActive(true)
-    }
-
-    func isHeadphoneConnected() -> Bool {
-        AVAudioSession.sharedInstance().currentRoute.outputs.contains { output in
-            output.portType == .headphones || output.portType == .bluetoothA2DP
-                || output.portType == .bluetoothLE || output.portType == .bluetoothHFP
-        }
     }
 
     func isAirPodsConnected() -> Bool {
