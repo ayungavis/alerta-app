@@ -12,7 +12,7 @@ struct DirectionIndicatorView: View {
             (.backLeft, -135),
             (.backRight, 135),
             (.left, -90),
-            (.right, 90),
+            (.right, 90)
         ]
     }
 
