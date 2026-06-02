@@ -9,7 +9,13 @@ enum AppError: Error {
     enum UnavailableFeatureError {
         /// A requested feature is not available in this build (e.g. missing entitlement, unsupported OS version).
         case unavailableFeature(name: String)
+        case microphoneUnavailable
+        case invalidInputFormat
+        case permissionDenied
+        case sessionInterrupted
+        case audioEngineFailed(message: String)
     }
+    
 
     enum AudioOutputError {
         /// The `AVAudioSession` could not be activated (e.g. interrupted by a call).
@@ -35,6 +41,16 @@ extension AppError.UnavailableFeatureError: LocalizedError {
         switch self {
         case let .unavailableFeature(name):
             "\(name) is not available in this build."
+        case let .audioEngineFailed(message):
+            "An unexpected error occurred: \(message)."
+        case .microphoneUnavailable:
+            "Microphone is unavailable."
+        case .invalidInputFormat:
+            "Invalid input format."
+        case .permissionDenied:
+            "Permission denied."
+        case .sessionInterrupted:
+            "Session was interrupted."
         }
     }
 }
