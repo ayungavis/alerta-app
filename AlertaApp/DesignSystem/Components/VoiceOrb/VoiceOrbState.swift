@@ -7,15 +7,17 @@ enum VoiceOrbState: String, CaseIterable, Identifiable {
     case speaking
     case muted
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var label: String {
         switch self {
-        case .idle: return "Idle"
-        case .connecting: return "Connecting"
-        case .listening: return "Listening"
-        case .speaking: return "Speaking"
-        case .muted: return "Muted"
+        case .idle: "Idle"
+        case .connecting: "Connecting"
+        case .listening: "Listening"
+        case .speaking: "Speaking"
+        case .muted: "Muted"
         }
     }
 }
@@ -26,14 +28,16 @@ enum VoiceOrbVariant: String, CaseIterable, Identifiable {
     case violet
     case emerald
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var label: String {
         switch self {
-        case .default: return "Default"
-        case .blue: return "Blue"
-        case .violet: return "Violet"
-        case .emerald: return "Emerald"
+        case .default: "Default"
+        case .blue: "Blue"
+        case .violet: "Violet"
+        case .emerald: "Emerald"
         }
     }
 }
@@ -51,7 +55,7 @@ struct OrbParams {
         .connecting: OrbParams(speed: 0.5, amplitude: 0.1, glow: 0.45, brightness: 0.75, pulse: 1.0, saturation: 0.9),
         .listening: OrbParams(speed: 0.4, amplitude: 0.14, glow: 0.5, brightness: 0.85, pulse: 0.0, saturation: 1.0),
         .speaking: OrbParams(speed: 1.4, amplitude: 0.35, glow: 0.9, brightness: 1.0, pulse: 0.0, saturation: 1.0),
-        .muted: OrbParams(speed: 0.06, amplitude: 0.015, glow: 0.08, brightness: 0.35, pulse: 0.0, saturation: 0.2),
+        .muted: OrbParams(speed: 0.06, amplitude: 0.015, glow: 0.08, brightness: 0.35, pulse: 0.0, saturation: 0.2)
     ]
 }
 
@@ -80,7 +84,7 @@ struct VariantColors {
             color0: (0.15, 0.75, 0.55),
             color1: (0.3, 0.9, 0.7),
             color2: (0.1, 0.55, 0.4)
-        ),
+        )
     ]
 
     static func primary(for colorScheme: ColorScheme) -> VariantColors {

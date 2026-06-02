@@ -21,4 +21,5 @@ struct DetectionEvent: Identifiable {
     let topCandidates: [DetectionCandidate]
     let rawIdentifier: String
     let timestamp: Date
+    let frequencyInfo: FrequencySpectrum?
 }
