@@ -1,0 +1,109 @@
+name: Release to TestFlight
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      bump_build:
+        description: "Increment build number"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build and Upload to TestFlight
+    runs-on: macos-26
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+
+      - name: Print tool versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.cache/org.swift.swiftpm
+            BuildTools/.build
+          key: ${{ runner.os }}-spm-${{ hashFiles('BuildTools/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve build tools
+        run: scripts/bootstrap.sh
+
+      - name: Determine build number
+        id: build_number
+        run: |
+          CURRENT="$(xcrun agvtool what-version -terse 2>/dev/null || echo "1")"
+          if [[ "${{ inputs.bump_build }}" == "true" || "${{ github.event_name }}" == "release" ]]; then
+            NEW=$((CURRENT + 1))
+          else
+            NEW="$CURRENT"
+          fi
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "next=$NEW" >> "$GITHUB_OUTPUT"
+          echo "Build number: $CURRENT → $NEW"
+
+      - name: Write App Store Connect API key
+        run: |
+          mkdir -p ~/.appstoreconnect
+          echo "${{ secrets.APPSTORE_API_KEY_BASE64 }}" | base64 -d > ~/.appstoreconnect/AuthKey_${{ secrets.APPSTORE_KEY_ID }}.p8
+          chmod 600 ~/.appstoreconnect/AuthKey_${{ secrets.APPSTORE_KEY_ID }}.p8
+
+      - name: Run lint checks
+        run: scripts/lint.sh
+
+      - name: Archive and export
+        run: |
+          xcodebuild archive \
+            -project AlertaApp.xcodeproj \
+            -scheme AlertaApp \
+            -configuration Release \
+            -archivePath build/AlertaApp.xcarchive \
+            CURRENT_PROJECT_VERSION=${{ steps.build_number.outputs.next }} \
+            -allowProvisioningUpdates \
+            -authenticationKeyIssuerID "${{ secrets.APPSTORE_ISSUER_ID }}" \
+            -authenticationKeyID "${{ secrets.APPSTORE_KEY_ID }}" \
+            -authenticationKeyPath ~/.appstoreconnect/AuthKey_${{ secrets.APPSTORE_KEY_ID }}.p8
+
+          xcodebuild -exportArchive \
+            -archivePath build/AlertaApp.xcarchive \
+            -exportOptionsPlist scripts/ExportOptions.plist \
+            -exportPath build/ \
+            -allowProvisioningUpdates \
+            -authenticationKeyIssuerID "${{ secrets.APPSTORE_ISSUER_ID }}" \
+            -authenticationKeyID "${{ secrets.APPSTORE_KEY_ID }}" \
+            -authenticationKeyPath ~/.appstoreconnect/AuthKey_${{ secrets.APPSTORE_KEY_ID }}.p8
+
+      - name: Upload to TestFlight
+        run: |
+          xcrun altool --upload-app \
+            --file build/AlertaApp.ipa \
+            --type ios \
+            --apiKey "${{ secrets.APPSTORE_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APPSTORE_ISSUER_ID }}"
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: release-artifacts
+          path: |
+            build/*.ipa
+            build/*.xcarchive/**/*.log
+          retention-days: 7
