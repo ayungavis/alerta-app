@@ -67,10 +67,10 @@ struct FrequencyAnalyzer {
         var total: Float = 0
         var count = 0
 
-        for i in 0 ..< magnitudes.count {
-            let frequency = sampleRate * Float(i) / Float(fftSize)
+        for index in 0 ..< magnitudes.count {
+            let frequency = sampleRate * Float(index) / Float(fftSize)
             if range ~= frequency {
-                total += magnitudes[i]
+                total += magnitudes[index]
                 count += 1
             }
         }
@@ -111,6 +111,7 @@ private final class FFTAccelerator {
         self.fftSize = fftSize
         log2n = UInt(round(log2(Float(fftSize))))
         halfSize = fftSize / 2
+        // swiftlint:disable:next force_unwrapping
         setup = vDSP_create_fftsetup(log2n, FFTRadix(FFT_RADIX2))!
     }
 
@@ -121,15 +122,16 @@ private final class FFTAccelerator {
     func computeMagnitudes(from samples: UnsafePointer<Float>, frameLength: Int) -> [Float] {
         var padded = [Float](repeating: 0, count: fftSize)
         let copyCount = min(frameLength, fftSize)
-        for i in 0 ..< copyCount {
-            padded[i] = samples[i]
+        for index in 0 ..< copyCount {
+            padded[index] = samples[index]
         }
 
         var realParts = [Float](repeating: 0, count: halfSize)
         var imagParts = [Float](repeating: 0, count: halfSize)
 
         padded.withUnsafeBufferPointer { paddedPtr in
-            let complexPtr = UnsafeRawPointer(paddedPtr.baseAddress!).assumingMemoryBound(to: DSPComplex.self)
+            guard let baseAddress = paddedPtr.baseAddress else { return }
+            let complexPtr = UnsafeRawPointer(baseAddress).assumingMemoryBound(to: DSPComplex.self)
 
             var splitComplex = DSPSplitComplex(
                 realp: &realParts,
@@ -147,8 +149,8 @@ private final class FFTAccelerator {
             var scaled = [Float](repeating: 0, count: halfSize)
             vDSP_vsdiv(magnitudes, 1, [scale], &scaled, 1, vDSP_Length(halfSize))
 
-            for i in 0 ..< halfSize {
-                realParts[i] = sqrt(scaled[i])
+            for index in 0 ..< halfSize {
+                realParts[index] = sqrt(scaled[index])
             }
         }
 
