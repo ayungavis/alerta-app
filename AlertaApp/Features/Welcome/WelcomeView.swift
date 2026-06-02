@@ -1,3 +1,10 @@
+//
+//  WelcomeView.swift
+//  AlertaApp
+//
+//  Created by Wahyu Kurniawan on 20/05/26.
+//
+
 import SwiftUI
 
 struct WelcomeView: View {
@@ -41,13 +48,15 @@ struct WelcomeView: View {
                     .foregroundStyle(Color("primary"))
                     .padding(.top, 24)
 
-                Text("We detect important environmental sounds and instantly notify you about potential danger nearby.")
-                    .font(.body)
-                    .fontWeight(.regular)
-                    .foregroundStyle(Color("secondary"))
-                    .multilineTextAlignment(.center)
-                    .frame(width: 297)
-                    .padding(.top, 16)
+                Text(
+                    "We detect important environmental sounds and instantly notify you about potential danger nearby."
+                )
+                .font(.body)
+                .fontWeight(.regular)
+                .foregroundStyle(Color("secondary"))
+                .multilineTextAlignment(.center)
+                .frame(width: 297)
+                .padding(.top, 16)
 
                 Spacer()
 

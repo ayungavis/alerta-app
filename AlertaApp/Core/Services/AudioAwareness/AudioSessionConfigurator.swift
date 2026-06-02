@@ -1,6 +1,6 @@
 //
 //  AudioSessionConfigurator.swift
-//  ExprimentApp
+//  AlertaApp
 //
 //  Created by Wahyu Kurniawan on 20/05/26.
 //
@@ -21,7 +21,8 @@ struct AudioSessionConfigurator {
             options: [.allowBluetoothA2DP, .defaultToSpeaker]
         )
 
-        guard let builtInMic = session.availableInputs?.first(where: { $0.portType == .builtInMic }) else {
+        guard let builtInMic = session.availableInputs?.first(where: { $0.portType == .builtInMic })
+        else {
             throw AppError.microphoneUnavailable
         }
 
@@ -39,17 +40,14 @@ struct AudioSessionConfigurator {
 
     func isHeadphoneConnected() -> Bool {
         AVAudioSession.sharedInstance().currentRoute.outputs.contains { output in
-            output.portType == .headphones ||
-                output.portType == .bluetoothA2DP ||
-                output.portType == .bluetoothLE ||
-                output.portType == .bluetoothHFP
+            output.portType == .headphones || output.portType == .bluetoothA2DP
+                || output.portType == .bluetoothLE || output.portType == .bluetoothHFP
         }
     }
 
     func isAirPodsConnected() -> Bool {
         AVAudioSession.sharedInstance().currentRoute.inputs.contains { input in
-            input.portType == .bluetoothHFP ||
-                input.portType == .bluetoothA2DP
+            input.portType == .bluetoothHFP || input.portType == .bluetoothA2DP
         }
     }
 }
