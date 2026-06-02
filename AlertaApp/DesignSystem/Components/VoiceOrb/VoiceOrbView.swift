@@ -1,12 +1,12 @@
-import SwiftUI
 import MetalKit
+import SwiftUI
 
 struct VoiceOrbView: UIViewRepresentable {
     let state: VoiceOrbState
     let variant: VoiceOrbVariant
     var volume: Float = 0
     var reduceMotion: Bool = false
-    var customColors: VariantColors? = nil
+    var customColors: VariantColors?
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -42,9 +42,9 @@ struct VoiceOrbView: UIViewRepresentable {
         private let commandQueue: MTLCommandQueue
         private let pipelineState: MTLRenderPipelineState
 
-        var targetParams: OrbParams = OrbParams.stateMap[.idle]!
-        var currentParams: OrbParams = OrbParams.stateMap[.idle]!
-        var variantColors: VariantColors = VariantColors.map[.default]!
+        var targetParams: OrbParams = .stateMap[.idle]!
+        var currentParams: OrbParams = .stateMap[.idle]!
+        var variantColors: VariantColors = .map[.default]!
         var volume: Float = 0
         private let startTime: CFTimeInterval
 
@@ -123,183 +123,183 @@ struct VoiceOrbView: UIViewRepresentable {
         }
 
         static let shaderSource = """
-#include <metal_stdlib>
-using namespace metal;
+        #include <metal_stdlib>
+        using namespace metal;
 
-struct VertexOut {
-    float4 position [[position]];
-    float2 uv;
-};
+        struct VertexOut {
+            float4 position [[position]];
+            float2 uv;
+        };
 
-struct OrbUniforms {
-    float u_time;
-    float u_speed;
-    float u_amplitude;
-    float u_glow;
-    float u_brightness;
-    float u_pulse;
-    float u_saturation;
-    float u_dpr;
-    float u_color0_r;
-    float u_color0_g;
-    float u_color0_b;
-    float u_color1_r;
-    float u_color1_g;
-    float u_color1_b;
-    float u_color2_r;
-    float u_color2_g;
-    float u_color2_b;
-};
+        struct OrbUniforms {
+            float u_time;
+            float u_speed;
+            float u_amplitude;
+            float u_glow;
+            float u_brightness;
+            float u_pulse;
+            float u_saturation;
+            float u_dpr;
+            float u_color0_r;
+            float u_color0_g;
+            float u_color0_b;
+            float u_color1_r;
+            float u_color1_g;
+            float u_color1_b;
+            float u_color2_r;
+            float u_color2_g;
+            float u_color2_b;
+        };
 
-vertex VertexOut vertex_main(uint vertexID [[vertex_id]]) {
-    float2 positions[4] = {
-        float2(-1.0f, -1.0f),
-        float2( 1.0f, -1.0f),
-        float2(-1.0f,  1.0f),
-        float2( 1.0f,  1.0f)
-    };
-    VertexOut out;
-    out.position = float4(positions[vertexID], 0.0f, 1.0f);
-    out.uv = positions[vertexID] * 0.5f + 0.5f;
-    return out;
-}
+        vertex VertexOut vertex_main(uint vertexID [[vertex_id]]) {
+            float2 positions[4] = {
+                float2(-1.0f, -1.0f),
+                float2( 1.0f, -1.0f),
+                float2(-1.0f,  1.0f),
+                float2( 1.0f,  1.0f)
+            };
+            VertexOut out;
+            out.position = float4(positions[vertexID], 0.0f, 1.0f);
+            out.uv = positions[vertexID] * 0.5f + 0.5f;
+            return out;
+        }
 
-float3 mod289(float3 x) {
-    return x - floor(x / 289.0f) * 289.0f;
-}
+        float3 mod289(float3 x) {
+            return x - floor(x / 289.0f) * 289.0f;
+        }
 
-float4 mod289(float4 x) {
-    return x - floor(x / 289.0f) * 289.0f;
-}
+        float4 mod289(float4 x) {
+            return x - floor(x / 289.0f) * 289.0f;
+        }
 
-float4 permute(float4 x) {
-    return mod289((x * 34.0f + 1.0f) * x);
-}
+        float4 permute(float4 x) {
+            return mod289((x * 34.0f + 1.0f) * x);
+        }
 
-float4 taylorInvSqrt(float4 r) {
-    return 1.79284291400159f - 0.85373472095314f * r;
-}
+        float4 taylorInvSqrt(float4 r) {
+            return 1.79284291400159f - 0.85373472095314f * r;
+        }
 
-float snoise(float3 v) {
-    constexpr float2 C = float2(1.0f / 6.0f, 1.0f / 3.0f);
+        float snoise(float3 v) {
+            constexpr float2 C = float2(1.0f / 6.0f, 1.0f / 3.0f);
 
-    float3 i  = floor(v + dot(v, float3(C.y)));
-    float3 x0 = v - i + dot(i, float3(C.x));
+            float3 i  = floor(v + dot(v, float3(C.y)));
+            float3 x0 = v - i + dot(i, float3(C.x));
 
-    float3 g = step(x0.yzx, x0.xyz);
-    float3 l = 1.0f - g;
-    float3 i1 = min(g, l.zxy);
-    float3 i2 = max(g, l.zxy);
+            float3 g = step(x0.yzx, x0.xyz);
+            float3 l = 1.0f - g;
+            float3 i1 = min(g, l.zxy);
+            float3 i2 = max(g, l.zxy);
 
-    float3 x1 = x0 - i1 + C.x;
-    float3 x2 = x0 - i2 + C.y;
-    float3 x3 = x0 - 0.5f;
+            float3 x1 = x0 - i1 + C.x;
+            float3 x2 = x0 - i2 + C.y;
+            float3 x3 = x0 - 0.5f;
 
-    i = mod289(i);
-    float4 p = permute(permute(permute(
-        i.z + float4(0.0f, i1.z, i2.z, 1.0f))
-        + i.y + float4(0.0f, i1.y, i2.y, 1.0f))
-        + i.x + float4(0.0f, i1.x, i2.x, 1.0f));
+            i = mod289(i);
+            float4 p = permute(permute(permute(
+                i.z + float4(0.0f, i1.z, i2.z, 1.0f))
+                + i.y + float4(0.0f, i1.y, i2.y, 1.0f))
+                + i.x + float4(0.0f, i1.x, i2.x, 1.0f));
 
-    float4 j = p - 49.0f * floor(p / 49.0f);
-    float4 x_ = floor(j / 7.0f);
-    float4 y_ = floor(j - 7.0f * x_);
+            float4 j = p - 49.0f * floor(p / 49.0f);
+            float4 x_ = floor(j / 7.0f);
+            float4 y_ = floor(j - 7.0f * x_);
 
-    float4 x = (x_ * 2.0f + 0.5f) / 7.0f - 1.0f;
-    float4 y = (y_ * 2.0f + 0.5f) / 7.0f - 1.0f;
+            float4 x = (x_ * 2.0f + 0.5f) / 7.0f - 1.0f;
+            float4 y = (y_ * 2.0f + 0.5f) / 7.0f - 1.0f;
 
-    float4 h = 1.0f - abs(x) - abs(y);
+            float4 h = 1.0f - abs(x) - abs(y);
 
-    float4 b0 = float4(x.xy, y.xy);
-    float4 b1 = float4(x.zw, y.zw);
+            float4 b0 = float4(x.xy, y.xy);
+            float4 b1 = float4(x.zw, y.zw);
 
-    float4 s0 = floor(b0) * 2.0f + 1.0f;
-    float4 s1 = floor(b1) * 2.0f + 1.0f;
-    float4 sh = -step(h, float4(0.0f));
+            float4 s0 = floor(b0) * 2.0f + 1.0f;
+            float4 s1 = floor(b1) * 2.0f + 1.0f;
+            float4 sh = -step(h, float4(0.0f));
 
-    float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
-    float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+            float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+            float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
 
-    float3 g0 = float3(a0.xy, h.x);
-    float3 g1 = float3(a0.zw, h.y);
-    float3 g2 = float3(a1.xy, h.z);
-    float3 g3 = float3(a1.zw, h.w);
+            float3 g0 = float3(a0.xy, h.x);
+            float3 g1 = float3(a0.zw, h.y);
+            float3 g2 = float3(a1.xy, h.z);
+            float3 g3 = float3(a1.zw, h.w);
 
-    float4 norm = taylorInvSqrt(float4(dot(g0,g0), dot(g1,g1), dot(g2,g2), dot(g3,g3)));
-    g0 *= norm.x;
-    g1 *= norm.y;
-    g2 *= norm.z;
-    g3 *= norm.w;
+            float4 norm = taylorInvSqrt(float4(dot(g0,g0), dot(g1,g1), dot(g2,g2), dot(g3,g3)));
+            g0 *= norm.x;
+            g1 *= norm.y;
+            g2 *= norm.z;
+            g3 *= norm.w;
 
-    float4 m = max(0.6f - float4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0f);
-    m = m * m;
-    return 42.0f * dot(m * m, float4(dot(g0,x0), dot(g1,x1), dot(g2,x2), dot(g3,x3)));
-}
+            float4 m = max(0.6f - float4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0f);
+            m = m * m;
+            return 42.0f * dot(m * m, float4(dot(g0,x0), dot(g1,x1), dot(g2,x2), dot(g3,x3)));
+        }
 
-fragment float4 fragment_main(
-    VertexOut in [[stage_in]],
-    constant OrbUniforms &u [[buffer(0)]]
-) {
-    float2 uv = in.uv * 2.0f - 1.0f;
-    float dist = length(uv);
-    float t = u.u_time * u.u_speed;
+        fragment float4 fragment_main(
+            VertexOut in [[stage_in]],
+            constant OrbUniforms &u [[buffer(0)]]
+        ) {
+            float2 uv = in.uv * 2.0f - 1.0f;
+            float dist = length(uv);
+            float t = u.u_time * u.u_speed;
 
-    float3 color0 = float3(u.u_color0_r, u.u_color0_g, u.u_color0_b);
-    float3 color1 = float3(u.u_color1_r, u.u_color1_g, u.u_color1_b);
-    float3 color2 = float3(u.u_color2_r, u.u_color2_g, u.u_color2_b);
+            float3 color0 = float3(u.u_color0_r, u.u_color0_g, u.u_color0_b);
+            float3 color1 = float3(u.u_color1_r, u.u_color1_g, u.u_color1_b);
+            float3 color2 = float3(u.u_color2_r, u.u_color2_g, u.u_color2_b);
 
-    float radius = 0.44f;
-    float circle = 1.0f - smoothstep(radius - 0.008f, radius + 0.008f, dist);
+            float radius = 0.44f;
+            float circle = 1.0f - smoothstep(radius - 0.008f, radius + 0.008f, dist);
 
-    if (circle < 0.001f) {
-        float glowDist = dist - radius;
-        float glow = exp(-glowDist * 12.0f) * u.u_glow * 0.4f;
-        float3 glowColor = mix(color0, color1, 0.5f);
-        return float4(glowColor * glow, glow);
-    }
+            if (circle < 0.001f) {
+                float glowDist = dist - radius;
+                float glow = exp(-glowDist * 12.0f) * u.u_glow * 0.4f;
+                float3 glowColor = mix(color0, color1, 0.5f);
+                return float4(glowColor * glow, glow);
+            }
 
-    float n1 = snoise(float3(uv * 2.0f, t * 0.6f)) * 0.5f + 0.5f;
-    float n2 = snoise(float3(uv * 3.5f + 7.0f, t * 0.9f)) * 0.5f + 0.5f;
-    float n3 = snoise(float3(uv * 1.5f - 3.0f, t * 0.4f + 10.0f)) * 0.5f + 0.5f;
+            float n1 = snoise(float3(uv * 2.0f, t * 0.6f)) * 0.5f + 0.5f;
+            float n2 = snoise(float3(uv * 3.5f + 7.0f, t * 0.9f)) * 0.5f + 0.5f;
+            float n3 = snoise(float3(uv * 1.5f - 3.0f, t * 0.4f + 10.0f)) * 0.5f + 0.5f;
 
-    float2 distort = float2(
-        snoise(float3(uv * 2.0f + 5.0f, t * 0.7f)),
-        snoise(float3(uv * 2.0f + 15.0f, t * 0.7f))
-    ) * u.u_amplitude * 2.0f;
+            float2 distort = float2(
+                snoise(float3(uv * 2.0f + 5.0f, t * 0.7f)),
+                snoise(float3(uv * 2.0f + 15.0f, t * 0.7f))
+            ) * u.u_amplitude * 2.0f;
 
-    float n4 = snoise(float3((uv + distort) * 3.0f, t * 0.5f)) * 0.5f + 0.5f;
+            float n4 = snoise(float3((uv + distort) * 3.0f, t * 0.5f)) * 0.5f + 0.5f;
 
-    float3 col = mix(color0, color1, n1);
-    col = mix(col, color2, n2 * 0.5f);
-    col = mix(col, color1 * 1.3f, n4 * 0.4f);
+            float3 col = mix(color0, color1, n1);
+            col = mix(col, color2, n2 * 0.5f);
+            col = mix(col, color1 * 1.3f, n4 * 0.4f);
 
-    float vein = pow(n3, 3.0f) * u.u_amplitude * 6.0f;
-    col += vein * mix(color1, float3(1.0f), 0.3f);
+            float vein = pow(n3, 3.0f) * u.u_amplitude * 6.0f;
+            col += vein * mix(color1, float3(1.0f), 0.3f);
 
-    float centerDist = dist / radius;
-    float depthShade = 1.0f - centerDist * centerDist * 0.4f;
-    col *= depthShade;
+            float centerDist = dist / radius;
+            float depthShade = 1.0f - centerDist * centerDist * 0.4f;
+            col *= depthShade;
 
-    float rim = pow(centerDist, 4.0f) * 0.6f;
-    col += rim * mix(color0, float3(1.0f), 0.5f);
+            float rim = pow(centerDist, 4.0f) * 0.6f;
+            col += rim * mix(color0, float3(1.0f), 0.5f);
 
-    float2 lightPos = float2(-0.15f, -0.18f);
-    float specDist = length(uv - lightPos);
-    float spec = exp(-specDist * specDist * 30.0f) * 0.7f;
-    col += spec * float3(1.0f);
+            float2 lightPos = float2(-0.15f, -0.18f);
+            float specDist = length(uv - lightPos);
+            float spec = exp(-specDist * specDist * 30.0f) * 0.7f;
+            col += spec * float3(1.0f);
 
-    float2 lightPos2 = float2(0.2f, 0.25f);
-    float spec2 = exp(-length(uv - lightPos2) * 8.0f) * 0.15f;
-    col += spec2 * color1;
+            float2 lightPos2 = float2(0.2f, 0.25f);
+            float spec2 = exp(-length(uv - lightPos2) * 8.0f) * 0.15f;
+            col += spec2 * color1;
 
-    float pulseFactor = 1.0f + u.u_pulse * sin(u.u_time * 3.5f) * 0.35f;
-    float lum = dot(col, float3(0.299f, 0.587f, 0.114f));
-    col = mix(float3(lum), col, u.u_saturation);
-    col *= u.u_brightness * pulseFactor;
+            float pulseFactor = 1.0f + u.u_pulse * sin(u.u_time * 3.5f) * 0.35f;
+            float lum = dot(col, float3(0.299f, 0.587f, 0.114f));
+            col = mix(float3(lum), col, u.u_saturation);
+            col *= u.u_brightness * pulseFactor;
 
-    return float4(col, circle);
-}
-"""
+            return float4(col, circle);
+        }
+        """
     }
 }
 

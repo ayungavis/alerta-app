@@ -37,7 +37,8 @@ final class AudioCaptureService {
                 urgency: match.event.urgency,
                 topCandidates: candidates,
                 rawIdentifier: match.rawIdentifier,
-                timestamp: Date()
+                timestamp: Date(),
+                frequencyInfo: nil
             )
 
             onDetection(event)

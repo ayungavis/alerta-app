@@ -13,7 +13,7 @@ struct AudioBarsView: View {
         (31, "primaryDark"),
         (77, "primary"),
         (39, "secondary"),
-        (31, "primaryDark"),
+        (31, "primaryDark")
     ]
 
     var body: some View {
