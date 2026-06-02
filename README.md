@@ -133,17 +133,23 @@ Releases are built and uploaded via GitHub Actions CI. You trigger a release by 
 An App Store Connect API Key is required for the CI workflow (one-time setup):
 
 1. Go to [App Store Connect → Users and Access → Integrations → App Store Connect API](https://appstoreconnect.apple.com/access/integrations/api)
-2. Create a key with **Developer** role
+2. Create a key with **Admin** role (required for provisioning and upload)
 3. Download the `.p8` file
-4. Add three GitHub Secrets:
+4. Encode it to base64:
+   ```bash
+   base64 -i AuthKey_XXXXXXXXXX.p8 | tr -d '\n' | pbcopy
+   ```
+5. Add three GitHub Secrets:
 
 | Secret | Value |
 |---|---|
-| `APPSTORE_KEY_ID` | Key ID from App Store Connect |
-| `APPSTORE_ISSUER_ID` | Issuer ID from App Store Connect |
-| `APPSTORE_API_KEY_BASE64` | `base64 -i AuthKey_XXXXXXXXXX.p8` |
+| `APPSTORE_KEY_ID` | Key ID from App Store Connect (e.g., `ABC123XYZ`) |
+| `APPSTORE_ISSUER_ID` | Issuer ID from App Store Connect (UUID at top of Keys page) |
+| `APPSTORE_API_KEY_BASE64` | Base64-encoded `.p8` file (single line, no newlines) |
 
-Go to **GitHub → Settings → Secrets and variables → Actions** and add them.
+Go to **GitHub → Settings → Secrets and variables → Actions** to add them.
+
+> **Important:** The API key must have **Admin** or **App Manager** role. The **Developer** role does not have sufficient permissions for provisioning profile management.
 
 ### How to release
 
