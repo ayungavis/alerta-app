@@ -24,11 +24,12 @@ scripts/check.sh
 
 ## Continuous Integration
 
-GitHub Actions runs the same check used locally:
+Two GitHub Actions workflows:
 
-```bash
-scripts/check.sh
-```
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `ci.yml` | Push/PR to `main` | Lint + build without code signing |
+| `release.yml` | GitHub Release published or manual dispatch | Lint + archive + export + upload to TestFlight |
 
 The CI workflow resolves the project-managed Swift tools, runs SwiftFormat in lint mode, runs SwiftLint, and builds the iPhone app without code signing.
 
@@ -60,9 +61,9 @@ Empty folders use `.gitkeep` so the intended structure is visible before the fir
 
 Example: adding microphone permission support.
 
-- `AlertaApp/Core/Services/Audio/MicrophonePermissionProviding.swift`
+- `AlertaApp/Core/Services/AudioAwareness/MicrophonePermissionProviding.swift`
   Defines a protocol that describes permission behavior.
-- `AlertaApp/Core/Services/Audio/SystemMicrophonePermissionProvider.swift`
+- `AlertaApp/Core/Services/AudioAwareness/SystemMicrophonePermissionProvider.swift`
   Implements the protocol by talking to Apple system APIs.
 - `AlertaApp/Features/Awareness/AwarenessViewModel.swift`
   Injects `MicrophonePermissionProviding` and reacts to permission state.
@@ -73,16 +74,16 @@ Example: splitting a large feature view.
 
 - `AlertaApp/Features/Awareness/AwarenessView.swift`
   Owns feature layout and connects state to child views.
-- `AlertaApp/Features/Awareness/Components/AwarenessStatusHeader.swift`
-  Renders the status header for the awareness feature only.
-- `AlertaApp/Features/Awareness/Components/AwarenessEmptyStateView.swift`
-  Renders the empty state for the awareness feature only.
+- `AlertaApp/Features/Awareness/Components/DirectionIndicatorView.swift`
+  Renders directional compass for spatial awareness.
+- `AlertaApp/Features/Awareness/Components/FrequencyBarsView.swift`
+  Renders live frequency band visualization.
 
 Do not create a new view model for every small component. Start with typed input properties and closures for user actions.
 
 Example: promoting a component to the design system.
 
-- Keep `AwarenessStatusHeader` in `Features/Awareness/Components/` while only the awareness feature uses it.
+- Keep `DirectionIndicatorView` in `Features/Awareness/Components/` while only the awareness feature uses it.
 - Move a reusable button, badge, color, spacing value, or typography style to `AlertaApp/DesignSystem/` when multiple features need it.
 
 ## Dependency Direction
@@ -122,3 +123,55 @@ Build without code signing:
 ```bash
 xcodebuild build -project AlertaApp.xcodeproj -scheme AlertaApp -configuration Debug -destination generic/platform=iOS CODE_SIGNING_ALLOWED=NO
 ```
+
+## Release to TestFlight
+
+Releases are built and uploaded via GitHub Actions CI. You trigger a release by creating a GitHub Release.
+
+### Prerequisites
+
+An App Store Connect API Key is required for the CI workflow (one-time setup):
+
+1. Go to [App Store Connect → Users and Access → Integrations → App Store Connect API](https://appstoreconnect.apple.com/access/integrations/api)
+2. Create a key with **Developer** role
+3. Download the `.p8` file
+4. Add three GitHub Secrets:
+
+| Secret | Value |
+|---|---|
+| `APPSTORE_KEY_ID` | Key ID from App Store Connect |
+| `APPSTORE_ISSUER_ID` | Issuer ID from App Store Connect |
+| `APPSTORE_API_KEY_BASE64` | `base64 -i AuthKey_XXXXXXXXXX.p8` |
+
+Go to **GitHub → Settings → Secrets and variables → Actions** and add them.
+
+### How to release
+
+1. Run the pre-flight check locally:
+   ```bash
+   scripts/release.sh
+   ```
+   This verifies clean git, `main` branch, synced with remote, and lint + build pass.
+
+2. Create a GitHub Release:
+   - Go to **GitHub → Releases → Draft a new release**
+   - Tag: `vX.Y.Z` (e.g., `v1.0.0`)
+   - Write release notes
+   - Click **Publish release**
+
+3. CI runs automatically:
+   - Checks out the tagged commit
+   - Increments the build number
+   - Archives the app (Release configuration)
+   - Exports an `.ipa`
+   - Uploads to App Store Connect (TestFlight)
+
+4. The build appears in TestFlight within minutes. It enters Apple's beta review before external distribution.
+
+### Manual trigger
+
+To upload without creating a release:
+
+- Go to **GitHub → Actions → Release to TestFlight → Run workflow**
+- Toggle "Increment build number" as needed
+- Click **Run workflow**
