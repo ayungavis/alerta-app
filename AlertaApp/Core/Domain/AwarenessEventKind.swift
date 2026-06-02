@@ -1,3 +1,10 @@
+//
+//  AwarenessEventKind.swift
+//  AlertaApp
+//
+//  Created by Wahyu Kurniawan on 20/05/26.
+//
+
 enum AwarenessEventKind: String, CaseIterable, Identifiable {
     case approachingVehicle
     case bicycleOrScooter

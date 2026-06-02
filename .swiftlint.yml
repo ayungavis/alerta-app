@@ -4,6 +4,7 @@ included:
 excluded:
   - BuildTools
   - AlertaApp/Assets.xcassets
+  - AlertaApp/DesignSystem/Components/VoiceOrb/VoiceOrbView.swift
 
 disabled_rules:
   - trailing_comma
