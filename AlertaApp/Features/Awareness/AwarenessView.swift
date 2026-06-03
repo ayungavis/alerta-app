@@ -161,7 +161,7 @@ struct AwarenessView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
-    private func urgencyColor(_ urgency: DetectionUrgency) -> Color {
+    private func urgencyColor(_ urgency: Urgency) -> Color {
         switch urgency {
         case .critical: Color("alertCritical")
         case .high: Color("alertMedium")
