@@ -19,6 +19,7 @@ struct DetectionEvent: Identifiable {
     let confidence: Float
     let urgency: DetectionUrgency
     let topCandidates: [DetectionCandidate]
+    let kind: AwarenessEventKind
     let rawIdentifier: String
     let timestamp: Date
     let frequencyInfo: FrequencySpectrum?

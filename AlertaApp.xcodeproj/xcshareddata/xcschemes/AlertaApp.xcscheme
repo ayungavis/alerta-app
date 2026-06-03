@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A2BB0BCC2FC5682D007B9484"
-               BuildableName = "AlertaApp.app"
+               BuildableName = "AlertaApp"
                BlueprintName = "AlertaApp"
                ReferencedContainer = "container:AlertaApp.xcodeproj">
             </BuildableReference>
@@ -40,7 +40,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "115F7BB32FC7FAC800FD997A"
+               BlueprintIdentifier = "1199A3782FC80DC1007B1E7B"
                BuildableName = "AlertaAppTests.xctest"
                BlueprintName = "AlertaAppTests"
                ReferencedContainer = "container:AlertaApp.xcodeproj">
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A2BB0BCC2FC5682D007B9484"
-            BuildableName = "AlertaApp.app"
+            BuildableName = "AlertaApp"
             BlueprintName = "AlertaApp"
             ReferencedContainer = "container:AlertaApp.xcodeproj">
          </BuildableReference>
@@ -92,7 +92,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A2BB0BCC2FC5682D007B9484"
-            BuildableName = "AlertaApp.app"
+            BuildableName = "AlertaApp"
             BlueprintName = "AlertaApp"
             ReferencedContainer = "container:AlertaApp.xcodeproj">
          </BuildableReference>

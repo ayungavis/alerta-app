@@ -95,7 +95,7 @@ extension AudioOutputService: AVSpeechSynthesizerDelegate {
 private extension SystemSoundID {
     /// Maps urgency levels to built-in system sound IDs.
     /// IDs sourced from the iOS System Sound library (uidialog subset).
-    static func id(for urgency: AlertUrgency) -> SystemSoundID {
+    static func id(for urgency: DetectionUrgency) -> SystemSoundID {
         switch urgency {
         case .critical: 1005 // SIMToolkitNegativeACK — sharp, attention-grabbing
         case .high: 1003 // SIMToolkitPositiveACK — firm double-tap feel

@@ -7,21 +7,21 @@
 
 import Foundation
 
-struct DetectionEvent {
-    let label: String
-    let urgency: AlertUrgency
-    let timestamp: Date
-    let confidence: Float
-
-    init(
-        label: String,
-        urgency: AlertUrgency,
-        confidence: Float = 1.0,
-        timestamp: Date = .now
-    ) {
-        self.label = label
-        self.urgency = urgency
-        self.confidence = confidence
-        self.timestamp = timestamp
-    }
-}
+//struct DetectionEvent {
+//    let label: String
+//    let urgency: AlertUrgency
+//    let timestamp: Date
+//    let confidence: Float
+//
+//    init(
+//        label: String,
+//        urgency: AlertUrgency,
+//        confidence: Float = 1.0,
+//        timestamp: Date = .now
+//    ) {
+//        self.label = label
+//        self.urgency = urgency
+//        self.confidence = confidence
+//        self.timestamp = timestamp
+//    }
+//}

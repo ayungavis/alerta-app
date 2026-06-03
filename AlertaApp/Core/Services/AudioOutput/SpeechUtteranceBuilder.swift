@@ -25,13 +25,13 @@ struct SpeechUtteranceBuilder {
     private func announcementText(for event: DetectionEvent) -> String {
         switch event.urgency {
         case .critical:
-            "Warning. \(event.label) detected immediately ahead."
+            "Warning. \(event.kind.title) detected immediately ahead."
         case .high:
-            "\(event.label) detected ahead."
+            "\(event.kind.title) detected ahead."
         case .medium:
-            "\(event.label) nearby."
+            "\(event.kind.title) nearby."
         case .low:
-            event.label
+            event.kind.title
         }
     }
 
@@ -47,7 +47,7 @@ struct SpeechUtteranceBuilder {
             ?? AVSpeechSynthesisVoice(language: languageCode)
     }
 
-    private func speechRate(for urgency: AlertUrgency) -> Float {
+    private func speechRate(for urgency: DetectionUrgency) -> Float {
         switch urgency {
         case .critical: AVSpeechUtteranceDefaultSpeechRate
         case .high: AVSpeechUtteranceDefaultSpeechRate
@@ -56,7 +56,7 @@ struct SpeechUtteranceBuilder {
         }
     }
 
-    private func pitchMultiplier(for urgency: AlertUrgency) -> Float {
+    private func pitchMultiplier(for urgency: DetectionUrgency) -> Float {
         switch urgency {
         case .critical: 1.3
         case .high: 1.15
@@ -65,7 +65,7 @@ struct SpeechUtteranceBuilder {
         }
     }
 
-    private func preDelay(for urgency: AlertUrgency) -> TimeInterval {
+    private func preDelay(for urgency: DetectionUrgency) -> TimeInterval {
         switch urgency {
         case .critical: 0.05
         case .high: 0.10
