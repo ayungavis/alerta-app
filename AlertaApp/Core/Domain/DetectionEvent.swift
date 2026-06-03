@@ -15,4 +15,5 @@ struct DetectionEvent: Identifiable {
     let rawIdentifier: String
     let timestamp: Date
     let frequencyInfo: FrequencySpectrum?
+    let soundName: String?
 }

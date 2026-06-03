@@ -30,15 +30,18 @@ final class AwarenessViewModel {
     private let permissionProvider: any MicrophonePermissionProviding
     private let feedbackService: CueFeedbackService
     private var cancellables = Set<AnyCancellable>()
+    private let hapticService: HapticFeedbackProviding
 
     init(
         monitoringService: any AudioMonitoringProviding,
         permissionProvider: any MicrophonePermissionProviding,
-        feedbackService: CueFeedbackService
+        feedbackService: CueFeedbackService,
+        hapticService: HapticFeedbackProviding
     ) {
         self.monitoringService = monitoringService
         self.permissionProvider = permissionProvider
         self.feedbackService = feedbackService
+        self.hapticService = hapticService
     }
 
     func start() async {
@@ -88,5 +91,17 @@ final class AwarenessViewModel {
         isRunning = false
         baselineProfile = nil
         calibrationState = .notStarted
+    }
+
+    func onDetectionEventReceived(_ event: DetectionEvent) {
+        hapticService.playHaptic(for: event.urgency)
+    }
+
+    func startSession() {
+        hapticService.prepare()
+    }
+
+    func stopSession() {
+        hapticService.stop()
     }
 }

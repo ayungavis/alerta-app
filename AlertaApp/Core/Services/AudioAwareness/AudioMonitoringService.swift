@@ -87,7 +87,8 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 topCandidates: detectionCandidates,
                 rawIdentifier: match.rawIdentifier,
                 timestamp: Date(),
-                frequencyInfo: frequencyInfo
+                frequencyInfo: frequencyInfo,
+                soundName: "Unknown"
             )
 
             subject.send(event)

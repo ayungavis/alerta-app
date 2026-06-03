@@ -17,6 +17,7 @@
 				Core/Extensions/.gitkeep,
 				Core/Services/.gitkeep,
 				Core/Utilities/.gitkeep,
+				Info.plist,
 			);
 			target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
 		};
@@ -268,9 +269,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QHL64K2LPL;
+				DEVELOPMENT_TEAM = JLQK39AS23;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AlertaApp/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to detect ambient traffic sounds and translate them into awareness cues.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "This app uses motion usage";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -282,7 +284,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ayungavis.alerta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kyky.alerta;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -301,9 +303,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QHL64K2LPL;
+				DEVELOPMENT_TEAM = JLQK39AS23;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AlertaApp/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to detect ambient traffic sounds and translate them into awareness cues.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "This app uses motion usage";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -315,7 +318,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ayungavis.alerta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kyky.alerta;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
