@@ -1,45 +1,50 @@
+//
+//  HapticsSelectionView.swift
+//  AlertaApp
+//
+//  Created by Kyky on 04/06/26.
+//
+
 import SwiftUI
 
 struct HapticsSelectionView: View {
-    let level: Urgency // Level mana yang sedang diatur?
+    let level: Urgency
     var viewModel: HapticsSettingsViewModel
     var manager: HapticRecorderManager
-    
+
     @State private var isShowingNewVibrationSheet = false
-    
+
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: AppSpacing.large) {
-                        
-                        // Badge Alert Level
                         HStack {
                             Text("Alert Level:")
                                 .soraFont(size: 16, weight: .regular)
                                 .foregroundColor(.white)
-                            
-                            Text(level.rawValue)
+
+                            Text(level.displayName)
                                 .soraFont(size: 14, weight: .bold)
                                 .foregroundColor(level.color)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 6)
-                                .background(AppColors.card) // Mengikuti desain mockup
+                                .background(AppColors.card)
                                 .cornerRadius(20)
                         }
                         .padding(.top, 10)
-                        
+
                         Text("Choose how your device vibrates")
                             .soraFont(size: 16, weight: .regular)
                             .foregroundColor(.white)
-                        
+
                         VStack(alignment: .leading, spacing: 16) {
                             Text("VIBRATION PATTERNS")
                                 .soraFont(size: 12, weight: .bold)
                                 .foregroundColor(AppColors.cyan)
-                            
+
                             VStack(spacing: 12) {
                                 ForEach(viewModel.availablePatterns, id: \.self) { pattern in
                                     SettRowView(
@@ -52,7 +57,7 @@ struct HapticsSelectionView: View {
                                         onPlay: { manager.playPreview(for: pattern) }
                                     )
                                 }
-                                
+
                                 ForEach(viewModel.customPatterns) { pattern in
                                     SettRowView(
                                         title: pattern.name,
@@ -70,7 +75,7 @@ struct HapticsSelectionView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 16) {
                     Button(action: {
                         manager.stopPreview()
@@ -85,7 +90,7 @@ struct HapticsSelectionView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
                         .background(AppColors.cyan)
-                        .cornerRadius(30) // Sesuai desain mockup (lebih rounded)
+                        .cornerRadius(30)
                     }
                 }
                 .padding(.horizontal, 20)

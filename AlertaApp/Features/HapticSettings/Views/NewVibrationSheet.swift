@@ -117,9 +117,16 @@ struct NewVibrationSheet: View {
                         else { manager.startRecordingSession() }
                     }) {
                         HStack {
-                            Circle()
-                                .fill(manager.isRecording ? Color.red : Color(red: 1.0, green: 0.7, blue: 0.7))
-                                .frame(width: 12, height: 12)
+                            if manager.isRecording {
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(Color.red)
+                                    .frame(width: 12, height: 12)
+                            } else {
+                                Circle()
+                                    .fill(Color(red: 1.0, green: 0.7, blue: 0.7))
+                                    .frame(width: 12, height: 12)
+                            }
+
                             Text(manager.isRecording ? "STOP" : "RECORD")
                                 .font(.system(size: 14, design: .monospaced))
                         }

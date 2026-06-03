@@ -5,6 +5,9 @@ import Foundation
 enum AppError: Error {
     case unavailableFeature(UnavailableFeatureError)
     case audioOutput(AudioOutputError)
+    case hapticEngineCreationFails(String)
+    case hapticEngineStartFails(String)
+    case hapticPlaybackFails(String)
 
     enum UnavailableFeatureError {
         /// A requested feature is not available in this build (e.g. missing entitlement, unsupported OS version).
@@ -32,8 +35,16 @@ enum AppError: Error {
 extension AppError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case let .unavailableFeature(e): e.localizedDescription
-        case let .audioOutput(e): e.localizedDescription
+        case let .unavailableFeature(e):
+            e.localizedDescription
+        case let .audioOutput(e):
+            e.localizedDescription
+        case let .hapticEngineCreationFails(message):
+            message
+        case let .hapticEngineStartFails(message):
+            message
+        case let .hapticPlaybackFails(message):
+            message
         }
     }
 }

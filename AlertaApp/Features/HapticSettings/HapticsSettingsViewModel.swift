@@ -10,18 +10,23 @@ struct CustomPattern: Identifiable {
 @Observable
 @MainActor
 final class HapticsSettingsViewModel {
-    var selectedPattern: String = "Rapid Pulse"
+    var selections: [Urgency: String] = [
+        .low: "Steady Alert",
+        .medium: "Rapid Pulse",
+        .high: "Heartbeat",
+        .critical: "S.O.S."
+    ]
 
     let availablePatterns: [String] = [
         "Steady Alert",
         "Rapid Pulse",
         "Heartbeat",
-        "Emergency"
+        "S.O.S.",
+        "Staccato"
     ]
 
     var customPatterns: [CustomPattern] = []
-
-    func selectPattern(_ pattern: String) {
-        selectedPattern = pattern
+    func selectPattern(_ pattern: String, for level: Urgency) {
+        selections[level] = pattern
     }
 }

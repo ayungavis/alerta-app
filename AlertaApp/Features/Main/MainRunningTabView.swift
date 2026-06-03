@@ -15,7 +15,7 @@ struct MainRunningTabView: View {
                     Text("History")
                 }
 
-            HapticsSettingsView()
+            SettingsView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     Text("Settings")
@@ -24,8 +24,4 @@ struct MainRunningTabView: View {
         .tint(AppColors.cyan)
         .preferredColorScheme(.dark)
     }
-}
-
-#Preview {
-    MainRunningTabView()
 }

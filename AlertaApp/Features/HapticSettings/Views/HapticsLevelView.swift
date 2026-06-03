@@ -3,31 +3,35 @@ import SwiftUI
 struct HapticsLevelView: View {
     var viewModel: HapticsSettingsViewModel
     var manager: HapticRecorderManager
-    
+
     var body: some View {
         ZStack {
             AppColors.background.ignoresSafeArea()
-            
+
             VStack(alignment: .leading, spacing: 16) {
                 Text("Alert Level")
                     .soraFont(size: 16, weight: .bold)
                     .foregroundColor(AppColors.cyan)
                     .padding(.top, 20)
-                
+
                 VStack(spacing: 12) {
-                    ForEach(AlertLevel.allCases, id: \.self) { level in
-                        NavigationLink(destination: HapticsSelectionView(level: level, viewModel: viewModel, manager: manager)) {
+                    ForEach(Urgency.allCases, id: \.rawValue) { level in
+                        NavigationLink(destination: HapticsSelectionView(
+                            level: level,
+                            viewModel: viewModel,
+                            manager: manager
+                        )) {
                             HStack {
-                                Text(level.rawValue)
+                                Text(level.displayName)
                                     .soraFont(size: 16, weight: .medium)
-                                    .foregroundColor(level.color) // Warna dinamis
-                                
+                                    .foregroundColor(level.color)
+
                                 Spacer()
-                                
+
                                 Text(viewModel.selections[level] ?? "")
                                     .soraFont(size: 14, weight: .regular)
                                     .foregroundColor(.gray)
-                                
+
                                 Image(systemName: "chevron.right")
                                     .foregroundColor(.gray)
                                     .font(.system(size: 14, weight: .bold))

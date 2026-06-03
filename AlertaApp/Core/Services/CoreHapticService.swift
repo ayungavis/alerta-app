@@ -16,9 +16,9 @@ class CoreHapticsService: HapticFeedbackProviding {
     private var engine: CHHapticEngine?
     private var isMonitoring: Bool = false
 
-    private let patternMap: [DetectionUrgency: HapticPatternConfig]
+    private let patternMap: [Urgency: HapticPatternConfig]
 
-    init(patternMap: [DetectionUrgency: HapticPatternConfig]) {
+    init(patternMap: [Urgency: HapticPatternConfig]) {
         self.patternMap = patternMap
         setupEngine()
     }
@@ -55,7 +55,7 @@ class CoreHapticsService: HapticFeedbackProviding {
         }
     }
 
-    func playHaptic(for urgency: DetectionUrgency) {
+    func playHaptic(for urgency: Urgency) {
         guard isMonitoring, let engine else { return }
         guard let config = patternMap[urgency] else { return }
 

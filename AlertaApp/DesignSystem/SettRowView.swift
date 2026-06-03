@@ -57,7 +57,3 @@ struct SettRowView: View {
         }
     }
 }
-
-#Preview {
-    HapticsSettingsView()
-}
