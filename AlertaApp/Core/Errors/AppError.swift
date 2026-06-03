@@ -5,6 +5,11 @@ enum AppError: Error, Equatable {
     case hapticEngineCreationFails(String)
     case hapticEngineStartFails(String)
     case hapticPlaybackFails(String)
+    case microphoneUnavailable
+    case invalidInputFormat
+    case permissionDenied
+    case sessionInterrupted
+    case audioEngineFailed(message: String)
 
     var message: String {
         switch self {
@@ -16,6 +21,16 @@ enum AppError: Error, Equatable {
             "Failed to start haptic engine: \(errorMsg)"
         case let .hapticPlaybackFails(errorMsg):
             "Failed to play haptic pattern: \(errorMsg)"
+        case let .audioEngineFailed(message):
+            "An unexpected error occurred: \(message)."
+        case .microphoneUnavailable:
+            "Microphone is unavailable."
+        case .invalidInputFormat:
+            "Invalid input format."
+        case .permissionDenied:
+            "Permission denied."
+        case .sessionInterrupted:
+            "Session was interrupted."
         }
     }
 }
