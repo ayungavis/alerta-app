@@ -1,18 +1,35 @@
 import Foundation
 
 enum SoundEvent: String, CaseIterable, Identifiable {
-    case approachingVehicle = "Approaching vehicle"
-    case bicycleOrScooter = "Bicycle or scooter"
-    case horn = "Horn"
-    case siren = "Siren"
-    case nearbyPersonMovement = "Nearby movement"
-    case generalLoudSound = "General loud sound"
+    case approachingVehicle
+    case bicycleOrScooter
+    case horn
+    case siren
+    case nearbyPersonMovement
+    case generalLoudSound
 
     var id: String {
         rawValue
     }
 
-    var urgency: DetectionUrgency {
+    var dispalyName: String {
+        switch self {
+        case .approachingVehicle:
+            "Approaching vehicle"
+        case .bicycleOrScooter:
+            "Bicycle or scooter"
+        case .horn:
+            "Horn"
+        case .siren:
+            "Siren"
+        case .nearbyPersonMovement:
+            "Nearby person movement"
+        case .generalLoudSound:
+            "General loud sound"
+        }
+    }
+
+    var urgency: Urgency {
         switch self {
         case .siren: .critical
         case .horn, .approachingVehicle: .high
