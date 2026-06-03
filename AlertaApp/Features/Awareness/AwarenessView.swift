@@ -5,18 +5,18 @@
 //  Created by Wahyu Kurniawan on 20/05/26.
 //
 
-import SwiftUI
 import CoreHaptics
+import SwiftUI
 
 struct AwarenessView: View {
     @State private var viewModel: AwarenessViewModel
     @Environment(\.colorScheme) private var colorScheme
     @State private var flashSpeaking: Bool = false
     @State private var flashTask: Task<Void, Never>?
-    
+
     init() {
         let hapticService: HapticFeedbackProviding
-        
+
         if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
             let defaultPatterns: [DetectionUrgency: HapticPatternConfig] = [
                 .low: HapticPatternConfig(events: [
@@ -25,35 +25,35 @@ struct AwarenessView: View {
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.3)
                     ], relativeTime: 0)
                 ]),
-                
-                    .medium: HapticPatternConfig(events: [
-                        CHHapticEvent(eventType: .hapticContinuous, parameters: [
-                            CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.6),
-                            CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
-                        ], relativeTime: 0, duration: 0.5)
-                    ]),
-                
-                    .high: HapticPatternConfig(events: [
-                        CHHapticEvent(eventType: .hapticContinuous, parameters: [
-                            CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
-                            CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.7)
-                        ], relativeTime: 0, duration: 1.0)
-                    ]),
-                
-                    .critical: HapticPatternConfig(events: [
-                        CHHapticEvent(eventType: .hapticContinuous, parameters: [
-                            CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
-                            CHHapticEventParameter(parameterID: .hapticSharpness, value: 1.0)
-                        ], relativeTime: 0, duration: 2.0)
-                    ])
+
+                .medium: HapticPatternConfig(events: [
+                    CHHapticEvent(eventType: .hapticContinuous, parameters: [
+                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.6),
+                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
+                    ], relativeTime: 0, duration: 0.5)
+                ]),
+
+                .high: HapticPatternConfig(events: [
+                    CHHapticEvent(eventType: .hapticContinuous, parameters: [
+                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
+                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.7)
+                    ], relativeTime: 0, duration: 1.0)
+                ]),
+
+                .critical: HapticPatternConfig(events: [
+                    CHHapticEvent(eventType: .hapticContinuous, parameters: [
+                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
+                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 1.0)
+                    ], relativeTime: 0, duration: 2.0)
+                ])
             ]
-            
+
             hapticService = CoreHapticsService(patternMap: defaultPatterns)
-            
+
         } else {
             hapticService = FallbackHapticService()
         }
-        
+
         _viewModel = State(initialValue: AwarenessViewModel(
             monitoringService: AudioMonitoringService(),
             permissionProvider: SystemMicrophonePermissionProvider(),
