@@ -53,12 +53,7 @@ struct AlertaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(
-                viewModel: AwarenessViewModel(
-                    initialState: AwarenessSessionState.initial,
-                    hapticService: FallbackHapticService()
-                )
-            )
+            RootView(viewModel: awarenessViewModel)
         }
     }
 }

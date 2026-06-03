@@ -1,3 +1,10 @@
+//
+//  SettRowView.swift
+//  AlertaApp
+//
+//  Created by Kyky on 03/06/26.
+//
+
 import SwiftUI
 
 struct SettRowView: View {
@@ -5,22 +12,21 @@ struct SettRowView: View {
     let isSelected: Bool
     let onSelect: () -> Void
     let onPlay: () -> Void
-    
+
     var body: some View {
         HStack {
             Rectangle()
                 .fill(AppColors.cyan)
-                .frame(width: 4)
+                .frame(width: 10)
                 .opacity(isSelected ? 1 : 0)
-            
+
             Text(title)
-                .font(.system(size: 16))
+                .soraFont(size: 17)
                 .foregroundColor(.white)
                 .padding(.leading, 12)
-            
+
             Spacer()
-            
-            // Dibungkus ZStack agar transisi ikon play ke checkmark tidak bergeser (smooth)
+
             ZStack {
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
@@ -34,12 +40,12 @@ struct SettRowView: View {
                         .onTapGesture {
                             onPlay()
                         }
-                        .transition(.scale.combined(with: .opacity))
+//                        .transition(.scale.combined(with: .opacity))
                 }
             }
             .padding(.trailing, 16)
         }
-        .frame(height: 64)
+        .frame(height: 48)
         .background(AppColors.card)
         .cornerRadius(12)
         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -50,4 +56,8 @@ struct SettRowView: View {
             }
         }
     }
+}
+
+#Preview {
+    HapticsSettingsView()
 }

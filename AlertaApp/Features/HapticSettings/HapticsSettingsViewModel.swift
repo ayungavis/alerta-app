@@ -11,16 +11,16 @@ struct CustomPattern: Identifiable {
 @MainActor
 final class HapticsSettingsViewModel {
     var selectedPattern: String = "Rapid Pulse"
-    
+
     let availablePatterns: [String] = [
         "Steady Alert",
         "Rapid Pulse",
         "Heartbeat",
         "Emergency"
     ]
-    
+
     var customPatterns: [CustomPattern] = []
-    
+
     func selectPattern(_ pattern: String) {
         selectedPattern = pattern
     }

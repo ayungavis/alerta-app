@@ -4,27 +4,25 @@ struct HapticsSettingsView: View {
     @State private var viewModel = HapticsSettingsViewModel()
     @State private var manager = HapticRecorderManager()
     @State private var isShowingNewVibrationSheet = false
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 AppColors.background.ignoresSafeArea()
-                
+
                 VStack(spacing: 0) {
-                    
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: AppSpacing.large) {
-                            
                             Text("Choose how your device vibrates")
                                 .font(.system(size: 16))
                                 .foregroundColor(.white)
                                 .padding(.top, 10)
-                            
+
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("VIBRATION PATTERNS")
                                     .font(.system(size: 12, weight: .bold))
                                     .foregroundColor(AppColors.cyan)
-                                
+
                                 VStack(spacing: 12) {
                                     ForEach(viewModel.availablePatterns, id: \.self) { pattern in
                                         SettRowView(
@@ -37,7 +35,7 @@ struct HapticsSettingsView: View {
                                             onPlay: { manager.playPreview(for: pattern) }
                                         )
                                     }
-                                    
+
                                     ForEach(viewModel.customPatterns) { pattern in
                                         SettRowView(
                                             title: pattern.name,
@@ -55,13 +53,12 @@ struct HapticsSettingsView: View {
                         .padding(.horizontal, 20)
                         .padding(.bottom, 20)
                     }
-                    
 
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Customize on how your device alerts you through touch.")
                             .font(.system(size: 16))
                             .foregroundColor(.white)
-                        
+
                         Button(action: {
                             manager.stopPreview()
                             isShowingNewVibrationSheet = true
@@ -109,4 +106,3 @@ struct HapticsSettingsView: View {
 #Preview {
     HapticsSettingsView()
 }
-
