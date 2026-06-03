@@ -36,10 +36,8 @@ final class AwarenessViewModel {
         monitoringService: any AudioMonitoringProviding,
         permissionProvider: any MicrophonePermissionProviding,
         feedbackService: CueFeedbackService,
-        initialState: AwarenessSessionState, 
         hapticService: HapticFeedbackProviding
     ) {
-        state = initialState
         self.monitoringService = monitoringService
         self.permissionProvider = permissionProvider
         self.feedbackService = feedbackService

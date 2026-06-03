@@ -9,6 +9,6 @@ import Foundation
 
 protocol HapticFeedbackProviding {
     func prepare()
-    func playHaptic(for urgency: AlertUrgency)
+    func playHaptic(for urgency: DetectionUrgency)
     func stop()
 }

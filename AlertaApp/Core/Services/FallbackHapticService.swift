@@ -17,7 +17,7 @@ class FallbackHapticService: HapticFeedbackProviding {
         generator.prepare()
     }
 
-    func playHaptic(for urgency: AlertUrgency) {
+    func playHaptic(for urgency: DetectionUrgency) {
         guard isMonitoring else { return }
 
         let type: UINotificationFeedbackGenerator.FeedbackType = switch urgency {

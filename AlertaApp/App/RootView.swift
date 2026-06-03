@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct RootView: View {
-    var viewModel: AwarenessViewModel
-
     var body: some View {
         MainRunningTabView()
         // NavigationStack {
@@ -19,10 +17,5 @@ struct RootView: View {
 }
 
 #Preview {
-    RootView(
-        viewModel: AwarenessViewModel(
-            initialState: AwarenessSessionState.initial,
-            hapticService: FallbackHapticService()
-        )
-    )
+    RootView()
 }
