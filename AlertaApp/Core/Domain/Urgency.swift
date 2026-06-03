@@ -31,6 +31,7 @@ enum Urgency: Int, Comparable, CaseIterable {
 }
 
 // MARK: - Audio properties for Urgency
+
 extension Urgency {
     /// Whether audio output should interrupt other system sounds.
     /// Only `critical` and `high` events warrant interruption.

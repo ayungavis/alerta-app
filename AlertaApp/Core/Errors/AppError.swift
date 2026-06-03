@@ -15,7 +15,6 @@ enum AppError: Error {
         case sessionInterrupted
         case audioEngineFailed(message: String)
     }
-    
 
     enum AudioOutputError {
         /// The `AVAudioSession` could not be activated (e.g. interrupted by a call).
