@@ -35,13 +35,13 @@ enum Urgency: Int, Comparable, CaseIterable {
 extension Urgency {
     var priority: Int {
         switch self {
-        case .low:      1
-        case .medium:   2
-        case .high:     3
+        case .low: 1
+        case .medium: 2
+        case .high: 3
         case .critical: 4
         }
     }
-    
+
     /// Whether audio output should interrupt other system sounds.
     /// Only `critical` and `high` events warrant interruption.
     var shouldInterruptAudio: Bool {

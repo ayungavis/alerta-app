@@ -93,9 +93,9 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 frequencyInfo: frequencyInfo,
                 soundName: "Unknown"
             )
-            
+
             do {
-                try self.audioService.play(event)
+                try audioService.play(event)
                 print("Play Succeeded")
             } catch {
                 print("Audio playback failed: \(error)")

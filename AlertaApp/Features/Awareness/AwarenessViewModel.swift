@@ -61,7 +61,7 @@ final class AwarenessViewModel {
                     switch state {
                     case .calibrating:
                         break
-                    case .complete(let profile):
+                    case let .complete(profile):
                         self?.isRunning = true
                         self?.baselineProfile = profile
                     case .notStarted:
