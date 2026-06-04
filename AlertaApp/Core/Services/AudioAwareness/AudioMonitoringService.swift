@@ -27,6 +27,7 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     private let configuration: AudioMonitoringConfiguration
     private let directionEstimator = DirectionEstimator()
     private let frequencyAnalyzer = FrequencyAnalyzer()
+    private let audioService: AudioOutputProviding
 
     private let headphoneMotionProvider = HeadphoneMotionProvider()
     private var headYaw: Double?
@@ -53,10 +54,12 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
     init(
         audioEngine: AVAudioEngine = AVAudioEngine(),
-        configuration: AudioMonitoringConfiguration = AudioMonitoringConfiguration()
+        configuration: AudioMonitoringConfiguration = AudioMonitoringConfiguration(),
+        audioService: AudioOutputProviding = AudioOutputService()
     ) {
         self.audioEngine = audioEngine
         self.configuration = configuration
+        self.audioService = audioService
         super.init()
         observeInterruptions()
     }
@@ -89,6 +92,13 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 timestamp: Date(),
                 frequencyInfo: frequencyInfo
             )
+            
+            do {
+                try self.audioService.play(event)
+                print("Play Succeeded")
+            } catch {
+                print("Audio playback failed: \(error)")
+            }
 
             subject.send(event)
         }

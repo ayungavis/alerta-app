@@ -5,23 +5,20 @@
 //  Created by Dimas Nugraha on 03/06/26.
 //
 
-//
-//  AudioOutputService.swift
-//  AlertaApp
-//
-//  Created by Dimas Nugraha on 28/05/26.
-//
-
-import AudioToolbox
 import AVFoundation
+import AudioToolbox
 
 /// Concrete audio output service.
 /// Uses `AudioServicesPlaySystemSound` for brief chime feedback and `AVSpeechSynthesizer` for TTS announcements.
 /// - No SwiftUI imports — safe to instantiate in any layer.
 /// - Marked `final` so the compiler can devirtualise calls.
+
 final class AudioOutputService: NSObject, AudioOutputProviding {
     private let synthesiser: AVSpeechSynthesizer
     private let utteranceBuilder: SpeechUtteranceBuilder
+    private var isSessionActive = false
+    private var lastPlayedAt: [Urgency: Date] = [:]
+    private let cooldown: TimeInterval = 10.0 // seconds
 
     private(set) var isSpeaking: Bool = false
 
@@ -37,8 +34,28 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
 
     func play(_ event: DetectionEvent) throws {
         try activateAudioSession()
+
+        // Skip if same urgency played within cooldown window
+        if let lastPlayed = lastPlayedAt[event.urgency],
+           Date().timeIntervalSince(lastPlayed) < cooldown {
+            return
+        }
+
+        lastPlayedAt[event.urgency] = Date()
         playSystemSound(for: event)
-        speak(event)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.speak(event)
+        }
+    }
+
+    private func playSystemSound(for event: DetectionEvent) {
+        AudioServicesPlaySystemSound(SystemSoundID.id(for: event.urgency))
+    }
+
+    private func speak(_ event: DetectionEvent) {
+        let utterance = utteranceBuilder.build(from: event)
+        synthesiser.speak(utterance)  // must be on main thread
     }
 
     func stopSpeaking() {
@@ -46,11 +63,11 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
     }
 
     private func activateAudioSession() throws {
+        guard !isSessionActive else { return }
         let session = AVAudioSession.sharedInstance()
         do {
-            // `.playback` keeps audio alive when the ringer switch is muted.
             try session.setCategory(
-                .playback,
+                .playAndRecord,
                 mode: .spokenAudio,
                 options: .duckOthers
             )
@@ -60,19 +77,6 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
                 .sessionActivationFailed(underlying: error)
             )
         }
-    }
-
-    private func playSystemSound(for event: DetectionEvent) {
-        let soundID = SystemSoundID.id(for: event.urgency)
-        AudioServicesPlaySystemSound(soundID)
-    }
-
-    private func speak(_ event: DetectionEvent) {
-        if synthesiser.isSpeaking {
-            synthesiser.stopSpeaking(at: .immediate)
-        }
-        let utterance = utteranceBuilder.build(from: event)
-        synthesiser.speak(utterance)
     }
 }
 
@@ -99,15 +103,15 @@ extension AudioOutputService: AVSpeechSynthesizerDelegate {
     }
 }
 
-private extension SystemSoundID {
+extension SystemSoundID {
     /// Maps urgency levels to built-in system sound IDs.
     /// IDs sourced from the iOS System Sound library (uidialog subset).
-    static func id(for urgency: Urgency) -> SystemSoundID {
+    fileprivate static func id(for urgency: Urgency) -> SystemSoundID {
         switch urgency {
-        case .critical: 1005 // SIMToolkitNegativeACK — sharp, attention-grabbing
-        case .high: 1003 // SIMToolkitPositiveACK — firm double-tap feel
-        case .medium: 1016 // tweet — neutral mid-priority chime
-        case .low: 1519 // Tock — subtle, non-disruptive
+        case .critical: 1005  // SIMToolkitNegativeACK — sharp, attention-grabbing
+        case .high: 1003  // SIMToolkitPositiveACK — firm double-tap feel
+        case .medium: 1016  // tweet — neutral mid-priority chime
+        case .low: 1519  // Tock — subtle, non-disruptive
         }
     }
 }
