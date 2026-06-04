@@ -16,9 +16,9 @@ class CoreHapticsService: HapticFeedbackProviding {
     private var engine: CHHapticEngine?
     private var isMonitoring: Bool = false
 
-    private let patternMap: [DetectionUrgency: HapticPatternConfig]
+    private let patternMap: [Urgency: HapticPatternConfig]
 
-    init(patternMap: [DetectionUrgency: HapticPatternConfig]) {
+    init(patternMap: [Urgency: HapticPatternConfig]) {
         self.patternMap = patternMap
         setupEngine()
     }
@@ -42,7 +42,7 @@ class CoreHapticsService: HapticFeedbackProviding {
             }
 
         } catch {
-            print(AppError.hapticEngineCreationFails(error.localizedDescription))
+            print(AppError.unavailableFeature(.hapticEngineCreationFails(error.localizedDescription)))
         }
     }
 
@@ -51,11 +51,11 @@ class CoreHapticsService: HapticFeedbackProviding {
         do {
             try engine?.start()
         } catch {
-            print(AppError.hapticEngineStartFails(error.localizedDescription))
+            print(AppError.unavailableFeature(.hapticEngineStartFails(error.localizedDescription)))
         }
     }
 
-    func playHaptic(for urgency: DetectionUrgency) {
+    func playHaptic(for urgency: Urgency) {
         guard isMonitoring, let engine else { return }
         guard let config = patternMap[urgency] else { return }
 
@@ -64,7 +64,7 @@ class CoreHapticsService: HapticFeedbackProviding {
             let player = try engine.makePlayer(with: pattern)
             try player.start(atTime: 0)
         } catch {
-            print(AppError.hapticPlaybackFails(error.localizedDescription))
+            print(AppError.unavailableFeature(.hapticPlaybackFails(error.localizedDescription)))
         }
     }
 

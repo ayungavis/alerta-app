@@ -18,7 +18,7 @@ struct AwarenessView: View {
         let hapticService: HapticFeedbackProviding
 
         if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
-            let defaultPatterns: [DetectionUrgency: HapticPatternConfig] = [
+            let defaultPatterns: [Urgency: HapticPatternConfig] = [
                 .low: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticTransient, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.4),

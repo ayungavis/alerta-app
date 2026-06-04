@@ -59,11 +59,12 @@ jobs:
           echo "next=$NEW" >> "$GITHUB_OUTPUT"
           echo "Build number: $CURRENT → $NEW"
 
-      - name: Write App Store Connect API key
+      - name: Write and validate App Store Connect API key
         id: api_key
         env:
           KEY_BASE64: ${{ secrets.APPSTORE_API_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
         run: |
           KEY_DIR="${HOME}/.appstoreconnect"
           KEY_PATH="${KEY_DIR}/AuthKey_${KEY_ID}.p8"
@@ -76,29 +77,10 @@ jobs:
           echo "path=${KEY_PATH}" >> "$GITHUB_OUTPUT"
           echo "Key written to ${KEY_PATH} ($(wc -c < "${KEY_PATH}") bytes)"
 
-      - name: Validate API key
-        id: key_check
-        env:
-          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
-          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
-        run: |
-          echo "Attempting App Store Connect authentication..."
-          if xcrun appstoreconnect list-apps \
-            --apiKey "${KEY_ID}" \
-            --apiIssuer "${ISSUER_ID}"; then
-            echo "  ✓ API key is valid and has required permissions"
-          else
-            echo ""
-            echo "ERROR: API key authentication failed (401 Unauthorized)."
-            echo ""
-            echo "Check the following:"
-            echo "  1. API key role must be 'Admin' or 'App Manager' (not just 'Developer')"
-            echo "  2. Key ID and Issuer ID must match the .p8 file"
-            echo "  3. The Apple ID that created the key must have access to the App Store Connect team"
-            echo ""
-            echo "Fix at: https://appstoreconnect.apple.com/access/integrations/api"
-            exit 1
-          fi
+          export APPSTORE_KEY_ID="${KEY_ID}"
+          export APPSTORE_ISSUER_ID="${ISSUER_ID}"
+          echo "--- Validating credentials ---"
+          scripts/verify-credentials.sh
 
       - name: Run lint checks
         run: scripts/lint.sh
@@ -149,7 +131,7 @@ jobs:
 
       - name: Upload build artifacts
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: release-artifacts
           path: |
