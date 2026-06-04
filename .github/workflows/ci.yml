@@ -25,6 +25,38 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
+      - name: Validate project settings
+        run: |
+          PBXPROJ="AlertaApp.xcodeproj/project.pbxproj"
+          EXIT=0
+
+          echo "Checking PRODUCT_BUNDLE_IDENTIFIER..."
+          EXPECTED_BUNDLE="com.ayungavis.alerta"
+          VIOLATIONS=$(grep -n "PRODUCT_BUNDLE_IDENTIFIER" "${PBXPROJ}" | grep -v "${EXPECTED_BUNDLE}" || true)
+          if [[ -n "${VIOLATIONS}" ]]; then
+            echo "  ✗ PRODUCT_BUNDLE_IDENTIFIER must be '${EXPECTED_BUNDLE}'"
+            echo "${VIOLATIONS}"
+            EXIT=1
+          else
+            TOTAL=$(grep -c "PRODUCT_BUNDLE_IDENTIFIER" "${PBXPROJ}")
+            echo "  ✓ All ${TOTAL} PRODUCT_BUNDLE_IDENTIFIER entries match '${EXPECTED_BUNDLE}'"
+          fi
+
+          echo ""
+          echo "Checking DEVELOPMENT_TEAM..."
+          EXPECTED_TEAM="QHL64K2LPL"
+          VIOLATIONS=$(grep -n "DEVELOPMENT_TEAM" "${PBXPROJ}" | grep -v "${EXPECTED_TEAM}" || true)
+          if [[ -n "${VIOLATIONS}" ]]; then
+            echo "  ✗ DEVELOPMENT_TEAM must be '${EXPECTED_TEAM}'"
+            echo "${VIOLATIONS}"
+            EXIT=1
+          else
+            TOTAL=$(grep -c "DEVELOPMENT_TEAM" "${PBXPROJ}")
+            echo "  ✓ All ${TOTAL} DEVELOPMENT_TEAM entries match '${EXPECTED_TEAM}'"
+          fi
+
+          exit "${EXIT}"
+
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
 
