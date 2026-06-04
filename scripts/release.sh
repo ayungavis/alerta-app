@@ -39,6 +39,29 @@ echo "--- Running lint + build check ---"
 ./scripts/check.sh
 echo "  ✓ lint and build pass"
 
+# ── Credential check (optional, skips if env vars not set) ───
+echo ""
+if [[ -n "${APPSTORE_KEY_ID:-}" && -n "${APPSTORE_ISSUER_ID:-}" ]]; then
+    echo "--- Verifying App Store Connect credentials ---"
+    ./scripts/verify-credentials.sh
+else
+    echo "--- Credential check skipped ---"
+    echo "  (APPSTORE_KEY_ID and APPSTORE_ISSUER_ID not set)"
+
+    if [[ -f "${HOME}/.appstoreconnect/AuthKey_"*.p8 ]] 2>/dev/null; then
+        echo "  Key files found but env vars not exported. To test:"
+        echo ""
+        echo "    export APPSTORE_KEY_ID=\"YOUR_KEY_ID\""
+        echo "    export APPSTORE_ISSUER_ID=\"XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX\""
+        echo "    scripts/verify-credentials.sh"
+    else
+        echo "  Set up credentials before creating a release:"
+        echo ""
+        echo "    See README.md → Release to TestFlight → Prerequisites"
+    fi
+    echo ""
+fi
+
 # ── Summary ────────────────────────────────────────────────
 echo ""
 echo "=== All checks passed — ready to release! ==="
