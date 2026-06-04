@@ -11,6 +11,7 @@ struct AwarenessView: View {
     @State private var viewModel = AwarenessViewModel(
         monitoringService: AudioMonitoringService(),
         permissionProvider: SystemMicrophonePermissionProvider(),
+        audioService: AudioOutputService(),
         feedbackService: CueFeedbackService()
     )
 

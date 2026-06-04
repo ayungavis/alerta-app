@@ -19,7 +19,7 @@ import AVFoundation
 /// Uses `AudioServicesPlaySystemSound` for brief chime feedback and `AVSpeechSynthesizer` for TTS announcements.
 /// - No SwiftUI imports — safe to instantiate in any layer.
 /// - Marked `final` so the compiler can devirtualise calls.
-final class AudioOutputService: NSObject {
+final class AudioOutputService: NSObject, AudioOutputProviding {
     private let synthesiser: AVSpeechSynthesizer
     private let utteranceBuilder: SpeechUtteranceBuilder
 

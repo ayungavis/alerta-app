@@ -29,17 +29,20 @@ final class AwarenessViewModel {
 
     private let monitoringService: any AudioMonitoringProviding
     private let permissionProvider: any MicrophonePermissionProviding
+    private let audioService: any AudioOutputProviding
     private let feedbackService: CueFeedbackService
     private var cancellables = Set<AnyCancellable>()
 
     init(
         monitoringService: any AudioMonitoringProviding,
         permissionProvider: any MicrophonePermissionProviding,
+        audioService: any AudioOutputProviding,
         feedbackService: CueFeedbackService
     ) {
         self.monitoringService = monitoringService
         self.permissionProvider = permissionProvider
         self.feedbackService = feedbackService
+        self.audioService = audioService
     }
 
     func start() async {
@@ -71,6 +74,9 @@ final class AwarenessViewModel {
                 .store(in: &cancellables)
 
             try monitoringService.start()
+            
+            
+            
 
             monitoringService.detectionPublisher
                 .receive(on: RunLoop.main)
@@ -80,9 +86,13 @@ final class AwarenessViewModel {
                     self?.latestDirection = event.direction
                     self?.rawDetectedSound = event.rawIdentifier
                     self?.feedbackService.playHapticCue(for: event)
+                    
                 }
                 .store(in: &cancellables)
-
+            
+            guard let _latestEvent = latestEvent else { return }
+            try audioService.play(_latestEvent)
+            
             statusMessage = "Calibrating..."
         } catch {
             statusMessage = "Unable to start awareness session."
