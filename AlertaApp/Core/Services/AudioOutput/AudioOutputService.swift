@@ -5,8 +5,8 @@
 //  Created by Dimas Nugraha on 03/06/26.
 //
 
-import AudioToolbox
 import AVFoundation
+import AudioToolbox
 
 // Concrete audio output service.
 // Uses `AudioServicesPlaySystemSound` for brief chime feedback and `AVSpeechSynthesizer` for TTS announcements.
@@ -18,7 +18,7 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
     private let utteranceBuilder: SpeechUtteranceBuilder
     private var isSessionActive = false
     private var lastPlayedAt: [Urgency: Date] = [:]
-    private let cooldown: TimeInterval = 10.0 // seconds
+    private let cooldown: TimeInterval = 10.0  // seconds
 
     private(set) var isSpeaking: Bool = false
 
@@ -37,7 +37,7 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
 
         // Skip if same urgency played within cooldown window
         if let lastPlayed = lastPlayedAt[event.urgency],
-           Date().timeIntervalSince(lastPlayed) < cooldown
+            Date().timeIntervalSince(lastPlayed) < cooldown
         {
             return
         }
@@ -56,7 +56,7 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
 
     private func speak(_ event: DetectionEvent) {
         let utterance = utteranceBuilder.build(from: event)
-        synthesiser.speak(utterance) // must be on main thread
+        synthesiser.speak(utterance)  // must be on main thread
     }
 
     func stopSpeaking() {
@@ -70,7 +70,7 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
             try session.setCategory(
                 .playAndRecord,
                 mode: .spokenAudio,
-                options: .duckOthers
+                options: [.duckOthers, .defaultToSpeaker, .allowBluetoothHFP]
             )
             try session.setActive(true)
         } catch {
@@ -104,15 +104,15 @@ extension AudioOutputService: AVSpeechSynthesizerDelegate {
     }
 }
 
-private extension SystemSoundID {
+extension SystemSoundID {
     /// Maps urgency levels to built-in system sound IDs.
     /// IDs sourced from the iOS System Sound library (uidialog subset).
-    static func id(for urgency: Urgency) -> SystemSoundID {
+    fileprivate static func id(for urgency: Urgency) -> SystemSoundID {
         switch urgency {
-        case .critical: 1005 // SIMToolkitNegativeACK — sharp, attention-grabbing
-        case .high: 1003 // SIMToolkitPositiveACK — firm double-tap feel
-        case .medium: 1016 // tweet — neutral mid-priority chime
-        case .low: 1519 // Tock — subtle, non-disruptive
+        case .critical: 1005  // SIMToolkitNegativeACK — sharp, attention-grabbing
+        case .high: 1003  // SIMToolkitPositiveACK — firm double-tap feel
+        case .medium: 1016  // tweet — neutral mid-priority chime
+        case .low: 1519  // Tock — subtle, non-disruptive
         }
     }
 }
