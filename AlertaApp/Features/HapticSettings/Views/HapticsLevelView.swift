@@ -6,12 +6,12 @@ struct HapticsLevelView: View {
 
     var body: some View {
         ZStack {
-            AppColors.background.ignoresSafeArea()
+            AppColors.backgroundPrimary.ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 16) {
                 Text("Alert Level")
-                    .soraFont(size: 16, weight: .bold)
-                    .foregroundColor(AppColors.cyan)
+                    .soraFont(size: 17, weight: .semiBold)
+                    .foregroundColor(AppColors.textSecondary)
                     .padding(.top, 20)
 
                 VStack(spacing: 12) {
@@ -23,14 +23,14 @@ struct HapticsLevelView: View {
                         )) {
                             HStack {
                                 Text(level.displayName)
-                                    .soraFont(size: 16, weight: .medium)
+                                    .soraFont(size: 16, weight: .regular)
                                     .foregroundColor(level.color)
 
                                 Spacer()
 
                                 Text(viewModel.selections[level] ?? "")
-                                    .soraFont(size: 14, weight: .regular)
-                                    .foregroundColor(.gray)
+                                    .soraFont(size: 12, weight: .regular)
+                                    .foregroundColor(.textSecondary)
 
                                 Image(systemName: "chevron.right")
                                     .foregroundColor(.gray)
@@ -39,7 +39,7 @@ struct HapticsLevelView: View {
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 64)
-                            .background(AppColors.card)
+                            .background(AppColors.surfacePrimary)
                             .cornerRadius(12)
                         }
                     }
@@ -49,6 +49,22 @@ struct HapticsLevelView: View {
             .padding(.horizontal, 20)
         }
         .navigationTitle("Haptics")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Haptics")
+                    .soraFont(size: 22, weight: .bold)
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
     }
+}
+
+#Preview {
+    NavigationStack {
+        HapticsLevelView(
+            viewModel: HapticsSettingsViewModel(),
+            manager: HapticRecorderManager()
+        )
+    }
+    .preferredColorScheme(.dark)
 }

@@ -1,10 +1,3 @@
-//
-//  SettingsView.swift
-//  AlertaApp
-//
-//  Created by Kyky on 04/06/26.
-//
-
 import SwiftUI
 
 struct SettingsView: View {
@@ -14,80 +7,93 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                AppColors.background.ignoresSafeArea()
+                AppColors.backgroundPrimary.ignoresSafeArea()
 
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 32) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Alert")
-                                .soraFont(size: 16, weight: .bold)
-                                .foregroundColor(AppColors.cyan)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Settings")
+                        .soraFont(size: 34, weight: .bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 10)
+                        .padding(.bottom, 24)
 
-                            VStack(spacing: 12) {
-                                NavigationLink(destination: HapticsLevelView(
-                                    viewModel: viewModel,
-                                    manager: hapticManager
-                                )) {
-                                    SettingsMenuRow(icon: "iphone.radiowaves.left.and.right", title: "Haptics")
-                                }
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 32) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Alert")
+                                    .soraFont(size: 17, weight: .semiBold)
+                                    .foregroundColor(AppColors.primary)
 
-                                NavigationLink(destination: Text("Audio Settings (Coming Soon)")
-                                    .foregroundColor(.white))
-                                {
-                                    SettingsMenuRow(icon: "headphones", title: "Audio")
-                                }
-                            }
-                        }
+                                VStack(spacing: 12) {
+                                    NavigationLink(destination: HapticsLevelView(
+                                        viewModel: viewModel,
+                                        manager: hapticManager
+                                    )) {
+                                        SettingsMenuRow(icon: "iphone.gen3.radiowaves.left.and.right", title: "Haptics")
+                                    }
 
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Display")
-                                .soraFont(size: 16, weight: .bold)
-                                .foregroundColor(AppColors.cyan)
-
-                            HStack {
-                                Image(systemName: "moon")
-                                    .foregroundColor(AppColors.cyan)
-                                    .font(.system(size: 20))
-                                    .frame(width: 32)
-
-                                Text("Theme")
-                                    .soraFont(size: 16, weight: .regular)
-                                    .foregroundColor(.white)
-
-                                Spacer()
-
-                                ZStack {
-                                    Capsule()
-                                        .stroke(AppColors.cyan, lineWidth: 1)
-                                        .frame(width: 120, height: 32)
-
-                                    HStack(spacing: 0) {
-                                        Text("DARK")
-                                            .soraFont(size: 12, weight: .bold)
-                                            .foregroundColor(.black)
-                                            .frame(width: 60, height: 32)
-                                            .background(AppColors.cyan)
-                                            .clipShape(Capsule())
-
-                                        Text("LIGHT")
-                                            .soraFont(size: 12, weight: .bold)
-                                            .foregroundColor(.gray)
-                                            .frame(width: 60, height: 32)
+                                    NavigationLink(destination: Text("Audio Settings (Coming Soon)")
+                                        .foregroundColor(.white))
+                                    {
+                                        SettingsMenuRow(icon: "airpods.max", title: "Audio")
                                     }
                                 }
                             }
-                            .padding(.horizontal, 16)
-                            .frame(height: 64)
-                            .background(AppColors.card)
-                            .cornerRadius(12)
+
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Display")
+                                    .soraFont(size: 17, weight: .semiBold)
+                                    .foregroundColor(AppColors.primary)
+
+                                HStack {
+                                    Image(systemName: "moon")
+                                        .foregroundColor(AppColors.primary)
+                                        .font(.system(size: 20))
+                                        .frame(width: 32)
+
+                                    Text("Theme")
+                                        .soraFont(size: 16, weight: .regular)
+                                        .foregroundColor(.white)
+
+                                    Spacer()
+
+                                    ZStack {
+                                        Capsule()
+                                            .stroke(AppColors.primary, lineWidth: 1)
+                                            .frame(width: 166, height: 32)
+
+                                        HStack(spacing: 0) {
+                                            Text("DARK")
+                                                .soraFont(size: 12, weight: .semiBold)
+                                                .foregroundColor(.black)
+                                                .frame(width: 83, height: 32)
+                                                .background(AppColors.primary)
+                                                .clipShape(Capsule())
+
+                                            Text("LIGHT")
+                                                .soraFont(size: 12, weight: .semiBold)
+                                                .foregroundColor(.gray)
+                                                .frame(width: 83, height: 32)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                                .frame(height: 64)
+                                .background(AppColors.surfacePrimary)
+                                .cornerRadius(12)
+                            }
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 10)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 20)
                 }
             }
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.large)
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
+}
+
+#Preview {
+    SettingsView()
+        .preferredColorScheme(.dark)
 }

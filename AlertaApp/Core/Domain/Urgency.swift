@@ -53,7 +53,7 @@ extension Urgency {
 
     var color: Color {
         switch self {
-        case .low: AppColors.cyan
+        case .low: AppColors.primary
         case .medium: .yellow
         case .high: .orange
         case .critical: .red

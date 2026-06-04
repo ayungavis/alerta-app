@@ -16,12 +16,12 @@ struct SettRowView: View {
     var body: some View {
         HStack {
             Rectangle()
-                .fill(AppColors.cyan)
+                .fill(AppColors.primary)
                 .frame(width: 10)
                 .opacity(isSelected ? 1 : 0)
 
             Text(title)
-                .soraFont(size: 17)
+                .soraFont(size: 17, weight: .regular)
                 .foregroundColor(.white)
                 .padding(.leading, 12)
 
@@ -30,12 +30,12 @@ struct SettRowView: View {
             ZStack {
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(AppColors.cyan)
+                        .foregroundColor(AppColors.primary)
                         .font(.system(size: 20))
                         .transition(.scale.combined(with: .opacity))
                 } else {
                     Image(systemName: "play.circle")
-                        .foregroundColor(AppColors.cyan)
+                        .foregroundColor(AppColors.primary)
                         .font(.system(size: 20))
                         .onTapGesture {
                             onPlay()
@@ -45,8 +45,8 @@ struct SettRowView: View {
             }
             .padding(.trailing, 16)
         }
-        .frame(height: 48)
-        .background(AppColors.card)
+        .frame(height: 56)
+        .background(AppColors.surfacePrimary)
         .cornerRadius(12)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contentShape(Rectangle())

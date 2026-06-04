@@ -1,20 +1,37 @@
-//
-//  AppFont.swift
-//  AlertaApp
-//
-//  Created by Kyky on 03/06/26.
-//
-
 import SwiftUI
 
+enum SoraWeight {
+    case thin
+    case extraLight
+    case light
+    case regular
+    case medium
+    case semiBold
+    case bold
+    case extraBold
+
+    var fontName: String {
+        switch self {
+        case .thin: "Sora-Regular_Thin"
+        case .extraLight: "Sora-Regular_ExtraLight"
+        case .light: "Sora-Regular_Light"
+        case .regular: "Sora-Regular"
+        case .medium: "Sora-Regular_Medium"
+        case .semiBold: "Sora-Regular_SemiBold"
+        case .bold: "Sora-Regular_Bold"
+        case .extraBold: "Sora-Regular_ExtraBold"
+        }
+    }
+}
+
 enum AppFont {
-    static func sora(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        Font.custom("Sora", size: size).weight(weight)
+    static func sora(_ size: CGFloat, weight: SoraWeight = .regular) -> Font {
+        Font.custom(weight.fontName, size: size)
     }
 }
 
 extension View {
-    func soraFont(size: CGFloat, weight: Font.Weight = .regular) -> some View {
+    func soraFont(size: CGFloat, weight: SoraWeight = .regular) -> some View {
         font(AppFont.sora(size, weight: weight))
     }
 }

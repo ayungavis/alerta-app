@@ -43,5 +43,5 @@ struct SettingsMenuRow: View {
 
 #Preview {
     SettingsView()
-    .preferredColorScheme(.dark)
+        .preferredColorScheme(.dark)
 }

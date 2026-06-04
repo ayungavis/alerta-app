@@ -16,18 +16,18 @@ struct HapticsSelectionView: View {
 
     var body: some View {
         ZStack {
-            AppColors.background.ignoresSafeArea()
+            AppColors.backgroundPrimary.ignoresSafeArea()
 
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: AppSpacing.large) {
                         HStack {
                             Text("Alert Level:")
-                                .soraFont(size: 16, weight: .regular)
+                                .soraFont(size: 20, weight: .regular)
                                 .foregroundColor(.white)
 
                             Text(level.displayName)
-                                .soraFont(size: 14, weight: .bold)
+                                .soraFont(size: 20, weight: .semiBold)
                                 .foregroundColor(level.color)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 6)
@@ -37,13 +37,13 @@ struct HapticsSelectionView: View {
                         .padding(.top, 10)
 
                         Text("Choose how your device vibrates")
-                            .soraFont(size: 16, weight: .regular)
+                            .soraFont(size: 17, weight: .regular)
                             .foregroundColor(.white)
 
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("VIBRATION PATTERNS")
-                                .soraFont(size: 12, weight: .bold)
-                                .foregroundColor(AppColors.cyan)
+                            Text("Vibration Patterns")
+                                .soraFont(size: 17, weight: .regular)
+                                .foregroundColor(AppColors.primary)
 
                             VStack(spacing: 12) {
                                 ForEach(viewModel.availablePatterns, id: \.self) { pattern in
@@ -84,22 +84,28 @@ struct HapticsSelectionView: View {
                         HStack {
                             Image(systemName: "plus")
                             Text("Create New Pattern")
-                                .soraFont(size: 16, weight: .medium)
+                                .soraFont(size: 17, weight: .regular)
                         }
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
-                        .background(AppColors.cyan)
+                        .background(AppColors.primary)
                         .cornerRadius(30)
                     }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
                 .padding(.bottom, 24)
-                .background(AppColors.background)
+                .background(AppColors.backgroundPrimary)
             }
         }
         .navigationTitle("Select Haptics")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Select Haptics")
+                    .soraFont(size: 22, weight: .bold)
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isShowingNewVibrationSheet) {
             NewVibrationSheet(
@@ -110,4 +116,15 @@ struct HapticsSelectionView: View {
             .presentationDragIndicator(.visible)
         }
     }
+}
+
+#Preview {
+    NavigationStack {
+        HapticsSelectionView(
+            level: .medium,
+            viewModel: HapticsSettingsViewModel(),
+            manager: HapticRecorderManager()
+        )
+    }
+    .preferredColorScheme(.dark)
 }

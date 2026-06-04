@@ -21,7 +21,7 @@ struct MainRunningTabView: View {
                     Text("Settings")
                 }
         }
-        .tint(AppColors.cyan)
+        .tint(AppColors.primary)
         .preferredColorScheme(.dark)
     }
 }
