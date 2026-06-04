@@ -2,7 +2,7 @@ import CoreHaptics
 import Observation
 
 @Observable
-class CoreHapticsService {
+class CoreHapticService {
     private var engine: CHHapticEngine?
     private var previewPlayer: CHHapticPatternPlayer?
     private var continuousPlayer: CHHapticPatternPlayer?
@@ -20,7 +20,7 @@ class CoreHapticsService {
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
         do {
             engine = try CHHapticEngine()
-            
+
             engine?.stoppedHandler = { [weak self] reason in
                 print("Haptic engine stopped: \(reason)")
                 try? self?.engine?.start()
@@ -29,7 +29,7 @@ class CoreHapticsService {
                 print("Haptic engine reset")
                 try? self?.engine?.start()
             }
-            
+
             try engine?.start()
         } catch {
             print("Gagal inisialisasi haptic: \(error.localizedDescription)")
@@ -48,12 +48,13 @@ class CoreHapticsService {
             print("Gagal play haptic: \(error.localizedDescription)")
         }
     }
-    
+
     func stopHaptic() {
         try? previewPlayer?.stop(atTime: 0)
     }
 
     // MARK: - 2. LOGIKA PEREKAMAN
+
     func startRecordingSession() {
         recordedPattern.removeAll()
         lastTouchUpTime = nil
@@ -68,14 +69,14 @@ class CoreHapticsService {
     func touchDown() {
         guard isRecording else { return }
         currentTouchDownTime = Date()
-        
+
         let event = CHHapticEvent(eventType: .hapticContinuous, parameters: [
             CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
             CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
         ], relativeTime: 0, duration: 100)
-        
+
         do {
-            continuousPlayer = try engine?.makePlayer(with: try CHHapticPattern(events: [event], parameters: []))
+            continuousPlayer = try engine?.makePlayer(with: CHHapticPattern(events: [event], parameters: []))
             try continuousPlayer?.start(atTime: 0)
         } catch {}
     }
@@ -101,7 +102,7 @@ class CoreHapticsService {
         for step in steps {
             currentTime += step.waitTime
             let isTransient = step.duration < 0.15
-            
+
             let event = CHHapticEvent(
                 eventType: isTransient ? .hapticTransient : .hapticContinuous,
                 parameters: [
@@ -116,11 +117,11 @@ class CoreHapticsService {
         }
         return events
     }
-    
+
     func getEvents(forPreset patternName: String) -> [CHHapticEvent] {
         var events = [CHHapticEvent]()
         var t: TimeInterval = 0
-        
+
         func addTransient() {
             events.append(CHHapticEvent(eventType: .hapticTransient, parameters: [
                 CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
@@ -133,38 +134,73 @@ class CoreHapticsService {
                 CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
             ], relativeTime: t, duration: duration))
         }
-        
+
         switch patternName {
         case "Steady Alert":
-            while t < 2.0 { addTransient(); t += 0.15; addTransient(); t += 0.15; addContinuous(duration: 0.3); t += 0.45 }
+            while t < 2.0 {
+                addTransient()
+                t += 0.15
+                addTransient()
+                t += 0.15
+                addContinuous(duration: 0.3)
+                t += 0.45
+            }
         case "Rapid Pulse":
-            while t < 3.0 { addTransient(); t += 0.15; addTransient(); t += 0.15; addContinuous(duration: 0.3); t += 0.45; addContinuous(duration: 0.3); t += 0.45 }
+            while t < 3.0 {
+                addTransient()
+                t += 0.15
+                addTransient()
+                t += 0.15
+                addContinuous(duration: 0.3)
+                t += 0.45
+                addContinuous(duration: 0.3)
+                t += 0.45
+            }
         case "Heartbeat":
-            while t < 4.0 { addContinuous(duration: 0.3); t += 0.45; addContinuous(duration: 0.3); t += 0.45; addTransient(); t += 0.15 }   
+            while t < 4.0 {
+                addContinuous(duration: 0.3)
+                t += 0.45
+                addContinuous(duration: 0.3)
+                t += 0.45
+                addTransient()
+                t += 0.15
+            }
         case "S.O.S.":
-            while t < 6.0 { addContinuous(duration: 0.3); t += 0.45; addTransient(); t += 0.15; addTransient(); t += 0.15; addContinuous(duration: 0.3); t += 0.45; addContinuous(duration: 0.3); t += 0.45; addTransient(); t += 0.5 }
+            while t < 6.0 {
+                addContinuous(duration: 0.3)
+                t += 0.45
+                addTransient()
+                t += 0.15
+                addTransient()
+                t += 0.15
+                addContinuous(duration: 0.3)
+                t += 0.45
+                addContinuous(duration: 0.3)
+                t += 0.45
+                addTransient()
+                t += 0.5
+            }
         default: break
         }
         return events
     }
 }
 
-extension CoreHapticsService: HapticFeedbackProviding {
+extension CoreHapticService: HapticFeedbackProviding {
     func prepare() {}
-    
+
     func playHaptic(for urgency: Urgency) {
-        let patternName: String
-        switch urgency {
-        case .low: patternName = "Steady Alert"
-        case .medium: patternName = "Rapid Pulse"
-        case .high: patternName = "Heartbeat"
-        case .critical: patternName = "Emergency"
+        let patternName = switch urgency {
+        case .low: "Steady Alert"
+        case .medium: "Rapid Pulse"
+        case .high: "Heartbeat"
+        case .critical: "Emergency"
         }
-        
+
         let events = getEvents(forPreset: patternName)
         playHaptic(events: events)
     }
-    
+
     func stop() {
         stopHaptic()
     }

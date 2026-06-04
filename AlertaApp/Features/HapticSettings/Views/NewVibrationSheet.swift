@@ -2,7 +2,7 @@ import SwiftUI
 
 struct NewVibrationSheet: View {
     @Environment(\.dismiss) var dismiss
-    var manager: HapticRecorderManager
+    var manager: CoreHapticService
     var viewModel: HapticsSettingsViewModel
 
     @State private var patternName: String = ""
@@ -102,11 +102,13 @@ struct NewVibrationSheet: View {
                 )
 
                 HStack(spacing: 16) {
-                    Button(action: { manager.playRecordedPattern() }) {
+                    Button(action: {
+                        let events = manager.getEvents(fromSteps: manager.recordedPattern)
+                        manager.playHaptic(events: events)
+                    }) {
                         HStack {
                             Image(systemName: "play")
-                            Text("PLAY")
-                                .soraFont(size: 14, weight: .semiBold)
+                            Text("PLAY").font(.system(size: 14, design: .monospaced))
                         }
                         .foregroundColor(manager.recordedPattern.isEmpty ? .gray : .white)
                         .frame(maxWidth: .infinity).frame(height: 56)
@@ -146,7 +148,7 @@ struct NewVibrationSheet: View {
 #Preview {
     NavigationStack {
         NewVibrationSheet(
-            manager: HapticRecorderManager(),
+            manager: CoreHapticService(),
             viewModel: HapticsSettingsViewModel()
         )
     }

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var viewModel = HapticsSettingsViewModel()
-    @State private var hapticManager = HapticRecorderManager()
+    @State private var hapticManager = CoreHapticService()
 
     var body: some View {
         NavigationStack {

@@ -10,7 +10,7 @@ import SwiftUI
 struct HapticsSelectionView: View {
     let level: Urgency
     var viewModel: HapticsSettingsViewModel
-    var manager: HapticRecorderManager
+    var manager: CoreHapticService
 
     @State private var isShowingNewVibrationSheet = false
 
@@ -52,21 +52,31 @@ struct HapticsSelectionView: View {
                                         isSelected: viewModel.selections[level] == pattern,
                                         onSelect: {
                                             viewModel.selectPattern(pattern, for: level)
-                                            manager.playPreview(for: pattern)
+
+                                            let events = manager.getEvents(forPreset: pattern)
+                                            manager.playHaptic(events: events)
                                         },
-                                        onPlay: { manager.playPreview(for: pattern) }
+                                        onPlay: {
+                                            let events = manager.getEvents(forPreset: pattern)
+                                            manager.playHaptic(events: events)
+                                        }
                                     )
                                 }
 
-                                ForEach(viewModel.customPatterns) { pattern in
+                                ForEach(viewModel.customPatterns, id: \.name) { pattern in
                                     SettRowView(
                                         title: pattern.name,
                                         isSelected: viewModel.selections[level] == pattern.name,
                                         onSelect: {
                                             viewModel.selectPattern(pattern.name, for: level)
-                                            manager.playCustomPattern(steps: pattern.steps)
+
+                                            let events = manager.getEvents(fromSteps: pattern.steps)
+                                            manager.playHaptic(events: events)
                                         },
-                                        onPlay: { manager.playCustomPattern(steps: pattern.steps) }
+                                        onPlay: {
+                                            let events = manager.getEvents(fromSteps: pattern.steps)
+                                            manager.playHaptic(events: events)
+                                        }
                                     )
                                 }
                             }
@@ -78,7 +88,7 @@ struct HapticsSelectionView: View {
 
                 VStack(alignment: .leading, spacing: 16) {
                     Button(action: {
-                        manager.stopPreview()
+                        manager.stopHaptic()
                         isShowingNewVibrationSheet = true
                     }) {
                         HStack {
@@ -123,7 +133,7 @@ struct HapticsSelectionView: View {
         HapticsSelectionView(
             level: .medium,
             viewModel: HapticsSettingsViewModel(),
-            manager: HapticRecorderManager()
+            manager: CoreHapticService()
         )
     }
     .preferredColorScheme(.dark)

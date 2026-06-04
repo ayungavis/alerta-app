@@ -4,7 +4,7 @@ import Observation
 struct CustomPattern: Identifiable {
     let id = UUID()
     let name: String
-    let steps: [HapticRecorderManager.RecordedStep]
+    let steps: [RecordedStep]
 }
 
 @Observable

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct HapticsLevelView: View {
     var viewModel: HapticsSettingsViewModel
-    var manager: HapticRecorderManager
+    var manager: CoreHapticService
 
     var body: some View {
         ZStack {
@@ -63,7 +63,7 @@ struct HapticsLevelView: View {
     NavigationStack {
         HapticsLevelView(
             viewModel: HapticsSettingsViewModel(),
-            manager: HapticRecorderManager()
+            manager: CoreHapticService()
         )
     }
     .preferredColorScheme(.dark)
