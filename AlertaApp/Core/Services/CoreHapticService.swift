@@ -53,8 +53,6 @@ class CoreHapticService {
         try? previewPlayer?.stop(atTime: 0)
     }
 
-    // MARK: - 2. LOGIKA PEREKAMAN
-
     func startRecordingSession() {
         recordedPattern.removeAll()
         lastTouchUpTime = nil
