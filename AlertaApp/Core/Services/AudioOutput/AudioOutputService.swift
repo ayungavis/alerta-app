@@ -34,6 +34,9 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
 
     func play(_ event: DetectionEvent) throws {
         try activateAudioSession()
+        
+        print("🔊 Session category: \(AVAudioSession.sharedInstance().category)")
+        print("🔊 Session mode: \(AVAudioSession.sharedInstance().mode)")
 
         // Skip if same urgency played within cooldown window
         if let lastPlayed = lastPlayedAt[event.urgency],
@@ -66,13 +69,21 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
     private func activateAudioSession() throws {
         guard !isSessionActive else { return }
         let session = AVAudioSession.sharedInstance()
+        
+        if session.category == .playAndRecord {
+            isSessionActive = true
+            return
+        }
+        
         do {
             try session.setCategory(
                 .playAndRecord,
                 mode: .spokenAudio,
-                options: [.duckOthers, .defaultToSpeaker, .allowBluetoothHFP]
+                options: [.duckOthers, .defaultToSpeaker]
             )
+            try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
             try session.setActive(true)
+            isSessionActive = true
         } catch {
             throw AppError.audioOutput(
                 .sessionActivationFailed(underlying: error)

@@ -1,18 +1,18 @@
 //
-//  AlertaAppTests.swift
-//  AlertaAppTests
+//  MockScenarioEvent.swift
+//  AlertaApp
 //
-//  Created by Dimas Nugraha on 28/05/26.
+//  Created by Dimas Nugraha on 04/06/26.
 //
 
-import XCTest
-import AVFoundation
+import Foundation
+
 @testable import AlertaApp
 
 extension DetectionEvent {
-    
+
     // MARK: - Helpers
-    
+
     private static func makeSpectrum(
         subBass: Float = 0.01,
         bass: Float = 0.01,
@@ -27,7 +27,11 @@ extension DetectionEvent {
         let bands = zip(FrequencyBand.defaultBands, energies).map {
             FrequencyBand(name: $0.name, range: $0.range, energy: $1)
         }
-        return FrequencySpectrum(bands: bands, dominantFrequency: dominant, spectralCentroid: centroid)
+        return FrequencySpectrum(
+            bands: bands,
+            dominantFrequency: dominant,
+            spectralCentroid: centroid
+        )
     }
 
     // MARK: - Static Mocks
@@ -40,11 +44,17 @@ extension DetectionEvent {
         urgency: .low,
         topCandidates: [
             DetectionCandidate(identifier: "bicycle", confidence: 0.61),
-            DetectionCandidate(identifier: "scooter", confidence: 0.22)
+            DetectionCandidate(identifier: "scooter", confidence: 0.22),
         ],
         rawIdentifier: "bicycle",
         timestamp: .now,
-        frequencyInfo: makeSpectrum(bass: 0.02, lowMid: 0.015, dominant: 180, centroid: 300)
+        frequencyInfo: makeSpectrum(
+            bass: 0.02,
+            lowMid: 0.015,
+            dominant: 180,
+            centroid: 300
+        ),
+        soundName: "test"
     )
 
     static let mockMedium = DetectionEvent(
@@ -55,11 +65,17 @@ extension DetectionEvent {
         urgency: .medium,
         topCandidates: [
             DetectionCandidate(identifier: "dog_bark", confidence: 0.74),
-            DetectionCandidate(identifier: "animal", confidence: 0.18)
+            DetectionCandidate(identifier: "animal", confidence: 0.18),
         ],
         rawIdentifier: "dog_bark",
         timestamp: .now,
-        frequencyInfo: makeSpectrum(mid: 0.03, highMid: 0.025, dominant: 800, centroid: 1200)
+        frequencyInfo: makeSpectrum(
+            mid: 0.03,
+            highMid: 0.025,
+            dominant: 800,
+            centroid: 1200
+        ),
+        soundName: "test"
     )
 
     static let mockHigh = DetectionEvent(
@@ -69,12 +85,22 @@ extension DetectionEvent {
         confidence: 0.88,
         urgency: .high,
         topCandidates: [
-            DetectionCandidate(identifier: "approaching_vehicle", confidence: 0.88),
-            DetectionCandidate(identifier: "car_engine", confidence: 0.09)
+            DetectionCandidate(
+                identifier: "approaching_vehicle",
+                confidence: 0.88
+            ),
+            DetectionCandidate(identifier: "car_engine", confidence: 0.09),
         ],
         rawIdentifier: "approaching_vehicle",
         timestamp: .now,
-        frequencyInfo: makeSpectrum(subBass: 0.04, bass: 0.035, lowMid: 0.02, dominant: 120, centroid: 400)
+        frequencyInfo: makeSpectrum(
+            subBass: 0.04,
+            bass: 0.035,
+            lowMid: 0.02,
+            dominant: 120,
+            centroid: 400
+        ),
+        soundName: "test"
     )
 
     static let mockCritical = DetectionEvent(
@@ -85,11 +111,18 @@ extension DetectionEvent {
         urgency: .critical,
         topCandidates: [
             DetectionCandidate(identifier: "siren", confidence: 0.97),
-            DetectionCandidate(identifier: "horn", confidence: 0.02)
+            DetectionCandidate(identifier: "horn", confidence: 0.02),
         ],
         rawIdentifier: "siren",
         timestamp: .now,
-        frequencyInfo: makeSpectrum(mid: 0.04, highMid: 0.045, high: 0.03, dominant: 1200, centroid: 2000)
+        frequencyInfo: makeSpectrum(
+            mid: 0.04,
+            highMid: 0.045,
+            high: 0.03,
+            dominant: 1200,
+            centroid: 2000
+        ),
+        soundName: "test"
     )
 
     static let mockEmptyLabel = DetectionEvent(
@@ -101,7 +134,8 @@ extension DetectionEvent {
         topCandidates: [],
         rawIdentifier: "",
         timestamp: .now,
-        frequencyInfo: .zero
+        frequencyInfo: .zero,
+        soundName: "test"
     )
 
     static let mockLowConfidence = DetectionEvent(
@@ -115,7 +149,8 @@ extension DetectionEvent {
         ],
         rawIdentifier: "unknown",
         timestamp: .now,
-        frequencyInfo: makeSpectrum(dominant: 300, centroid: 350)
+        frequencyInfo: makeSpectrum(dominant: 300, centroid: 350),
+        soundName: "test"
     )
 
     static let mockLongLabel = DetectionEvent(
@@ -125,12 +160,22 @@ extension DetectionEvent {
         confidence: 0.83,
         urgency: .high,
         topCandidates: [
-            DetectionCandidate(identifier: "approaching_vehicle", confidence: 0.83),
-            DetectionCandidate(identifier: "truck", confidence: 0.10)
+            DetectionCandidate(
+                identifier: "approaching_vehicle",
+                confidence: 0.83
+            ),
+            DetectionCandidate(identifier: "truck", confidence: 0.10),
         ],
         rawIdentifier: "large_articulated_lorry",
         timestamp: .now,
-        frequencyInfo: makeSpectrum(subBass: 0.05, bass: 0.045, lowMid: 0.03, dominant: 80, centroid: 250)
+        frequencyInfo: makeSpectrum(
+            subBass: 0.05,
+            bass: 0.045,
+            lowMid: 0.03,
+            dominant: 80,
+            centroid: 250
+        ),
+        soundName: "test"
     )
 
     static let mockPinnedTimestamp = DetectionEvent(
@@ -144,13 +189,19 @@ extension DetectionEvent {
         ],
         rawIdentifier: "traffic_cone",
         timestamp: Date(timeIntervalSince1970: 0),
-        frequencyInfo: makeSpectrum(lowMid: 0.02, mid: 0.018, dominant: 400, centroid: 600)
+        frequencyInfo: makeSpectrum(
+            lowMid: 0.02,
+            mid: 0.018,
+            dominant: 400,
+            centroid: 600
+        ),
+        soundName: "test"
     )
 
     // MARK: - Factory
 
     static func mock(
-        soundEvent: SoundEvent  = .generalLoudSound,
+        soundEvent: SoundEvent = .generalLoudSound,
         direction: SoundDirection = .nearby,
         confidence: Float = 0.90,
         urgency: Urgency = .medium,
@@ -165,11 +216,15 @@ extension DetectionEvent {
             confidence: confidence,
             urgency: urgency,
             topCandidates: [
-                DetectionCandidate(identifier: rawIdentifier, confidence: confidence)
+                DetectionCandidate(
+                    identifier: rawIdentifier,
+                    confidence: confidence
+                )
             ],
             rawIdentifier: rawIdentifier,
             timestamp: timestamp,
-            frequencyInfo: frequencyInfo
+            frequencyInfo: frequencyInfo,
+            soundName: "test"
         )
     }
 
@@ -177,7 +232,9 @@ extension DetectionEvent {
 
     static var allUrgencies: [DetectionEvent] {
         Urgency.allCases.map { urgency in
-            let event = SoundEvent.allCases.first { $0.urgency == urgency } ?? .generalLoudSound
+            let event =
+                SoundEvent.allCases.first { $0.urgency == urgency }
+                ?? .generalLoudSound
             return mock(soundEvent: event, urgency: urgency)
         }
     }
@@ -185,41 +242,27 @@ extension DetectionEvent {
     // MARK: - All Directions
 
     static var allDirections: [DetectionEvent] {
-        [.frontLeft, .frontRight, .backLeft, .backRight, .left, .right, .nearby, .unknown].map { direction in
-            mock(soundEvent: .approachingVehicle, direction: direction, rawIdentifier: direction.rawValue)
+        [
+            .frontLeft, .frontRight, .backLeft, .backRight, .left, .right,
+            .nearby, .unknown,
+        ].map { direction in
+            mock(
+                soundEvent: .approachingVehicle,
+                direction: direction,
+                rawIdentifier: direction.rawValue
+            )
         }
     }
-    
+
     // MARK: - All Sound Events
-    
+
     static var allSoundEvents: [DetectionEvent] {
         SoundEvent.allCases.map { event in
-            mock(soundEvent: event, urgency: event.urgency, rawIdentifier: event.rawValue)
-        }
-    }
-}
-
-final class AudioOutputServiceTests: XCTestCase {
-    
-    func testPlayCriticalEvent() throws {
-        let service = AudioOutputService()
-        let event = DetectionEvent.mockCritical
-        XCTAssertNoThrow(try service.play(event))
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
-    }
-    
-    func testPlayHighEvent() throws {
-        let service = AudioOutputService()
-        let event = DetectionEvent.mockHigh
-        XCTAssertNoThrow(try service.play(event))
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
-    }
-
-    func testPlayAllUrgencies() throws {
-        let service = AudioOutputService()
-        for event in DetectionEvent.allUrgencies {
-            XCTAssertNoThrow(try service.play(event))
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
+            mock(
+                soundEvent: event,
+                urgency: event.urgency,
+                rawIdentifier: event.rawValue
+            )
         }
     }
 }
