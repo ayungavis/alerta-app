@@ -16,7 +16,8 @@ struct AudioSessionConfigurator {
             mode: .measurement,
             options: [.allowBluetoothA2DP, .defaultToSpeaker]
         )
-
+        try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
+        
         guard let builtInMic = session.availableInputs?.first(where: { $0.portType == .builtInMic })
         else {
             throw AppError.microphoneInput(.microphoneUnavailable)

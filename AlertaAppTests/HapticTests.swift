@@ -25,23 +25,23 @@ final class MockHapticService: HapticFeedbackProviding {
 final class AwarenessViewModelTests: XCTestCase {
     
     func testPlayCriticalEvent() throws {
-        let service = HapticRecorderManager()
+        let service = CoreHapticService()
         let event = DetectionEvent.mockCritical
-        XCTAssertNoThrow(service.playPreview(event))
+        XCTAssertNoThrow(service.playHaptic(for: event.urgency))
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     }
     
     func testPlayHighEvent() throws {
-        let service = HapticRecorderManager()
+        let service = CoreHapticService()
         let event = DetectionEvent.mockHigh
-        XCTAssertNoThrow(service.playPreview(event))
+        XCTAssertNoThrow(service.playHaptic(for: event.urgency))
         RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
     }
 
     func testPlayAllUrgencies() throws {
-        let service = HapticRecorderManager()
+        let service = CoreHapticService()
         for event in DetectionEvent.allUrgencies {
-            XCTAssertNoThrow(service.playPreview(event))
+            XCTAssertNoThrow(service.playHaptic(for: event.urgency))
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 10))
         }
     }

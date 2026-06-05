@@ -17,17 +17,22 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
     private let synthesiser: AVSpeechSynthesizer
     private let utteranceBuilder: SpeechUtteranceBuilder
     private var isSessionActive = false
-    private var lastPlayedAt: [Urgency: Date] = [:]
-    private let cooldown: TimeInterval = 10.0  // seconds
+    
+    private let cooldown: TimeInterval // seconds
+    private var lastPlayedAt: [Urgency: Date]
 
     private(set) var isSpeaking: Bool = false
 
     init(
         synthesiser: AVSpeechSynthesizer = AVSpeechSynthesizer(),
-        utteranceBuilder: SpeechUtteranceBuilder = SpeechUtteranceBuilder()
+        utteranceBuilder: SpeechUtteranceBuilder = SpeechUtteranceBuilder(),
+        cooldown: TimeInterval = 10.0,
+        lastPlayedAt: [Urgency: Date] = [:]
     ) {
         self.synthesiser = synthesiser
         self.utteranceBuilder = utteranceBuilder
+        self.cooldown = cooldown
+        self.lastPlayedAt = lastPlayedAt
         super.init()
         self.synthesiser.delegate = self
     }
@@ -35,8 +40,8 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
     func play(_ event: DetectionEvent) throws {
         try activateAudioSession()
         
-        print("🔊 Session category: \(AVAudioSession.sharedInstance().category)")
-        print("🔊 Session mode: \(AVAudioSession.sharedInstance().mode)")
+        print("Session category: \(AVAudioSession.sharedInstance().category)")
+        print("Session mode: \(AVAudioSession.sharedInstance().mode)")
 
         // Skip if same urgency played within cooldown window
         if let lastPlayed = lastPlayedAt[event.urgency],

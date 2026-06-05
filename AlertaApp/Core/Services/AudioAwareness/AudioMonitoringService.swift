@@ -20,6 +20,7 @@ struct AudioMonitoringConfiguration {
     var bufferSize: AVAudioFrameCount = 8192
     var directionThreshold: Float = 0.02
     var calibrationDuration: TimeInterval = 3.0
+    var cooldownAudioAndVibration: TimeInterval = 10.0
 }
 
 final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
@@ -28,7 +29,7 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     private let directionEstimator = DirectionEstimator()
     private let frequenprimaryalyzer = Frequenprimaryalyzer()
     private let audioService: AudioOutputProviding
-    private let hapticService: HapticRecorderManager
+    private let hapticService: HapticFeedbackProviding
 
     private let headphoneMotionProvider = HeadphoneMotionProvider()
     private var headYaw: Double?
@@ -48,6 +49,8 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     )
     private var calibrationBuffers: [AVAudioPCMBuffer] = []
     private var isCalibrating = false
+    
+    private(set) var lastPlayedAt: [Urgency: Date] = [:]
 
     private(set) var isRunning: Bool = false
 
@@ -63,13 +66,23 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
         audioEngine: AVAudioEngine = AVAudioEngine(),
         configuration: AudioMonitoringConfiguration =
             AudioMonitoringConfiguration(),
-        audioService: AudioOutputProviding = AudioOutputService(),
-        hapticService: HapticRecorderManager = HapticRecorderManager()
+        audioService: AudioOutputProviding? = nil,
+        hapticService: HapticFeedbackProviding? = nil
     ) {
         self.audioEngine = audioEngine
         self.configuration = configuration
-        self.audioService = audioService
-        self.hapticService = hapticService
+        self.audioService =
+            audioService
+            ?? AudioOutputService(
+                cooldown: configuration.cooldownAudioAndVibration,
+                lastPlayedAt: self.lastPlayedAt
+            )
+        self.hapticService =
+            hapticService
+            ?? CoreHapticService(
+                cooldown: configuration.cooldownAudioAndVibration,
+                lastPlayedAt: self.lastPlayedAt
+            )
         super.init()
         observeInterruptions()
     }
@@ -106,12 +119,12 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 frequencyInfo: frequencyInfo,
                 soundName: "Unknown"
             )
-            
+
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 do {
                     try audioService.play(event)
-                    hapticService.playPreview(event)
+                    hapticService.playHaptic(for: event.urgency)
                 } catch {
                     print("Playback failed: \(error)")
                 }
@@ -158,8 +171,8 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
         audioEngine.prepare()
         try audioEngine.start()
-        
-        hapticService.prepareHaptics()
+
+        hapticService.prepare()
 
         startCalibration()
     }
@@ -184,7 +197,9 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
         ) { [weak self] in
             guard let self, isCalibrating else { return }
 
-            let profile = frequenprimaryalyzer.captureBaseline(from: calibrationBuffers)
+            let profile = frequenprimaryalyzer.captureBaseline(
+                from: calibrationBuffers
+            )
             calibrationBuffers.removeAll()
             isCalibrating = false
             isRunning = true
