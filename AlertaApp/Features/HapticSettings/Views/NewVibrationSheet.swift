@@ -29,7 +29,7 @@ struct NewVibrationSheet: View {
                     }) {
                         Text("SAVE")
                             .font(.system(size: 12, weight: .bold))
-                        AppColors.buttonText
+                            .foregroundStyle(AppColors.buttonText)
                             .padding(.horizontal, 16).padding(.vertical, 8)
                             .background(patternName.isEmpty || manager.recordedPattern.isEmpty ? AppColors
                                 .textTertiary : AppColors
@@ -43,7 +43,7 @@ struct NewVibrationSheet: View {
                     .font(.system(size: 16, weight: .medium))
                     .padding()
                     .background(AppColors.card)
-                AppColors.textPrimary
+                    .foregroundStyle(AppColors.textPrimary)
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
@@ -71,17 +71,17 @@ struct NewVibrationSheet: View {
                             .overlay(
                                 Image(systemName: "iphone.radiowaves.left.and.right")
                                     .font(.system(size: 32))
-                                    .foregroundColor(manager.isRecording ? .red : AppColors.cyan)
+                                    .foregroundStyle(manager.isRecording ? AppColors.systemError : AppColors.cyan)
                             )
 
                         VStack(spacing: 8) {
                             Text(manager.isRecording ? "RECORDING..." : "TAP TO CREATE VIBRATION")
                                 .font(.system(size: 14, design: .monospaced))
-                                .foregroundColor(manager.isRecording ? .red : .white)
+                                .foregroundStyle(manager.isRecording ? AppColors.systemError : AppColors.textPrimary)
 
                             Text("TAP OR HOLD ANYWHERE")
                                 .font(.system(size: 14, weight: .bold, design: .monospaced))
-                                .foregroundColor(AppColors.cyan)
+                                .foregroundStyle(AppColors.cyan)
                         }
                     }
                 }
@@ -110,7 +110,8 @@ struct NewVibrationSheet: View {
                             Image(systemName: "play")
                             Text("PLAY").font(.system(size: 14, design: .monospaced))
                         }
-                        .foregroundColor(manager.recordedPattern.isEmpty ? .gray : .white)
+                        .foregroundStyle(manager.recordedPattern.isEmpty ? AppColors.textTertiary : AppColors
+                            .textPrimary)
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(AppColors.card).cornerRadius(16)
                     }
@@ -131,9 +132,9 @@ struct NewVibrationSheet: View {
                             Text(manager.isRecording ? "STOP" : "RECORD")
                                 .font(.system(size: 14, design: .monospaced))
                         }
-                        AppColors.textPrimary
-                            .frame(maxWidth: .infinity).frame(height: 56)
-                            .background(AppColors.card).cornerRadius(16)
+                        .foregroundStyle(AppColors.textPrimary)
+                        .frame(maxWidth: .infinity).frame(height: 56)
+                        .background(AppColors.card).cornerRadius(16)
                     }
                 }
                 .padding(.horizontal).padding(.bottom, 24)
