@@ -9,9 +9,20 @@ import SwiftUI
 
 @main
 struct AlertaApp: App {
+    @State private var router = AppRouter()
+
     var body: some Scene {
         WindowGroup {
-            RootView()
+            NavigationStack(path: $router.path) {
+                WelcomeView()
+                    .navigationDestination(for: AppRoute.self) { route in
+                        switch route {
+                        case .mainTab:
+                            MainTabView()
+                        }
+                    }
+            }
+            .environment(router)
         }
     }
 }

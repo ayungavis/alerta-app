@@ -22,7 +22,7 @@ struct SettRowView: View {
 
             Text(title)
                 .soraFont(size: 17)
-                .foregroundColor(.white)
+                .foregroundStyle(AppColors.textPrimary)
                 .padding(.leading, 12)
 
             Spacer()
@@ -47,7 +47,6 @@ struct SettRowView: View {
         }
         .frame(height: 48)
         .background(AppColors.card)
-        .cornerRadius(12)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contentShape(Rectangle())
         .onTapGesture {
@@ -59,5 +58,10 @@ struct SettRowView: View {
 }
 
 #Preview {
-    HapticsSettingsView()
+    SettRowView(
+        title: "Gentle pulse",
+        isSelected: true,
+        onSelect: {},
+        onPlay: {}
+    )
 }

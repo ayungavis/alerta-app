@@ -125,11 +125,11 @@ struct AwarenessView: View {
                         HStack(spacing: 6) {
                             Text("Live")
                                 .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color("textTertiary"))
+                                .foregroundStyle(AppColors.textTertiary)
                             Spacer()
                             Text(dominantHzText)
                                 .font(.system(size: 10, weight: .medium))
-                                .foregroundStyle(Color("textTertiary"))
+                                .foregroundStyle(AppColors.textTertiary)
                         }
                         .padding(.horizontal, 24)
 
@@ -139,7 +139,7 @@ struct AwarenessView: View {
                             HStack(spacing: 6) {
                                 Text("Baseline")
                                     .font(.system(size: 10, weight: .semibold))
-                                    .foregroundStyle(Color("textTertiary"))
+                                    .foregroundStyle(AppColors.textTertiary)
                                 Spacer()
                             }
                             .padding(.horizontal, 24)
@@ -201,16 +201,16 @@ struct AwarenessView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background(urgencyColor(event.urgency))
-        .foregroundStyle(Color("buttonText"))
+        .foregroundStyle(AppColors.buttonText)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     private func urgencyColor(_ urgency: Urgency) -> Color {
         switch urgency {
-        case .critical: Color("alertCritical")
-        case .high: Color("alertMedium")
-        case .medium: Color("alertLow")
-        case .low: Color("alertInfo")
+        case .critical: AppColors.alertCritical
+        case .high: AppColors.alertMedium
+        case .medium: AppColors.alertLow
+        case .low: AppColors.alertInfo
         }
     }
 }

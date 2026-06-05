@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @Environment(AppRouter.self) private var router
+
     var body: some View {
         ZStack {
-            Color("backgroundPrimary")
+            AppColors.backgroundPrimary
                 .ignoresSafeArea()
 
             Circle()
-                .fill(Color("primary").opacity(0.2))
+                .fill(AppColors.primary.opacity(0.2))
                 .frame(width: 320, height: 320)
                 .blur(radius: 60)
                 .offset(x: -136, y: -200)
 
             Circle()
-                .fill(Color("primaryDark").opacity(0.5))
+                .fill(AppColors.primaryDark.opacity(0.5))
                 .frame(width: 256, height: 256)
                 .blur(radius: 50)
                 .opacity(0.2)
@@ -32,11 +34,11 @@ struct WelcomeView: View {
                 Text("Welcome to")
                     .font(.title3)
                     .fontWeight(.regular)
-                    .foregroundStyle(Color("primary"))
+                    .foregroundStyle(AppColors.primary)
 
                 Text("ALERTA")
                     .font(.system(size: 64, weight: .bold))
-                    .foregroundStyle(Color("primary"))
+                    .foregroundStyle(AppColors.primary)
                     .padding(.top, 4)
 
                 AudioBarsView()
@@ -45,7 +47,7 @@ struct WelcomeView: View {
                 Text("Stay alert. Stay safe.")
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color("primary"))
+                    .foregroundStyle(AppColors.primary)
                     .padding(.top, 24)
 
                 Text(
@@ -53,23 +55,23 @@ struct WelcomeView: View {
                 )
                 .font(.body)
                 .fontWeight(.regular)
-                .foregroundStyle(Color("secondary"))
+                .foregroundStyle(AppColors.secondary)
                 .multilineTextAlignment(.center)
                 .frame(width: 297)
                 .padding(.top, 16)
 
                 Spacer()
 
-                NavigationLink {
-                    AwarenessView()
+                Button {
+                    router.navigate(to: .mainTab)
                 } label: {
                     Text("LET\u{2019}S ROCK!")
                         .font(.body)
                         .fontWeight(.semibold)
-                        .foregroundStyle(Color("buttonText"))
+                        .foregroundStyle(AppColors.buttonText)
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
-                        .background(Color("buttonDefault"))
+                        .background(AppColors.buttonDefault)
                         .clipShape(Capsule())
                 }
                 .padding(.horizontal, 16)
@@ -83,5 +85,6 @@ struct WelcomeView: View {
 #Preview {
     NavigationStack {
         WelcomeView()
+            .environment(AppRouter())
     }
 }

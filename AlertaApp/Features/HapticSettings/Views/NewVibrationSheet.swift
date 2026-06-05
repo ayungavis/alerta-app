@@ -15,10 +15,10 @@ struct NewVibrationSheet: View {
             VStack(spacing: AppSpacing.large) {
                 HStack {
                     Button(action: { dismiss() }) {
-                        Image(systemName: "xmark").font(.title2).foregroundColor(.white)
+                        Image(systemName: "xmark").font(.title2).foregroundStyle(AppColors.textPrimary)
                     }
                     Spacer()
-                    Text("New Vibration").font(.title3).fontWeight(.semibold).foregroundColor(.white)
+                    Text("New Vibration").font(.title3).fontWeight(.semibold).foregroundStyle(AppColors.textPrimary)
                     Spacer()
                     Button(action: {
                         if !manager.recordedPattern.isEmpty, !patternName.isEmpty {
@@ -29,9 +29,10 @@ struct NewVibrationSheet: View {
                     }) {
                         Text("SAVE")
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.black)
+                        AppColors.buttonText
                             .padding(.horizontal, 16).padding(.vertical, 8)
-                            .background(patternName.isEmpty || manager.recordedPattern.isEmpty ? Color.gray : AppColors
+                            .background(patternName.isEmpty || manager.recordedPattern.isEmpty ? AppColors
+                                .textTertiary : AppColors
                                 .cyan).cornerRadius(20)
                     }
                     .disabled(patternName.isEmpty || manager.recordedPattern.isEmpty)
@@ -42,11 +43,14 @@ struct NewVibrationSheet: View {
                     .font(.system(size: 16, weight: .medium))
                     .padding()
                     .background(AppColors.card)
-                    .foregroundColor(.white)
+                AppColors.textPrimary
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(patternName.isEmpty ? Color.gray.opacity(0.3) : AppColors.cyan, lineWidth: 1)
+                            .stroke(
+                                patternName.isEmpty ? AppColors.textTertiary.opacity(0.3) : AppColors.cyan,
+                                lineWidth: 1
+                            )
                     )
                     .padding(.horizontal)
 
@@ -56,7 +60,7 @@ struct NewVibrationSheet: View {
 
                     RoundedRectangle(cornerRadius: 16)
                         .strokeBorder(
-                            manager.isRecording ? Color.red : AppColors.cyan,
+                            manager.isRecording ? AppColors.systemError : AppColors.cyan,
                             style: StrokeStyle(lineWidth: 1, dash: [6])
                         )
 
@@ -118,14 +122,18 @@ struct NewVibrationSheet: View {
                     }) {
                         HStack {
                             Circle()
-                                .fill(manager.isRecording ? Color.red : Color(red: 1.0, green: 0.7, blue: 0.7))
+                                .fill(manager.isRecording ? AppColors.systemError : Color(
+                                    red: 1.0,
+                                    green: 0.7,
+                                    blue: 0.7
+                                ))
                                 .frame(width: 12, height: 12)
                             Text(manager.isRecording ? "STOP" : "RECORD")
                                 .font(.system(size: 14, design: .monospaced))
                         }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity).frame(height: 56)
-                        .background(AppColors.card).cornerRadius(16)
+                        AppColors.textPrimary
+                            .frame(maxWidth: .infinity).frame(height: 56)
+                            .background(AppColors.card).cornerRadius(16)
                     }
                 }
                 .padding(.horizontal).padding(.bottom, 24)

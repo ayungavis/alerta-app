@@ -15,7 +15,7 @@ struct HapticsSettingsView: View {
                         VStack(alignment: .leading, spacing: AppSpacing.large) {
                             Text("Choose how your device vibrates")
                                 .font(.system(size: 16))
-                                .foregroundColor(.white)
+                                .foregroundStyle(AppColors.textPrimary)
                                 .padding(.top, 10)
 
                             VStack(alignment: .leading, spacing: 16) {
@@ -68,7 +68,7 @@ struct HapticsSettingsView: View {
                                 Text("CREATE NEW PATTERN")
                                     .font(.system(size: 16, weight: .medium, design: .monospaced))
                             }
-                            .foregroundColor(.black)
+                            .foregroundStyle(AppColors.buttonText)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 18)
                             .background(AppColors.cyan)
