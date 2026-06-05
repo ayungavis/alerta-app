@@ -57,9 +57,9 @@ struct BestPracticesPhoneView: View {
                             .cornerRadius(16)
                             .padding(.horizontal, 16)
                             .padding(.leading, 8)
-
+                        // swiftlint:disable:next line_length
                         Text(
-                            "Holding your phone provides the clearest access to surrounding sounds and helps Alerta detect important events more reliably. This is the recommended option for the most consistent awareness support."
+                            "Holding your phone provides the clearest access to surrounding sounds and helps " + "Alerta detect important events more reliably. This is the recommended option for the most consistent awareness support."
                         )
                         .soraFont(size: 13, weight: .regular)
                         .padding(.horizontal, 24)
@@ -86,9 +86,10 @@ struct BestPracticesPhoneView: View {
                             .cornerRadius(16)
                             .padding(.horizontal, 16)
                             .padding(.leading, 8)
-
+                        // swiftlint:disable:next line_length
                         Text(
-                            "Wearing your phone on a shoulder strap keeps it accessible while allowing the microphone to remain relatively unobstructed. This option offers a good balance between comfort and detection performance."
+                            "Wearing your phone on a shoulder strap keeps it accessible while allowing the microphone to remain relatively unobstructed. " +
+                                "This option offers a good balance between comfort and detection performance."
                         )
                         .soraFont(size: 13, weight: .regular)
                         .padding(.horizontal, 24)
@@ -115,9 +116,10 @@ struct BestPracticesPhoneView: View {
                             .cornerRadius(16)
                             .padding(.horizontal, 16)
                             .padding(.leading, 8)
-
+                        // swiftlint:disable:next line_length
                         Text(
-                            "Keeping your phone in a pocket is convenient, but clothing and body movement may reduce microphone performance. Alerts will still work, though some sounds may be detected less consistently."
+                            "Keeping your phone in a pocket is convenient, but clothing and body movement may reduce microphone performance. "
+                            "Alerts will still work, though some sounds may be detected less consistently."
                         )
                         .soraFont(size: 13, weight: .regular)
                         .padding(.horizontal, 24)

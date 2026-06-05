@@ -41,7 +41,7 @@ struct BestPracticesEarphoneView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .padding(.horizontal, 24)
                     .padding(.vertical, 8)
-
+                // swiftlint:disable:next line_length
                 Text(
                     "For the best experience, connect your headphones before starting a session. This allows Alerta to deliver audio cues that help you stay informed about important sounds detected around you."
                 )
