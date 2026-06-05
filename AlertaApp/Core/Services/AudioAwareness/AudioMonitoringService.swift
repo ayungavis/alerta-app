@@ -9,8 +9,8 @@ import AVFoundation
 import Combine
 import CoreMotion
 import Foundation
-import SoundAnalysis
 import os
+import SoundAnalysis
 
 struct AudioMonitoringConfiguration {
     var windowDuration: CMTime = .init(seconds: 1.5, preferredTimescale: 48000)
@@ -49,7 +49,7 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     )
     private var calibrationBuffers: [AVAudioPCMBuffer] = []
     private var isCalibrating = false
-    
+
     private(set) var lastPlayedAt: [Urgency: Date] = [:]
 
     private(set) var isRunning: Bool = false
@@ -73,16 +73,16 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
         self.configuration = configuration
         self.audioService =
             audioService
-            ?? AudioOutputService(
-                cooldown: configuration.cooldownAudioAndVibration,
-                lastPlayedAt: self.lastPlayedAt
-            )
+                ?? AudioOutputService(
+                    cooldown: configuration.cooldownAudioAndVibration,
+                    lastPlayedAt: lastPlayedAt
+                )
         self.hapticService =
             hapticService
-            ?? CoreHapticService(
-                cooldown: configuration.cooldownAudioAndVibration,
-                lastPlayedAt: self.lastPlayedAt
-            )
+                ?? CoreHapticService(
+                    cooldown: configuration.cooldownAudioAndVibration,
+                    lastPlayedAt: lastPlayedAt
+                )
         super.init()
         observeInterruptions()
     }
@@ -243,9 +243,9 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
         case .ended:
             guard isRunning,
-                let optionsValue = notification.userInfo?[
-                    AVAudioSessionInterruptionOptionKey
-                ] as? UInt
+                  let optionsValue = notification.userInfo?[
+                      AVAudioSessionInterruptionOptionKey
+                  ] as? UInt
             else { return }
 
             let options = AVAudioSession.InterruptionOptions(
