@@ -112,13 +112,14 @@ if [[ "$r_seq" != "02" ]]; then
     fail "Invalid DER signature: expected 0x02 at byte 2, got 0x${r_seq}"
     exit 1
 fi
-r_len=$(dd if="${SIG_FILE}" bs=1 skip=3 count=1 2>/dev/null | od -A n -t u1 | tr -d ' \n')
+r_orig_len=$(dd if="${SIG_FILE}" bs=1 skip=3 count=1 2>/dev/null | od -A n -t u1 | tr -d ' \n')
 r_start=4
-if [[ "$r_len" -eq 33 ]]; then
+r_byte_len="${r_orig_len}"
+if [[ "$r_orig_len" -eq 33 ]]; then
     r_start=5
-    r_len=32
+    r_byte_len=32
 fi
-dd if="${SIG_FILE}" bs=1 skip="${r_start}" count="${r_len}" of="${TMP_DIR}/r.bin" 2>/dev/null
+dd if="${SIG_FILE}" bs=1 skip="${r_start}" count="${r_byte_len}" of="${TMP_DIR}/r.bin" 2>/dev/null
 R_RAW="${TMP_DIR}/r.bin"
 R_PAD="${TMP_DIR}/r_pad.bin"
 # Ensure exactly 32 bytes (pad left with zeros if short)
@@ -130,12 +131,8 @@ else
     cp "${R_RAW}" "${R_PAD}"
 fi
 
-# S: skip past R
-r_total=$((3 + r_len))  # 02 + len_byte + r_bytes
-if [[ "${r_len}" -ne "$R_SIZE" && $((R_SIZE)) -eq 32 ]]; then
-    r_total=4  # r had a 33-byte representation
-fi
-# Actually recalculate more carefully
+# S: skip past R (02 tag (1) + length byte (1) + r original bytes)
+r_total=$((2 + r_orig_len))
 s_offset=$((2 + r_total))
 
 s_seq="$(dd if="${SIG_FILE}" bs=1 skip="${s_offset}" count=1 2>/dev/null | od -A n -t x1 | tr -d ' \n')"

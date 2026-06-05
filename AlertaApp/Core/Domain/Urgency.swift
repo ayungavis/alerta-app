@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 /// Severity classification shared across haptic, audio, and visual feedback layers.
 /// Extend this file with domain-specific computed properties rather than scattering urgency logic across service files.
@@ -56,6 +57,15 @@ extension Urgency {
         case .high: 3.0
         case .medium: 5.0
         case .low: 8.0
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .low: AppColors.primary
+        case .medium: .yellow
+        case .high: .orange
+        case .critical: .red
         }
     }
 }

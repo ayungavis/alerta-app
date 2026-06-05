@@ -26,7 +26,7 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     private let audioEngine: AVAudioEngine
     private let configuration: AudioMonitoringConfiguration
     private let directionEstimator = DirectionEstimator()
-    private let frequencyAnalyzer = FrequencyAnalyzer()
+    private let frequenprimaryalyzer = Frequenprimaryalyzer()
     private let audioService: AudioOutputProviding
     private let hapticService: HapticRecorderManager
 
@@ -147,7 +147,7 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 $0 = (direction == .unknown ? .nearby : direction)
             }
 
-            let spectrum = frequencyAnalyzer.analyze(buffer: buffer)
+            let spectrum = frequenprimaryalyzer.analyze(buffer: buffer)
             frequencyState.withLock { $0 = spectrum }
 
             soundClassifier?.analyze(
@@ -184,9 +184,7 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
         ) { [weak self] in
             guard let self, isCalibrating else { return }
 
-            let profile = frequencyAnalyzer.captureBaseline(
-                from: calibrationBuffers
-            )
+            let profile = frequenprimaryalyzer.captureBaseline(from: calibrationBuffers)
             calibrationBuffers.removeAll()
             isCalibrating = false
             isRunning = true

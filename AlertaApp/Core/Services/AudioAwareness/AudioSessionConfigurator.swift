@@ -19,7 +19,7 @@ struct AudioSessionConfigurator {
 
         guard let builtInMic = session.availableInputs?.first(where: { $0.portType == .builtInMic })
         else {
-            throw AppError.unavailableFeature(.microphoneUnavailable)
+            throw AppError.microphoneInput(.microphoneUnavailable)
         }
 
         try session.setPreferredInput(builtInMic)

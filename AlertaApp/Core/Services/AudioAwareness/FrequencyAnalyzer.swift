@@ -9,7 +9,7 @@ import Accelerate
 import AVFoundation
 import Foundation
 
-struct FrequencyAnalyzer {
+struct Frequenprimaryalyzer {
     private let fftSize: Int = 2048
     private let fft: FFTAccelerator
 
