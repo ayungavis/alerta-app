@@ -21,6 +21,7 @@ enum AppColors {
     static let buttonPressed = Color("buttonPressed")
     static let buttonDisabled = Color("buttonDisabled")
     static let buttonText = Color("buttonText")
+    static let buttonDestructive = Color("buttonDestructive")
 
     static let alertCritical = Color("alertCritical")
     static let alertMedium = Color("alertMedium")

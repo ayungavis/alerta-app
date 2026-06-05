@@ -1,22 +1,12 @@
-//
-//  AwarenessView.swift
-//  AlertaApp
-//
-//  Created by Wahyu Kurniawan on 20/05/26.
-//
-
 import CoreHaptics
 import SwiftUI
 
 struct AwarenessView: View {
     @State private var viewModel: AwarenessViewModel
     @Environment(\.colorScheme) private var colorScheme
-    @State private var flashSpeaking: Bool = false
-    @State private var flashTask: Task<Void, Never>?
 
     init() {
         let hapticService: HapticFeedbackProviding
-
         if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
             let defaultPatterns: [Urgency: HapticPatternConfig] = [
                 .low: HapticPatternConfig(events: [
@@ -25,21 +15,18 @@ struct AwarenessView: View {
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.3)
                     ], relativeTime: 0)
                 ]),
-
                 .medium: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticContinuous, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.6),
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
                     ], relativeTime: 0, duration: 0.5)
                 ]),
-
                 .high: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticContinuous, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
                         CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.7)
                     ], relativeTime: 0, duration: 1.0)
                 ]),
-
                 .critical: HapticPatternConfig(events: [
                     CHHapticEvent(eventType: .hapticContinuous, parameters: [
                         CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
@@ -47,9 +34,7 @@ struct AwarenessView: View {
                     ], relativeTime: 0, duration: 2.0)
                 ])
             ]
-
             hapticService = CoreHapticsService(patternMap: defaultPatterns)
-
         } else {
             hapticService = FallbackHapticService()
         }
@@ -62,156 +47,148 @@ struct AwarenessView: View {
         ))
     }
 
-    private var orbState: VoiceOrbState {
-        if flashSpeaking { return .speaking }
-        if case .calibrating = viewModel.calibrationState { return .connecting }
-        return viewModel.isRunning ? .listening : .idle
+    private var isMonitoring: Bool {
+        viewModel.isRunning
     }
 
-    private var orbVolume: Float {
-        guard let event = viewModel.latestEvent else { return 0 }
-        return event.confidence
+    private var alertGlowColor: Color {
+        guard let event = viewModel.latestEvent else { return .clear }
+        switch event.urgency {
+        case .low: return AppColors.alertInfo.opacity(0.16)
+        case .medium: return AppColors.alertLow.opacity(0.16)
+        case .high: return AppColors.alertMedium.opacity(0.16)
+        case .critical: return AppColors.alertCritical.opacity(0.16)
+        }
     }
 
-    private var statusText: String {
-        if case .calibrating = viewModel.calibrationState { return "Calibrating" }
-        return viewModel.isRunning ? "Listening" : "Idle"
+    private var statusLabel: String {
+        if case .calibrating = viewModel.calibrationState { return "Monitoring.." }
+        if isMonitoring, viewModel.latestEvent == nil { return "Processing.." }
+        if isMonitoring { return "" }
+        return "Idle mode"
     }
 
-    private var statusColor: Color {
-        if case .calibrating = viewModel.calibrationState { return .orange }
-        return viewModel.isRunning ? .green : .gray
-    }
-
-    private var buttonTitle: String {
-        if case .calibrating = viewModel.calibrationState { return "Calibrating..." }
-        return viewModel.isRunning ? "Stop Session" : "Start Session"
-    }
-
-    private var dominantHzText: String {
-        let hz = viewModel.latestSpectrum.dominantFrequency
-        guard hz > 0 else { return "—" }
-        if hz >= 1000 { return String(format: "%.1f kHz", hz / 1000) }
-        return String(format: "%.0f Hz", hz)
+    private var headerColor: Color {
+        if isMonitoring { return AppColors.primaryDark }
+        return AppColors.secondary
     }
 
     var body: some View {
         ZStack {
-            VStack(spacing: 16) {
+            AppColors.backgroundPrimary.ignoresSafeArea()
+
+            if viewModel.latestEvent != nil, alertGlowColor != .clear {
+                Circle()
+                    .fill(alertGlowColor)
+                    .frame(width: 320, height: 320)
+                    .blur(radius: 60)
+                    .offset(x: -136, y: -200)
+
+                Circle()
+                    .fill(alertGlowColor)
+                    .frame(width: 256, height: 256)
+                    .blur(radius: 50)
+                    .offset(x: 100, y: 100)
+            }
+
+            VStack(spacing: 0) {
                 Spacer()
 
-                VoiceOrbView(
-                    state: orbState,
-                    variant: .default,
-                    volume: orbVolume * 0.12,
-                    customColors: VariantColors.primary(for: colorScheme)
+                Text("ALERTA")
+                    .font(AppFont.soraBold(28))
+                    .foregroundStyle(headerColor)
+
+                AudioBarsVisualizer(
+                    bands: viewModel.latestSpectrum.bands,
+                    isActive: isMonitoring
                 )
-                .frame(width: 280, height: 280)
+                .padding(.top, 32)
 
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(statusColor)
-                        .frame(width: 8, height: 8)
-                    Text(statusText)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                if viewModel.latestSpectrum.bands.contains(where: { $0.energy > 0 }) {
-                    DirectionIndicatorView(direction: viewModel.latestDirection)
-                        .padding(.vertical, 4)
-
-                    VStack(spacing: 8) {
-                        HStack(spacing: 6) {
-                            Text("Live")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(AppColors.textTertiary)
-                            Spacer()
-                            Text(dominantHzText)
-                                .font(.system(size: 10, weight: .medium))
-                                .foregroundStyle(AppColors.textTertiary)
-                        }
-                        .padding(.horizontal, 24)
-
-                        FrequencyBarsView(bands: viewModel.latestSpectrum.bands)
-
-                        if let baseline = viewModel.baselineProfile {
-                            HStack(spacing: 6) {
-                                Text("Baseline")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundStyle(AppColors.textTertiary)
-                                Spacer()
-                            }
-                            .padding(.horizontal, 24)
-
-                            FrequencyBarsView(bands: baseline.baseline.bands, style: .baseline)
-                        }
-                    }
-                    .transition(.scale.combined(with: .opacity))
+                if !statusLabel.isEmpty {
+                    Text(statusLabel)
+                        .font(AppFont.soraSemiBold(17))
+                        .foregroundStyle(isMonitoring ? AppColors.primary : AppColors.secondary)
+                        .padding(.top, 12)
                 }
 
                 if let event = viewModel.latestEvent {
-                    alertCard(event)
+                    DetectionAlertView(event: event)
+                        .padding(.top, 24)
                         .transition(.scale.combined(with: .opacity))
+                }
+
+                if !isMonitoring, viewModel.latestEvent == nil {
+                    Text("Alerta will notify you through these cues.")
+                        .font(AppFont.soraRegular(16))
+                        .foregroundStyle(AppColors.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 32)
+                        .padding(.horizontal, 40)
+
+                    HStack(spacing: 6) {
+                        CueBadgeView(icon: "iphone.radiowaves.left.and.right", label: "Haptics")
+                        CueBadgeView(icon: "speaker.wave.2", label: "Sound")
+                    }
+                    .padding(.top, 16)
                 }
 
                 Spacer()
 
-                Button(buttonTitle) {
-                    if viewModel.isRunning {
-                        viewModel.stop()
-                    } else {
+                if !isMonitoring, viewModel.latestEvent == nil {
+                    Text(
+                        "Alerts may be incorrect, delayed, or not detected at all. Do not rely solely on this app for your safety."
+                    )
+                    .font(AppFont.soraRegular(11))
+                    .foregroundStyle(AppColors.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+                    .padding(.bottom, 20)
+
+                    Button {
                         Task { await viewModel.start() }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 17, weight: .semibold))
+                            Text("Start")
+                                .font(AppFont.soraSemiBold(17))
+                        }
+                        .foregroundStyle(AppColors.buttonText)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 56)
+                        .background(AppColors.buttonDefault)
+                        .clipShape(Capsule())
+                    }
+                    .disabled(!viewModel.canStart)
+                } else {
+                    Button {
+                        viewModel.stop()
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "stop.fill")
+                                .font(.system(size: 17, weight: .semibold))
+                            Text("Stop")
+                                .font(AppFont.soraSemiBold(17))
+                        }
+                        .foregroundStyle(AppColors.buttonText)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 56)
+                        .background(AppColors.buttonDestructive)
+                        .clipShape(Capsule())
                     }
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(!viewModel.canStart && !viewModel.isRunning)
             }
-            .padding()
-        }
-        .animation(.easeInOut(duration: 0.3), value: viewModel.isRunning)
-        .animation(.easeInOut(duration: 0.3), value: viewModel.latestEvent?.id)
-        .animation(.easeInOut(duration: 0.3), value: viewModel.calibrationState)
-        .onChange(of: viewModel.latestEvent?.id) { _, _ in
-            guard viewModel.isRunning, viewModel.latestEvent != nil else { return }
-            flashTask?.cancel()
-            flashSpeaking = true
-            flashTask = Task {
-                try? await Task.sleep(for: .milliseconds(500))
-                flashSpeaking = false
-            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 24)
+            .animation(.easeInOut(duration: 0.3), value: viewModel.isRunning)
+            .animation(.easeInOut(duration: 0.3), value: viewModel.latestEvent?.id)
+            .animation(.easeInOut(duration: 0.3), value: viewModel.calibrationState)
         }
         .onDisappear {
-            flashTask?.cancel()
             viewModel.stop()
         }
-        .navigationTitle("Voice + Awareness")
-    }
-
-    private func alertCard(_ event: DetectionEvent) -> some View {
-        VStack(spacing: 8) {
-            Text(viewModel.rawDetectedSound)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-
-            Text(event.direction.rawValue)
-                .font(.system(size: 28, weight: .heavy))
-        }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(urgencyColor(event.urgency))
-        .foregroundStyle(AppColors.buttonText)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    private func urgencyColor(_ urgency: Urgency) -> Color {
-        switch urgency {
-        case .critical: AppColors.alertCritical
-        case .high: AppColors.alertMedium
-        case .medium: AppColors.alertLow
-        case .low: AppColors.alertInfo
-        }
+        .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

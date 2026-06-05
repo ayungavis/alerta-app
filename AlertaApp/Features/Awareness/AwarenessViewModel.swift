@@ -31,6 +31,7 @@ final class AwarenessViewModel {
     private let feedbackService: CueFeedbackService
     private var cancellables = Set<AnyCancellable>()
     private let hapticService: HapticFeedbackProviding
+    private var detectionDebounceTask: Task<Void, Never>?
 
     init(
         monitoringService: any AudioMonitoringProviding,
@@ -75,22 +76,37 @@ final class AwarenessViewModel {
             monitoringService.detectionPublisher
                 .receive(on: RunLoop.main)
                 .sink { [weak self] event in
-                    self?.latestEvent = event
-                    self?.latestSpectrum = event.frequencyInfo ?? .zero
-                    self?.latestDirection = event.direction
-                    self?.rawDetectedSound = event.rawIdentifier
-                    self?.feedbackService.playHapticCue(for: event)
+                    guard let self else { return }
+                    detectionDebounceTask?.cancel()
+
+                    latestEvent = event
+                    latestSpectrum = event.frequencyInfo ?? .zero
+                    latestDirection = event.direction
+                    rawDetectedSound = event.rawIdentifier
+                    feedbackService.playHapticCue(for: event)
+
+                    detectionDebounceTask = Task {
+                        try? await Task.sleep(for: .seconds(4))
+                        guard !Task.isCancelled else { return }
+                        self.latestEvent = nil
+                        self.latestSpectrum = .zero
+                        self.latestDirection = .unknown
+                        self.rawDetectedSound = "No sound detected yet"
+                    }
                 }
                 .store(in: &cancellables)
         } catch {}
     }
 
     func stop() {
+        detectionDebounceTask?.cancel()
         cancellables.removeAll()
         monitoringService.stop()
         isRunning = false
         baselineProfile = nil
         calibrationState = .notStarted
+        latestEvent = nil
+        latestSpectrum = .zero
     }
 
     func onDetectionEventReceived(_ event: DetectionEvent) {
