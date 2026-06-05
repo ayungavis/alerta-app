@@ -1,13 +1,19 @@
-import SwiftUI
-import AVFoundation
+//
+//  LoopingVideoPlayer.swift
+//  AlertaApp
+//
+//  Created by Kyky on 05/06/26.
+//
 
-// MARK: - Custom Video Player untuk Looping & Mute
+import AVFoundation
+import SwiftUI
+
 struct LoopingVideoPlayer: UIViewRepresentable {
     var videoName: String
-    var videoExt: String = "mp4" // Ubah kalau format videomu .mov
+    var videoExt: String = "mp4"
 
     func makeUIView(context: Context) -> UIView {
-        return LoopingPlayerUIView(videoName: videoName, videoExt: videoExt)
+        LoopingPlayerUIView(videoName: videoName, videoExt: videoExt)
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {}
@@ -19,29 +25,27 @@ class LoopingPlayerUIView: UIView {
 
     init(videoName: String, videoExt: String) {
         super.init(frame: .zero)
-        
-        // Cari file video di dalam project
+
         guard let url = Bundle.main.url(forResource: videoName, withExtension: videoExt) else {
-            print("⚠️ File video \(videoName).\(videoExt) tidak ditemukan di Xcode!")
+            print("⚠️ File \(videoName).\(videoExt) not found!")
             return
         }
 
         let asset = AVAsset(url: url)
         let item = AVPlayerItem(asset: asset)
-        
-        // AVQueuePlayer yang bikin loopingnya mulus
+
         let queuePlayer = AVQueuePlayer(playerItem: item)
-        queuePlayer.isMuted = true // Bikin tanpa suara
-        
+        queuePlayer.isMuted = true
+
         playerLayer.player = queuePlayer
-        playerLayer.videoGravity = .resizeAspect // Bisa diganti .resizeAspectFill kalau mau zoom-in
+        playerLayer.videoGravity = .resizeAspect
         layer.addSublayer(playerLayer)
 
-        // Mesin Looping
         playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: item)
         queuePlayer.play()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

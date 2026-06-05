@@ -30,42 +30,38 @@ struct WelcomeView: View {
                 Spacer()
 
                 Text("Welcome to")
-                    .font(.title3)
-                    .fontWeight(.regular)
+                    .soraFont(size: 20, weight: .regular)
                     .foregroundStyle(Color("primary"))
 
                 Text("ALERTA")
-                    .font(.system(size: 64, weight: .bold))
+                    .soraFont(size: 64, weight: .bold)
                     .foregroundStyle(Color("primary"))
-                    .padding(.top, 4)
+                    .padding(.top, 41)
 
                 AudioBarsView()
-                    .padding(.top, 24)
+                    .padding(.top, 71)
 
                 Text("Stay alert. Stay safe.")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    .soraFont(size: 22, weight: .semiBold)
                     .foregroundStyle(Color("primary"))
-                    .padding(.top, 24)
+                    .padding(.top, 71)
 
                 Text(
                     "We detect important environmental sounds and instantly notify you about potential danger nearby."
                 )
-                .font(.body)
-                .fontWeight(.regular)
-                .foregroundStyle(Color("secondary"))
+                .soraFont(size: 17, weight: .regular)
+                .foregroundStyle(AppColors.textSecondary)
                 .multilineTextAlignment(.center)
-                .frame(width: 297)
-                .padding(.top, 16)
+                .frame(width: 320)
+                .padding(.top, 18)
 
                 Spacer()
 
                 NavigationLink {
-                    AwarenessView()
+                    DisclaimerView()
                 } label: {
-                    Text("LET\u{2019}S ROCK!")
-                        .font(.body)
-                        .fontWeight(.semibold)
+                    Text("Let\u{2019}s Rock!")
+                        .soraFont(size: 17, weight: .semiBold)
                         .foregroundStyle(Color("buttonText"))
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
