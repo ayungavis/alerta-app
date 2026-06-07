@@ -12,12 +12,22 @@ class CoreHapticService {
     private var lastTouchUpTime: Date?
     private var currentTouchDownTime: Date?
 
-    init() {
+    private var lastPlayedAt: [Urgency: Date]
+    private let cooldown: TimeInterval // seconds
+
+    init(
+        cooldown: TimeInterval = 10.0,
+        lastPlayedAt: [Urgency: Date] = [:]
+    ) {
+        self.cooldown = cooldown
+        self.lastPlayedAt = lastPlayedAt
         setupEngine()
     }
 
     private func setupEngine() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
+            return
+        }
         do {
             engine = try CHHapticEngine()
 
@@ -38,7 +48,9 @@ class CoreHapticService {
 
     func playHaptic(events: [CHHapticEvent]) {
         try? previewPlayer?.stop(atTime: 0)
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics, !events.isEmpty else { return }
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics,
+              !events.isEmpty
+        else { return }
 
         do {
             let pattern = try CHHapticPattern(events: events, parameters: [])
@@ -68,13 +80,26 @@ class CoreHapticService {
         guard isRecording else { return }
         currentTouchDownTime = Date()
 
-        let event = CHHapticEvent(eventType: .hapticContinuous, parameters: [
-            CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
-            CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
-        ], relativeTime: 0, duration: 100)
+        let event = CHHapticEvent(
+            eventType: .hapticContinuous,
+            parameters: [
+                CHHapticEventParameter(
+                    parameterID: .hapticIntensity,
+                    value: 1.0
+                ),
+                CHHapticEventParameter(
+                    parameterID: .hapticSharpness,
+                    value: 0.5
+                )
+            ],
+            relativeTime: 0,
+            duration: 100
+        )
 
         do {
-            continuousPlayer = try engine?.makePlayer(with: CHHapticPattern(events: [event], parameters: []))
+            continuousPlayer = try engine?.makePlayer(
+                with: CHHapticPattern(events: [event], parameters: [])
+            )
             try continuousPlayer?.start(atTime: 0)
         } catch {}
     }
@@ -85,11 +110,14 @@ class CoreHapticService {
 
         let upTime = Date()
         let duration = upTime.timeIntervalSince(downTime)
-        let waitTime: TimeInterval = if let lastUp = lastTouchUpTime {
-            downTime.timeIntervalSince(lastUp)
-        } else { 0.0 }
+        let waitTime: TimeInterval =
+            if let lastUp = lastTouchUpTime {
+                downTime.timeIntervalSince(lastUp)
+            } else { 0.0 }
 
-        recordedPattern.append(RecordedStep(duration: duration, waitTime: waitTime))
+        recordedPattern.append(
+            RecordedStep(duration: duration, waitTime: waitTime)
+        )
         lastTouchUpTime = upTime
     }
 
@@ -104,8 +132,14 @@ class CoreHapticService {
             let event = CHHapticEvent(
                 eventType: isTransient ? .hapticTransient : .hapticContinuous,
                 parameters: [
-                    CHHapticEventParameter(parameterID: .hapticIntensity, value: isTransient ? 0.8 : 1.0),
-                    CHHapticEventParameter(parameterID: .hapticSharpness, value: isTransient ? 0.8 : 0.5)
+                    CHHapticEventParameter(
+                        parameterID: .hapticIntensity,
+                        value: isTransient ? 0.8 : 1.0
+                    ),
+                    CHHapticEventParameter(
+                        parameterID: .hapticSharpness,
+                        value: isTransient ? 0.8 : 0.5
+                    )
                 ],
                 relativeTime: currentTime,
                 duration: isTransient ? 0 : step.duration
@@ -121,16 +155,41 @@ class CoreHapticService {
         var t: TimeInterval = 0
 
         func addTransient() {
-            events.append(CHHapticEvent(eventType: .hapticTransient, parameters: [
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.8)
-            ], relativeTime: t))
+            events.append(
+                CHHapticEvent(
+                    eventType: .hapticTransient,
+                    parameters: [
+                        CHHapticEventParameter(
+                            parameterID: .hapticIntensity,
+                            value: 0.8
+                        ),
+                        CHHapticEventParameter(
+                            parameterID: .hapticSharpness,
+                            value: 0.8
+                        )
+                    ],
+                    relativeTime: t
+                )
+            )
         }
         func addContinuous(duration: TimeInterval) {
-            events.append(CHHapticEvent(eventType: .hapticContinuous, parameters: [
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
-            ], relativeTime: t, duration: duration))
+            events.append(
+                CHHapticEvent(
+                    eventType: .hapticContinuous,
+                    parameters: [
+                        CHHapticEventParameter(
+                            parameterID: .hapticIntensity,
+                            value: 1.0
+                        ),
+                        CHHapticEventParameter(
+                            parameterID: .hapticSharpness,
+                            value: 0.5
+                        )
+                    ],
+                    relativeTime: t,
+                    duration: duration
+                )
+            )
         }
 
         switch patternName {
@@ -188,15 +247,27 @@ extension CoreHapticService: HapticFeedbackProviding {
     func prepare() {}
 
     func playHaptic(for urgency: Urgency) {
-        let patternName = switch urgency {
-        case .low: "Steady Alert"
-        case .medium: "Rapid Pulse"
-        case .high: "Heartbeat"
-        case .critical: "Emergency"
+        let patternName =
+            switch urgency {
+            case .low: "Steady Alert"
+            case .medium: "Rapid Pulse"
+            case .high: "Heartbeat"
+            case .critical: "S.O.S."
+            }
+
+        // Skip if same urgency played within cooldown window
+        if let lastPlayed = lastPlayedAt[urgency],
+           Date().timeIntervalSince(lastPlayed) < cooldown
+        {
+            return
         }
 
+        lastPlayedAt[urgency] = Date()
+
         let events = getEvents(forPreset: patternName)
-        playHaptic(events: events)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.playHaptic(events: events)
+        }
     }
 
     func stop() {

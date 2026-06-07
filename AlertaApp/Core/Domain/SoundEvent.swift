@@ -12,7 +12,7 @@ enum SoundEvent: String, CaseIterable, Identifiable {
         rawValue
     }
 
-    var dispalyName: String {
+    var displayName: String {
         switch self {
         case .approachingVehicle:
             "Approaching vehicle"
