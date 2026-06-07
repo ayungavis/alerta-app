@@ -1,7 +1,7 @@
 import Foundation
 
-struct RecordedStep: Identifiable {
-    let id = UUID()
-    let duration: TimeInterval
-    let waitTime: TimeInterval
+struct RecordedStep: Identifiable, Codable, Hashable {
+    var id: UUID = .init()
+    var duration: TimeInterval
+    var waitTime: TimeInterval
 }

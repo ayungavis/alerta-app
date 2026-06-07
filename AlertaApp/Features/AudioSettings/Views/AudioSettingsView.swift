@@ -1,51 +1,76 @@
+//
+//  AudioSettingsView.swift
+//  AlertaApp
+//
+//  Created by Kyky on 07/06/26.
+//
+
 import SwiftUI
 
 struct AudioSettingsView: View {
     @State private var viewModel = AudioSettingsViewModel()
-    var manager: AudioOutputService // Untuk mengetes suara
-    
+    var manager: AudioOutputService
+
     var body: some View {
         ZStack {
             AppColors.backgroundPrimary.ignoresSafeArea()
-            
+
             VStack(spacing: 32) {
-                
-                // MARK: - Volume Slider
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("Voice Volume")
                             .soraFont(size: 16, weight: .bold)
-                            .foregroundColor(AppColors.cyan)
+                            .foregroundColor(AppColors.primary)
                         Spacer()
                         Text("\(Int(viewModel.voiceVolume * 100))%")
                             .soraFont(size: 14, weight: .regular)
                             .foregroundColor(.gray)
                     }
-                    
-                    Slider(value: $viewModel.voiceVolume, in: 0.0...1.0)
-                        .tint(AppColors.primary)
+
+                    Slider(
+                        value: $viewModel.voiceVolume,
+                        in: 0.0 ... 1.0,
+                        minimumValueLabel: Image(systemName: "speaker.fill")
+                            .foregroundColor(.gray)
+                            .frame(width: 30),
+                        maximumValueLabel: Image(systemName: "speaker.wave.3.fill")
+                            .foregroundColor(.gray)
+                            .frame(width: 30)
+                    ) {
+                        Text("Volume")
+                    }
+                    .tint(AppColors.primary)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 24)
-                
-                // MARK: - Speed Slider
+
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("Voice Speed")
                             .soraFont(size: 16, weight: .bold)
-                            .foregroundColor(AppColors.cyan)
+                            .foregroundColor(AppColors.primary)
                         Spacer()
                         Text(speedLabel(viewModel.voiceSpeed))
                             .soraFont(size: 14, weight: .regular)
                             .foregroundColor(.gray)
                     }
-                    
-                    Slider(value: $viewModel.voiceSpeed, in: 0.2...0.8) // Dibatasi agar tidak terlalu lambat/cepat
-                        .tint(AppColors.primary)
+
+                    Slider(
+                        value: $viewModel.voiceSpeed,
+                        in: 0.0 ... 1.0,
+                        minimumValueLabel: Image(systemName: "tortoise.fill")
+                            .foregroundColor(.gray)
+                            .frame(width: 30),
+                        maximumValueLabel: Image(systemName: "hare.fill")
+                            .foregroundColor(.gray)
+                            .frame(width: 30)
+                    ) {
+                        Text("Speed")
+                    }
+                    .tint(AppColors.primary)
                 }
                 .padding(.horizontal, 20)
-                
-                // MARK: - Test Button
+
                 Button(action: {
                     testVoice()
                 }) {
@@ -59,24 +84,22 @@ struct AudioSettingsView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
-                
+
                 Spacer()
             }
         }
         .navigationTitle("Audio Settings")
         .navigationBarTitleDisplayMode(.inline)
     }
-    
-    // Label teks bantu untuk kecepatan
+
     private func speedLabel(_ value: Float) -> String {
         if value < 0.4 { return "Slow" }
         if value > 0.6 { return "Fast" }
         return "Normal"
     }
-    
-    // Memutar suara sementara untuk ngetes
+
     private func testVoice() {
-        manager.stopSpeaking() // Hentikan suara sebelumnya jika ada
+        manager.stopSpeaking()
         manager.playTestVoice(speed: viewModel.voiceSpeed, volume: viewModel.voiceVolume)
     }
 }

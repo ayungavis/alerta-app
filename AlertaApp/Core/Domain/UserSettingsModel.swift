@@ -1,3 +1,10 @@
+//
+//  UserSettingsModel.swift
+//  AlertaApp
+//
+//  Created by Kyky on 07/06/26.
+//
+
 import Foundation
 import SwiftData
 
@@ -6,7 +13,7 @@ final class UserSettingsModel {
     var voiceVolume: Float
     var voiceSpeed: Float
     var hapticSelections: [String: String]
-    
+
     init(
         voiceVolume: Float = 1.0,
         voiceSpeed: Float = 0.5,
@@ -28,15 +35,10 @@ final class CustomPatternModel {
     @Attribute(.unique) var id: UUID
     var name: String
     var steps: [RecordedStep]
-    
+
     init(id: UUID = UUID(), name: String, steps: [RecordedStep]) {
         self.id = id
         self.name = name
         self.steps = steps
     }
-}
-
-struct RecordedStep: Codable, Hashable {
-    var duration: TimeInterval
-    var waitTime: TimeInterval
 }

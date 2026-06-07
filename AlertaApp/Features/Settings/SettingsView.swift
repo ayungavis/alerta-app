@@ -32,9 +32,7 @@ struct SettingsView: View {
                                         SettingsMenuRow(icon: "iphone.gen3.radiowaves.left.and.right", title: "Haptics")
                                     }
 
-                                    NavigationLink(destination: Text("Audio Settings (Coming Soon)")
-                                        .foregroundColor(.white))
-                                    {
+                                    NavigationLink(destination: AudioSettingsView(manager: AudioOutputService())) {
                                         SettingsMenuRow(icon: "airpods.max", title: "Audio")
                                     }
                                 }

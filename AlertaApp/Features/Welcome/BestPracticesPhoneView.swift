@@ -118,7 +118,8 @@ struct BestPracticesPhoneView: View {
                             .padding(.leading, 8)
                         // swiftlint:disable:next line_length
                         Text(
-                            "Keeping your phone in a pocket is convenient, but clothing and body movement may reduce microphone performance. " + "Alerts will still work, though some sounds may be detected less consistently."
+                            "Keeping your phone in a pocket is convenient, but clothing and body movement may reduce microphone performance. " +
+                                "Alerts will still work, though some sounds may be detected less consistently."
                         )
                         .soraFont(size: 13, weight: .regular)
                         .padding(.horizontal, 24)
