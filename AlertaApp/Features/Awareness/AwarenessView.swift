@@ -6,13 +6,14 @@ struct AwarenessView: View {
     @State private var isStopping = false
     @State private var stopTransitionTask: Task<Void, Never>?
 
-    init() {
+    init(historyStore: SessionHistoryStore) {
         _viewModel = State(
             initialValue: AwarenessViewModel(
                 monitoringService: AudioMonitoringService(),
                 permissionProvider: SystemMicrophonePermissionProvider(),
                 audioOutputService: AudioOutputService(),
-                hapticService: Self.makeHapticService()
+                hapticService: Self.makeHapticService(),
+                historyStore: historyStore
             )
         )
     }
@@ -86,7 +87,6 @@ struct AwarenessView: View {
         }
         .onDisappear {
             stopTransitionTask?.cancel()
-            viewModel.stop()
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
@@ -285,6 +285,12 @@ private enum AwarenessPresentationState {
 
 #Preview("Idle") {
     NavigationStack {
-        AwarenessView()
+        AwarenessView(
+            historyStore: SessionHistoryStore(
+                fileURL: FileManager.default.temporaryDirectory
+                    .appendingPathComponent("AlertaAppPreviewSessionHistory.json", isDirectory: false),
+                fileManager: .default
+            )
+        )
     }
 }

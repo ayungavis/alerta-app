@@ -34,21 +34,28 @@ final class AwarenessViewModel {
     private let audioOutputService: any AudioOutputProviding
     private var cancellables = Set<AnyCancellable>()
     private let hapticService: HapticFeedbackProviding
+    private let historyStore: SessionHistoryStore
     private var detectionDebounceTask: Task<Void, Never>?
 
     init(
         monitoringService: any AudioMonitoringProviding,
         permissionProvider: any MicrophonePermissionProviding,
         audioOutputService: any AudioOutputProviding,
-        hapticService: HapticFeedbackProviding
+        hapticService: HapticFeedbackProviding,
+        historyStore: SessionHistoryStore
     ) {
         self.monitoringService = monitoringService
         self.permissionProvider = permissionProvider
         self.audioOutputService = audioOutputService
         self.hapticService = hapticService
+        self.historyStore = historyStore
     }
 
     func start() async {
+        guard canStart else {
+            return
+        }
+
         let hasPermission = await permissionProvider.requestPermission()
 
         guard hasPermission else {
@@ -57,49 +64,14 @@ final class AwarenessViewModel {
 
         do {
             try AudioSessionConfigurator().configureSession()
-
-            monitoringService.calibrationPublisher
-                .receive(on: RunLoop.main)
-                .sink { [weak self] state in
-                    self?.calibrationState = state
-                    switch state {
-                    case .calibrating:
-                        break
-                    case let .complete(profile):
-                        self?.isRunning = true
-                        self?.baselineProfile = profile
-                    case .notStarted:
-                        break
-                    }
-                }
-                .store(in: &cancellables)
-
+            subscribeToCalibrationUpdates()
             try monitoringService.start()
             hapticService.prepare()
-
-            monitoringService.detectionPublisher
-                .receive(on: RunLoop.main)
-                .sink { [weak self] event in
-                    guard let self else { return }
-                    detectionDebounceTask?.cancel()
-
-                    latestEvent = event
-                    latestSpectrum = event.frequencyInfo ?? .zero
-                    latestDirection = event.direction
-                    rawDetectedSound = event.rawIdentifier
-                    playEnabledFeedback(for: event)
-
-                    detectionDebounceTask = Task {
-                        try? await Task.sleep(for: .seconds(4))
-                        guard !Task.isCancelled else { return }
-                        self.latestEvent = nil
-                        self.latestSpectrum = .zero
-                        self.latestDirection = .unknown
-                        self.rawDetectedSound = "No sound detected yet"
-                    }
-                }
-                .store(in: &cancellables)
-        } catch {}
+            historyStore.startSession(at: Date())
+            subscribeToDetectionEvents()
+        } catch {
+            assertionFailure("Failed to start awareness monitoring: \(error)")
+        }
     }
 
     func stop() {
@@ -113,6 +85,9 @@ final class AwarenessViewModel {
         calibrationState = .notStarted
         latestEvent = nil
         latestSpectrum = .zero
+        latestDirection = .unknown
+        rawDetectedSound = "No sound detected yet"
+        historyStore.finishLiveSession(at: Date())
     }
 
     func toggleHapticAlert() {
@@ -133,6 +108,60 @@ final class AwarenessViewModel {
 
     func stopSession() {
         hapticService.stop()
+    }
+
+    private func subscribeToCalibrationUpdates() {
+        monitoringService.calibrationPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] state in
+                self?.handleCalibrationState(state)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func handleCalibrationState(_ state: CalibrationState) {
+        calibrationState = state
+
+        switch state {
+        case .calibrating:
+            break
+        case let .complete(profile):
+            isRunning = true
+            baselineProfile = profile
+        case .notStarted:
+            break
+        }
+    }
+
+    private func subscribeToDetectionEvents() {
+        monitoringService.detectionPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] event in
+                self?.handleDetectionEvent(event)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func handleDetectionEvent(_ event: DetectionEvent) {
+        detectionDebounceTask?.cancel()
+        latestEvent = event
+        latestSpectrum = event.frequencyInfo ?? .zero
+        latestDirection = event.direction
+        rawDetectedSound = event.rawIdentifier
+        historyStore.recordAlert(from: event)
+        playEnabledFeedback(for: event)
+        scheduleLatestDetectionReset()
+    }
+
+    private func scheduleLatestDetectionReset() {
+        detectionDebounceTask = Task {
+            try? await Task.sleep(for: .seconds(4))
+            guard !Task.isCancelled else { return }
+            latestEvent = nil
+            latestSpectrum = .zero
+            latestDirection = .unknown
+            rawDetectedSound = "No sound detected yet"
+        }
     }
 
     private func playEnabledFeedback(for event: DetectionEvent) {

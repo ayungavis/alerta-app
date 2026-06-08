@@ -2,10 +2,11 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab = 0
+    let historyStore: SessionHistoryStore
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            AwarenessView()
+            AwarenessView(historyStore: historyStore)
                 .tabItem {
                     Image(systemName: "waveform")
                     Text("Home")
@@ -31,5 +32,11 @@ struct MainTabView: View {
 }
 
 #Preview {
-    MainTabView()
+    MainTabView(
+        historyStore: SessionHistoryStore(
+            fileURL: FileManager.default.temporaryDirectory
+                .appendingPathComponent("AlertaAppPreviewSessionHistory.json", isDirectory: false),
+            fileManager: .default
+        )
+    )
 }
