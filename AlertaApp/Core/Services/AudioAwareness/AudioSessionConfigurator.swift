@@ -14,7 +14,7 @@ struct AudioSessionConfigurator {
         try session.setCategory(
             .playAndRecord,
             mode: .measurement,
-            options: [.allowBluetoothA2DP, .defaultToSpeaker]
+            options: [.allowBluetoothA2DP, .defaultToSpeaker, .duckOthers]
         )
         try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
 

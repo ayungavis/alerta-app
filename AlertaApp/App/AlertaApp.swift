@@ -9,9 +9,23 @@ import SwiftUI
 
 @main
 struct AlertaApp: App {
+    @State private var router = AppRouter()
+    @State private var sessionHistoryStore = SessionHistoryStore(
+        fileURL: SessionHistoryStore.defaultFileURL(),
+        fileManager: .default
+    )
+
     var body: some Scene {
         WindowGroup {
-            RootView()
+            Group {
+                if router.hasEnteredMainApp {
+                    MainTabView(historyStore: sessionHistoryStore)
+                } else {
+                    WelcomeView()
+                }
+            }
+            .environment(router)
+            .environment(sessionHistoryStore)
         }
     }
 }

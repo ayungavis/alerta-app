@@ -40,5 +40,5 @@ struct AudioBarsView: View {
 #Preview {
     AudioBarsView()
         .padding()
-        .background(Color("backgroundPrimary"))
+        .background(AppColors.backgroundPrimary)
 }

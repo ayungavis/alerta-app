@@ -31,7 +31,7 @@ struct FrequencyBarsView: View {
 
                     Text(band.label)
                         .font(.system(size: 9, weight: .medium))
-                        .foregroundStyle(Color("textSecondary"))
+                        .foregroundStyle(AppColors.textSecondary)
                         .animation(.easeInOut(duration: 0.25), value: band.energy)
                 }
             }
@@ -46,17 +46,17 @@ struct FrequencyBarsView: View {
     }
 
     private func barColor(for normalizedEnergy: Float) -> Color {
-        if normalizedEnergy > 0.7 { return Color("alertMedium") }
-        if normalizedEnergy > 0.4 { return Color("alertLow") }
-        if normalizedEnergy > 0.15 { return Color("primary") }
-        return Color("primaryDark")
+        if normalizedEnergy > 0.7 { return AppColors.alertMedium }
+        if normalizedEnergy > 0.4 { return AppColors.alertLow }
+        if normalizedEnergy > 0.15 { return AppColors.primary }
+        return AppColors.primaryDark
     }
 }
 
 #Preview("Zero energy") {
     FrequencyBarsView(bands: FrequencySpectrum.zero.bands)
         .padding()
-        .background(Color("backgroundPrimary"))
+        .background(AppColors.backgroundPrimary)
 }
 
 #Preview("Active energy") {
@@ -69,5 +69,5 @@ struct FrequencyBarsView: View {
     }
     return FrequencyBarsView(bands: activeBands)
         .padding()
-        .background(Color("backgroundPrimary"))
+        .background(AppColors.backgroundPrimary)
 }
