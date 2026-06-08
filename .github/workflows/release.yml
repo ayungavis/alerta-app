@@ -87,21 +87,26 @@ jobs:
       - name: Run lint checks
         run: scripts/lint.sh
 
+      - name: Bump build number
+        env:
+          BUILD_NUMBER: ${{ steps.build_number.outputs.next }}
+        run: |
+          echo "Bumping build number to ${BUILD_NUMBER}..."
+          xcrun agvtool new-version -all "${BUILD_NUMBER}"
+
       - name: Archive and export
         env:
           KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
           ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           KEY_PATH: ${{ steps.api_key.outputs.path }}
-          BUILD_NUMBER: ${{ steps.build_number.outputs.next }}
         run: |
-          echo "Archiving with build number ${BUILD_NUMBER}..."
+          echo "Archiving with build number $(xcrun agvtool what-version -terse)..."
 
           xcodebuild archive \
             -project AlertaApp.xcodeproj \
             -scheme AlertaApp \
             -configuration Release \
             -archivePath build/AlertaApp.xcarchive \
-            CURRENT_PROJECT_VERSION="${BUILD_NUMBER}" \
             -allowProvisioningUpdates \
             -authenticationKeyIssuerID "${ISSUER_ID}" \
             -authenticationKeyID "${KEY_ID}" \
