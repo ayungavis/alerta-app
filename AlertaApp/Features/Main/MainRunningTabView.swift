@@ -9,9 +9,10 @@ struct MainRunningTabView: View {
                     Text("Home")
                 }
 
-            Text("History Screen")
+            HistoryView()
                 .tabItem {
                     Image(systemName: "clock.arrow.circlepath")
+                    Text("History")
                     Text("History")
                 }
 
