@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @Environment(AppRouter.self) private var router
+
     var body: some View {
         ZStack {
             AppColors.backgroundPrimary
@@ -79,5 +81,6 @@ struct WelcomeView: View {
 #Preview {
     NavigationStack {
         WelcomeView()
+            .environment(AppRouter())
     }
 }
