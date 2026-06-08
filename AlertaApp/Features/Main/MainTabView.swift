@@ -19,7 +19,7 @@ struct MainTabView: View {
                 }
                 .tag(1)
 
-            HapticsSettingsView()
+            SettingsView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     Text("Settings")

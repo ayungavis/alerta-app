@@ -20,13 +20,16 @@ struct AudioMonitoringConfiguration {
     var bufferSize: AVAudioFrameCount = 8192
     var directionThreshold: Float = 0.02
     var calibrationDuration: TimeInterval = 3.0
+    var cooldownAudioAndVibration: TimeInterval = 10.0
 }
 
 final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     private let audioEngine: AVAudioEngine
     private let configuration: AudioMonitoringConfiguration
     private let directionEstimator = DirectionEstimator()
-    private let frequencyAnalyzer = FrequencyAnalyzer()
+    private let frequenprimaryalyzer = Frequenprimaryalyzer()
+    private let audioService: AudioOutputProviding
+    private let hapticService: HapticFeedbackProviding
 
     private let headphoneMotionProvider = HeadphoneMotionProvider()
     private var headYaw: Double?
@@ -34,12 +37,20 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
     private var soundClassifier: SoundAnalysisClassifier?
     private let subject = PassthroughSubject<DetectionEvent, Never>()
-    private let calibrationSubject = PassthroughSubject<CalibrationState, Never>()
+    private let calibrationSubject = PassthroughSubject<
+        CalibrationState, Never
+    >()
 
-    private let directionState = OSAllocatedUnfairLock<SoundDirection>(initialState: .nearby)
-    private let frequencyState = OSAllocatedUnfairLock<FrequencySpectrum>(initialState: .zero)
+    private let directionState = OSAllocatedUnfairLock<SoundDirection>(
+        initialState: .nearby
+    )
+    private let frequencyState = OSAllocatedUnfairLock<FrequencySpectrum>(
+        initialState: .zero
+    )
     private var calibrationBuffers: [AVAudioPCMBuffer] = []
     private var isCalibrating = false
+
+    private(set) var lastPlayedAt: [Urgency: Date] = [:]
 
     private(set) var isRunning: Bool = false
 
@@ -53,10 +64,25 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
     init(
         audioEngine: AVAudioEngine = AVAudioEngine(),
-        configuration: AudioMonitoringConfiguration = AudioMonitoringConfiguration()
+        configuration: AudioMonitoringConfiguration =
+            AudioMonitoringConfiguration(),
+        audioService: AudioOutputProviding? = nil,
+        hapticService: HapticFeedbackProviding? = nil
     ) {
         self.audioEngine = audioEngine
         self.configuration = configuration
+        self.audioService =
+            audioService
+                ?? AudioOutputService(
+                    cooldown: configuration.cooldownAudioAndVibration,
+                    lastPlayedAt: lastPlayedAt
+                )
+        self.hapticService =
+            hapticService
+                ?? CoreHapticService(
+                    cooldown: configuration.cooldownAudioAndVibration,
+                    lastPlayedAt: lastPlayedAt
+                )
         super.init()
         observeInterruptions()
     }
@@ -75,7 +101,10 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
             let frequencyInfo = frequencyState.withLock { $0 }
 
             let detectionCandidates = match.topCandidates.map {
-                DetectionCandidate(identifier: $0.identifier, confidence: $0.confidence)
+                DetectionCandidate(
+                    identifier: $0.identifier,
+                    confidence: $0.confidence
+                )
             }
 
             let event = DetectionEvent(
@@ -91,7 +120,16 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 soundName: "Unknown"
             )
 
-            subject.send(event)
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                do {
+                    try audioService.play(event)
+                    hapticService.playHaptic(for: event.urgency)
+                } catch {
+                    print("Playback failed: \(error)")
+                }
+                subject.send(event)
+            }
         }
 
         if AudioSessionConfigurator().isAirPodsConnected() {
@@ -118,16 +156,23 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
                 threshold: configuration.directionThreshold,
                 headYaw: yaw
             )
-            directionState.withLock { $0 = (direction == .unknown ? .nearby : direction) }
+            directionState.withLock {
+                $0 = (direction == .unknown ? .nearby : direction)
+            }
 
-            let spectrum = frequencyAnalyzer.analyze(buffer: buffer)
+            let spectrum = frequenprimaryalyzer.analyze(buffer: buffer)
             frequencyState.withLock { $0 = spectrum }
 
-            soundClassifier?.analyze(buffer: buffer, at: .init(hostTime: mach_absolute_time()))
+            soundClassifier?.analyze(
+                buffer: buffer,
+                at: .init(hostTime: mach_absolute_time())
+            )
         }
 
         audioEngine.prepare()
         try audioEngine.start()
+
+        hapticService.prepare()
 
         startCalibration()
     }
@@ -147,10 +192,14 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
         isCalibrating = true
         calibrationSubject.send(.calibrating)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + configuration.calibrationDuration) { [weak self] in
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + configuration.calibrationDuration
+        ) { [weak self] in
             guard let self, isCalibrating else { return }
 
-            let profile = frequencyAnalyzer.captureBaseline(from: calibrationBuffers)
+            let profile = frequenprimaryalyzer.captureBaseline(
+                from: calibrationBuffers
+            )
             calibrationBuffers.removeAll()
             isCalibrating = false
             isRunning = true
@@ -179,8 +228,11 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     }
 
     @objc private func handleInterruption(_ notification: Notification) {
-        guard let typeValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
-              let type = AVAudioSession.InterruptionType(rawValue: typeValue)
+        guard
+            let typeValue = notification.userInfo?[
+                AVAudioSessionInterruptionTypeKey
+            ] as? UInt,
+            let type = AVAudioSession.InterruptionType(rawValue: typeValue)
         else { return }
 
         switch type {
@@ -191,10 +243,14 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
         case .ended:
             guard isRunning,
-                  let optionsValue = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt
+                  let optionsValue = notification.userInfo?[
+                      AVAudioSessionInterruptionOptionKey
+                  ] as? UInt
             else { return }
 
-            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            let options = AVAudioSession.InterruptionOptions(
+                rawValue: optionsValue
+            )
             if options.contains(.shouldResume) {
                 try? start()
             }

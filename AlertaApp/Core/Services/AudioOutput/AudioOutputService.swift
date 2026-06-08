@@ -5,56 +5,95 @@
 //  Created by Dimas Nugraha on 03/06/26.
 //
 
-//
-//  AudioOutputService.swift
-//  AlertaApp
-//
-//  Created by Dimas Nugraha on 28/05/26.
-//
-
 import AudioToolbox
 import AVFoundation
 
-/// Concrete audio output service.
-/// Uses `AudioServicesPlaySystemSound` for brief chime feedback and `AVSpeechSynthesizer` for TTS announcements.
-/// - No SwiftUI imports — safe to instantiate in any layer.
-/// - Marked `final` so the compiler can devirtualise calls.
+// Concrete audio output service.
+// Uses `AudioServicesPlaySystemSound` for brief chime feedback and `AVSpeechSynthesizer` for TTS announcements.
+// - No SwiftUI imports — safe to instantiate in any layer.
+// - Marked `final` so the compiler can devirtualise calls.
+
 final class AudioOutputService: NSObject, AudioOutputProviding {
     private let synthesiser: AVSpeechSynthesizer
     private let utteranceBuilder: SpeechUtteranceBuilder
+    private var isSessionActive = false
+
+    private let cooldown: TimeInterval // seconds
+    private var lastPlayedAt: [Urgency: Date]
 
     private(set) var isSpeaking: Bool = false
 
     init(
         synthesiser: AVSpeechSynthesizer = AVSpeechSynthesizer(),
-        utteranceBuilder: SpeechUtteranceBuilder = SpeechUtteranceBuilder()
+        utteranceBuilder: SpeechUtteranceBuilder = SpeechUtteranceBuilder(),
+        cooldown: TimeInterval = 10.0,
+        lastPlayedAt: [Urgency: Date] = [:]
     ) {
         self.synthesiser = synthesiser
         self.utteranceBuilder = utteranceBuilder
+        self.cooldown = cooldown
+        self.lastPlayedAt = lastPlayedAt
         super.init()
         self.synthesiser.delegate = self
     }
 
     func play(_ event: DetectionEvent) throws {
+        try activateAudioSession()
+
+        print("Session category: \(AVAudioSession.sharedInstance().category)")
+        print("Session mode: \(AVAudioSession.sharedInstance().mode)")
+
+        // Skip if same urgency played within cooldown window
+        if let lastPlayed = lastPlayedAt[event.urgency],
+           Date().timeIntervalSince(lastPlayed) < cooldown
+        {
+            return
+        }
+
+        lastPlayedAt[event.urgency] = Date()
         playSystemSound(for: event)
-        speak(event)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.speak(event)
+        }
+    }
+
+    private func playSystemSound(for event: DetectionEvent) {
+        AudioServicesPlaySystemSound(SystemSoundID.id(for: event.urgency))
+    }
+
+    private func speak(_ event: DetectionEvent) {
+        let utterance = utteranceBuilder.build(from: event)
+        synthesiser.speak(utterance) // must be on main thread
     }
 
     func stopSpeaking() {
         synthesiser.stopSpeaking(at: .immediate)
     }
 
-    private func playSystemSound(for event: DetectionEvent) {
-        let soundID = SystemSoundID.id(for: event.urgency)
-        AudioServicesPlaySystemSound(soundID)
-    }
+    private func activateAudioSession() throws {
+        guard !isSessionActive else { return }
+        let session = AVAudioSession.sharedInstance()
 
-    private func speak(_ event: DetectionEvent) {
-        if synthesiser.isSpeaking {
-            synthesiser.stopSpeaking(at: .immediate)
+        if session.category == .playAndRecord {
+            isSessionActive = true
+            return
         }
-        let utterance = utteranceBuilder.build(from: event)
-        synthesiser.speak(utterance)
+
+        do {
+            try session.setCategory(
+                .playAndRecord,
+                mode: .spokenAudio,
+                options: [.duckOthers, .defaultToSpeaker]
+            )
+            try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
+            try session.setActive(true)
+            isSessionActive = true
+        } catch {
+            throw AppError.audioOutput(
+                .sessionActivationFailed(underlying: error)
+            )
+        }
     }
 }
 
