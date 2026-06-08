@@ -17,8 +17,8 @@ enum AppSymbol: String {
         switch self {
         case .critical: AppColors.alertCritical
         case .high: AppColors.alertHigh
-        case .medium: AppColors.alertMedium
-        case .low: AppColors.alertLow
+        case .medium: AppColors.alertHigh
+        case .low: AppColors.alertMedium
         case.record: AppColors.ButtonDestructive.default
         }
     }

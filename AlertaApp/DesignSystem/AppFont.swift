@@ -117,6 +117,18 @@ enum AppFont {
     ) -> Font {
         Font.custom(weight.fontName, size: size)
     }
+
+    static func soraBold(_ size: CGFloat) -> Font {
+        sora(size, weight: .bold)
+    }
+
+    static func soraSemiBold(_ size: CGFloat) -> Font {
+        sora(size, weight: .semiBold)
+    }
+
+    static func soraRegular(_ size: CGFloat) -> Font {
+        sora(size, weight: .regular)
+    }
 }
 
 extension View {

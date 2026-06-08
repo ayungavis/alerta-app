@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HistoryView: View {
-    @State  var viewModel: HistoryViewModel
+    @State  var viewModel: HistoryViewModel = HistoryViewModel()
 
     var body: some View {
         NavigationStack {

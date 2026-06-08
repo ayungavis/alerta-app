@@ -10,7 +10,7 @@ import SwiftUI
 
 /// Severity classification shared across haptic, audio, and visual feedback layers.
 /// Extend this file with domain-specific computed properties rather than scattering urgency logic across service files.
-enum Urgency: Int, Comparable, CaseIterable {
+enum Urgency: Int, Codable, Comparable, CaseIterable {
     case low = 0
     case medium = 1
     case high = 2
