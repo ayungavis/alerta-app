@@ -63,7 +63,7 @@ struct WelcomeView: View {
                 Spacer()
 
                 Button {
-                    router.navigate(to: .mainTab)
+                    router.enterMainApp()
                 } label: {
                     Text("LET\u{2019}S ROCK!")
                         .font(.body)

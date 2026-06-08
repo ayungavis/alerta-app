@@ -1,19 +1,10 @@
 import Observation
-import SwiftUI
 
 @Observable
 final class AppRouter {
-    var path = NavigationPath()
+    var hasEnteredMainApp = false
 
-    func navigate(to route: AppRoute) {
-        path.append(route)
+    func enterMainApp() {
+        hasEnteredMainApp = true
     }
-
-    func popToRoot() {
-        path = NavigationPath()
-    }
-}
-
-enum AppRoute: Hashable {
-    case mainTab
 }

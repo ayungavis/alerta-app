@@ -27,7 +27,6 @@ struct MainTabView: View {
                 .tag(2)
         }
         .tint(AppColors.cyan)
-        .navigationBarBackButtonHidden(true)
     }
 }
 

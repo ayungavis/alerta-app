@@ -13,14 +13,12 @@ struct AlertaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $router.path) {
-                WelcomeView()
-                    .navigationDestination(for: AppRoute.self) { route in
-                        switch route {
-                        case .mainTab:
-                            MainTabView()
-                        }
-                    }
+            Group {
+                if router.hasEnteredMainApp {
+                    MainTabView()
+                } else {
+                    WelcomeView()
+                }
             }
             .environment(router)
         }

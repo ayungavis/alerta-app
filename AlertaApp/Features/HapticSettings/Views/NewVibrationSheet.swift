@@ -16,16 +16,19 @@ struct NewVibrationSheet: View {
                 HStack {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark").font(.title2).foregroundStyle(
-                            AppColors.textPrimary)
+                            AppColors.textPrimary
+                        )
                     }
                     Spacer()
                     Text("New Vibration").font(.title3).fontWeight(.semibold).foregroundStyle(
-                        AppColors.textPrimary)
+                        AppColors.textPrimary
+                    )
                     Spacer()
                     Button(action: {
                         if !manager.recordedPattern.isEmpty, !patternName.isEmpty {
                             let newPattern = CustomPattern(
-                                name: patternName, steps: manager.recordedPattern)
+                                name: patternName, steps: manager.recordedPattern
+                            )
                             viewModel.customPatterns.append(newPattern)
                         }
                         dismiss()
@@ -37,9 +40,9 @@ struct NewVibrationSheet: View {
                             .background(
                                 patternName.isEmpty || manager.recordedPattern.isEmpty
                                     ? AppColors
-                                        .textTertiary
+                                    .textTertiary
                                     : AppColors
-                                        .cyan
+                                    .cyan
                             ).cornerRadius(20)
                     }
                     .disabled(patternName.isEmpty || manager.recordedPattern.isEmpty)
@@ -89,7 +92,8 @@ struct NewVibrationSheet: View {
                                 .font(.system(size: 14, design: .monospaced))
                                 .foregroundStyle(
                                     manager.isRecording
-                                        ? AppColors.systemError : AppColors.textPrimary)
+                                        ? AppColors.systemError : AppColors.textPrimary
+                                )
 
                             Text("TAP OR HOLD ANYWHERE")
                                 .font(.system(size: 14, weight: .bold, design: .monospaced))
@@ -129,7 +133,7 @@ struct NewVibrationSheet: View {
                             manager.recordedPattern.isEmpty
                                 ? AppColors.textTertiary
                                 : AppColors
-                                    .textPrimary
+                                .textPrimary
                         )
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(AppColors.card).cornerRadius(16)
