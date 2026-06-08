@@ -14,12 +14,13 @@ struct AudioSessionConfigurator {
         try session.setCategory(
             .playAndRecord,
             mode: .measurement,
-            options: [.allowBluetoothA2DP, .defaultToSpeaker]
+            options: [.allowBluetoothA2DP, .defaultToSpeaker, .duckOthers]
         )
+        try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
 
         guard let builtInMic = session.availableInputs?.first(where: { $0.portType == .builtInMic })
         else {
-            throw AppError.unavailableFeature(.microphoneUnavailable)
+            throw AppError.microphoneInput(.microphoneUnavailable)
         }
 
         try session.setPreferredInput(builtInMic)

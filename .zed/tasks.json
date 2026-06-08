@@ -1,0 +1,24 @@
+[
+    {
+        "label": "SwiftBuild",
+        "command": "xcede build | xcbeautify",
+        "allow_concurrent_runs": false,
+        "reveal": "no_focus",
+        "hide": "never",
+    },
+    {
+        "label": "SwiftRun",
+        "command": "xcede buildrun | xcbeautify",
+        "allow_concurrent_runs": false,
+        "reveal": "no_focus",
+        "hide": "never",
+    },
+    {
+        "label": "Open current file in Xcode",
+        "command": "xcode-open-file",
+        "args": ["$ZED_FILE"],
+        "use_new_terminal": false,
+        "hide": "always",
+        "reveal": "never",
+    },
+]

@@ -26,7 +26,7 @@ struct DirectionIndicatorView: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color("primaryDark").opacity(0.3), lineWidth: 1.5)
+                .stroke(AppColors.primaryDark.opacity(0.3), lineWidth: 1.5)
                 .frame(width: size, height: size)
 
             ForEach(positions, id: \.0.rawValue) { dir, angle in
@@ -35,8 +35,8 @@ struct DirectionIndicatorView: View {
 
             Circle()
                 .fill(direction == .nearby || direction == .unknown
-                    ? Color("primary")
-                    : Color("primaryDark").opacity(0.4))
+                    ? AppColors.primary
+                    : AppColors.primaryDark.opacity(0.4))
                 .frame(width: 8, height: 8)
         }
         .frame(width: size, height: size)
@@ -45,7 +45,7 @@ struct DirectionIndicatorView: View {
     private func tick(isActive: Bool, angle: Double) -> some View {
         Image(systemName: "arrowtriangle.up.fill")
             .font(.system(size: isActive ? 9 : 6))
-            .foregroundStyle(isActive ? Color("primary") : Color("primaryDark").opacity(0.3))
+            .foregroundStyle(isActive ? AppColors.primary : AppColors.primaryDark.opacity(0.3))
             .rotationEffect(.degrees(angle))
             .offset(
                 x: size / 2 * 0.72 * sin(CGFloat(angle) * .pi / 180),
@@ -57,17 +57,17 @@ struct DirectionIndicatorView: View {
 #Preview("Left") {
     DirectionIndicatorView(direction: .left)
         .padding()
-        .background(Color("backgroundPrimary"))
+        .background(AppColors.backgroundPrimary)
 }
 
 #Preview("Front Right") {
     DirectionIndicatorView(direction: .frontRight)
         .padding()
-        .background(Color("backgroundPrimary"))
+        .background(AppColors.backgroundPrimary)
 }
 
 #Preview("Nearby") {
     DirectionIndicatorView(direction: .nearby)
         .padding()
-        .background(Color("backgroundPrimary"))
+        .background(AppColors.backgroundPrimary)
 }

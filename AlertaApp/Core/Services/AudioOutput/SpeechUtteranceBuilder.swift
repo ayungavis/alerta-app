@@ -32,13 +32,13 @@ struct SpeechUtteranceBuilder {
     private func announcementText(for event: DetectionEvent) -> String {
         switch event.urgency {
         case .critical:
-            "Warning. \(event.soundEvent.dispalyName) detected immediately ahead."
+            "Warning. \(event.soundEvent.displayName) detected immediately ahead."
         case .high:
-            "\(event.soundEvent.dispalyName) detected ahead."
+            "\(event.soundEvent.displayName) detected ahead."
         case .medium:
-            "\(event.soundEvent.dispalyName) nearby."
+            "\(event.soundEvent.displayName) nearby."
         case .low:
-            event.soundEvent.dispalyName
+            event.soundEvent.displayName
         }
     }
 

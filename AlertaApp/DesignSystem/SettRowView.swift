@@ -21,8 +21,8 @@ struct SettRowView: View {
                 .opacity(isSelected ? 1 : 0)
 
             Text(title)
-                .soraFont(size: 17, weight: .regular)
-                .foregroundColor(.white)
+                .soraFont(size: 17)
+                .foregroundStyle(AppColors.textPrimary)
                 .padding(.leading, 12)
 
             Spacer()
@@ -46,8 +46,7 @@ struct SettRowView: View {
             .padding(.trailing, 16)
         }
         .frame(height: 56)
-        .background(AppColors.surfacePrimary)
-        .cornerRadius(12)
+        .background(AppColors.card)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .contentShape(Rectangle())
         .onTapGesture {
@@ -56,4 +55,13 @@ struct SettRowView: View {
             }
         }
     }
+}
+
+#Preview {
+    SettRowView(
+        title: "Gentle pulse",
+        isSelected: true,
+        onSelect: {},
+        onPlay: {}
+    )
 }

@@ -10,7 +10,7 @@ import SwiftUI
 
 /// Severity classification shared across haptic, audio, and visual feedback layers.
 /// Extend this file with domain-specific computed properties rather than scattering urgency logic across service files.
-enum Urgency: Int, Comparable, CaseIterable {
+enum Urgency: Int, Codable, Comparable, CaseIterable {
     case low = 0
     case medium = 1
     case high = 2
@@ -34,6 +34,15 @@ enum Urgency: Int, Comparable, CaseIterable {
 // MARK: - Audio properties for Urgency
 
 extension Urgency {
+    var priority: Int {
+        switch self {
+        case .low: 1
+        case .medium: 2
+        case .high: 3
+        case .critical: 4
+        }
+    }
+
     /// Whether audio output should interrupt other system sounds.
     /// Only `critical` and `high` events warrant interruption.
     var shouldInterruptAudio: Bool {
