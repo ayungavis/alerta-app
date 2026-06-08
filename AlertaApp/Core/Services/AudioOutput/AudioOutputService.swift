@@ -36,30 +36,12 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
     }
 
     func play(_ event: DetectionEvent) throws {
-        try activateAudioSession()
         playSystemSound(for: event)
         speak(event)
     }
 
     func stopSpeaking() {
         synthesiser.stopSpeaking(at: .immediate)
-    }
-
-    private func activateAudioSession() throws {
-        let session = AVAudioSession.sharedInstance()
-        do {
-            // `.playback` keeps audio alive when the ringer switch is muted.
-            try session.setCategory(
-                .playback,
-                mode: .spokenAudio,
-                options: .duckOthers
-            )
-            try session.setActive(true)
-        } catch {
-            throw AppError.audioOutput(
-                .sessionActivationFailed(underlying: error)
-            )
-        }
     }
 
     private func playSystemSound(for event: DetectionEvent) {
