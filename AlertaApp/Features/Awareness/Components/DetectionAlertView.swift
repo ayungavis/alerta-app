@@ -23,7 +23,7 @@ struct DetectionAlertView: View {
                 .frame(height: 48)
 
             HStack(spacing: 0) {
-                sideBars(reversed: false)
+                sideBars(reversed: true)
 
                 Spacer()
 
@@ -33,7 +33,7 @@ struct DetectionAlertView: View {
 
                 Spacer()
 
-                sideBars(reversed: true)
+                sideBars(reversed: false)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 73)
