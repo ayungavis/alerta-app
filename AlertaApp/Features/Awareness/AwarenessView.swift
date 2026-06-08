@@ -101,19 +101,7 @@ struct AwarenessView: View {
         ZStack(alignment: .bottom) {
             AppColors.backgroundPrimary.ignoresSafeArea()
 
-            if viewModel.latestEvent != nil, alertGlowColor != .clear {
-                Circle()
-                    .fill(alertGlowColor)
-                    .frame(width: 320, height: 320)
-                    .blur(radius: 60)
-                    .offset(x: -160, y: -118)
-
-                Circle()
-                    .fill(alertGlowColor)
-                    .frame(width: 320, height: 320)
-                    .blur(radius: 60)
-                    .offset(x: 160, y: -10)
-            }
+            alertGlowLayer
 
             Stack(direction: .vertical, align: .center, spacing: 0, width: .fill, height: .fill) {
                 Text("ALERTA")
@@ -143,6 +131,29 @@ struct AwarenessView: View {
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var alertGlowLayer: some View {
+        GeometryReader { geometry in
+            if viewModel.latestEvent != nil, alertGlowColor != .clear {
+                ZStack(alignment: .topLeading) {
+                    Circle()
+                        .fill(alertGlowColor)
+                        .frame(width: 320, height: 320)
+                        .blur(radius: 60)
+                        .position(x: -11, y: 351)
+
+                    Circle()
+                        .fill(alertGlowColor)
+                        .frame(width: 320, height: 320)
+                        .blur(radius: 60)
+                        .position(x: geometry.size.width + 11, y: 351)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+            }
+        }
     }
 
     @ViewBuilder
