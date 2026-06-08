@@ -45,8 +45,7 @@ struct WelcomeView: View {
 
                 Text("Stay alert. Stay safe.")
                     .soraFont(size: 22, weight: .semiBold)
-                    .foregroundStyle(AppColors.primary)
-                    .padding(.top, 71)
+                    .foregroundStyle(AppColors.textPrimary)
 
                 Text(
                     "We detect important environmental sounds and instantly notify you about potential danger nearby."
