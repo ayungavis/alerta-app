@@ -2,6 +2,10 @@ import SwiftUI
 
 struct DetectionAlertView: View {
     let event: DetectionEvent
+    let isHapticAlertEnabled: Bool
+    let isAudioAlertEnabled: Bool
+    let toggleHapticAlert: () -> Void
+    let toggleAudioAlert: () -> Void
 
     var body: some View {
         Stack(direction: .vertical, align: .center, spacing: 43, width: .fill, height: .fixed(319)) {
@@ -60,12 +64,16 @@ struct DetectionAlertView: View {
             CueBadgeView(
                 icon: "iphone.radiowaves.left.and.right",
                 label: "Haptics",
-                style: .compact
+                style: .compact,
+                isActive: isHapticAlertEnabled,
+                action: toggleHapticAlert
             )
             CueBadgeView(
                 icon: "airpods.max",
                 label: "Sound",
-                style: .compact
+                style: .compact,
+                isActive: isAudioAlertEnabled,
+                action: toggleAudioAlert
             )
         }
         .frame(height: 47)
@@ -167,52 +175,70 @@ struct DetectionAlertView: View {
 }
 
 #Preview("Low") {
-    DetectionAlertView(event: DetectionEvent(
-        id: UUID(),
-        soundEvent: .approachingVehicle,
-        direction: .nearby,
-        confidence: 0.3,
-        urgency: .low,
-        topCandidates: [],
-        rawIdentifier: "Traffic Sound Detected",
-        timestamp: Date(),
-        frequencyInfo: nil,
-        soundName: nil
-    ))
+    DetectionAlertView(
+        event: DetectionEvent(
+            id: UUID(),
+            soundEvent: .approachingVehicle,
+            direction: .nearby,
+            confidence: 0.3,
+            urgency: .low,
+            topCandidates: [],
+            rawIdentifier: "Traffic Sound Detected",
+            timestamp: Date(),
+            frequencyInfo: nil,
+            soundName: nil
+        ),
+        isHapticAlertEnabled: true,
+        isAudioAlertEnabled: true,
+        toggleHapticAlert: {},
+        toggleAudioAlert: {}
+    )
     .padding()
     .background(AppColors.backgroundPrimary)
 }
 
 #Preview("Medium") {
-    DetectionAlertView(event: DetectionEvent(
-        id: UUID(),
-        soundEvent: .bicycleOrScooter,
-        direction: .nearby,
-        confidence: 0.5,
-        urgency: .medium,
-        topCandidates: [],
-        rawIdentifier: "Bicycle Bell Detected",
-        timestamp: Date(),
-        frequencyInfo: nil,
-        soundName: nil
-    ))
+    DetectionAlertView(
+        event: DetectionEvent(
+            id: UUID(),
+            soundEvent: .bicycleOrScooter,
+            direction: .nearby,
+            confidence: 0.5,
+            urgency: .medium,
+            topCandidates: [],
+            rawIdentifier: "Bicycle Bell Detected",
+            timestamp: Date(),
+            frequencyInfo: nil,
+            soundName: nil
+        ),
+        isHapticAlertEnabled: true,
+        isAudioAlertEnabled: false,
+        toggleHapticAlert: {},
+        toggleAudioAlert: {}
+    )
     .padding()
     .background(AppColors.backgroundPrimary)
 }
 
 #Preview("Critical") {
-    DetectionAlertView(event: DetectionEvent(
-        id: UUID(),
-        soundEvent: .siren,
-        direction: .nearby,
-        confidence: 0.9,
-        urgency: .critical,
-        topCandidates: [],
-        rawIdentifier: "Siren Detected",
-        timestamp: Date(),
-        frequencyInfo: nil,
-        soundName: nil
-    ))
+    DetectionAlertView(
+        event: DetectionEvent(
+            id: UUID(),
+            soundEvent: .siren,
+            direction: .nearby,
+            confidence: 0.9,
+            urgency: .critical,
+            topCandidates: [],
+            rawIdentifier: "Siren Detected",
+            timestamp: Date(),
+            frequencyInfo: nil,
+            soundName: nil
+        ),
+        isHapticAlertEnabled: false,
+        isAudioAlertEnabled: true,
+        toggleHapticAlert: {},
+        toggleAudioAlert: {}
+    )
     .padding()
     .background(AppColors.backgroundPrimary)
 }

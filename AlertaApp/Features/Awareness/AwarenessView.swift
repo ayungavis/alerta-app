@@ -11,7 +11,7 @@ struct AwarenessView: View {
             initialValue: AwarenessViewModel(
                 monitoringService: AudioMonitoringService(),
                 permissionProvider: SystemMicrophonePermissionProvider(),
-                feedbackService: CueFeedbackService(),
+                audioOutputService: AudioOutputService(),
                 hapticService: Self.makeHapticService()
             )
         )
@@ -166,9 +166,15 @@ struct AwarenessView: View {
         case .listening:
             monitoringMainContent(mode: .processing, topPadding: 157)
         case let .alert(event):
-            DetectionAlertView(event: event)
-                .padding(.top, 90)
-                .transition(.scale.combined(with: .opacity))
+            DetectionAlertView(
+                event: event,
+                isHapticAlertEnabled: viewModel.isHapticAlertEnabled,
+                isAudioAlertEnabled: viewModel.isAudioAlertEnabled,
+                toggleHapticAlert: viewModel.toggleHapticAlert,
+                toggleAudioAlert: viewModel.toggleAudioAlert
+            )
+            .padding(.top, 90)
+            .transition(.scale.combined(with: .opacity))
         case .stopping:
             AudioBarsVisualizer(bands: FrequencySpectrum.zero.bands, mode: .stopping)
                 .padding(.top, 171)
@@ -193,9 +199,17 @@ struct AwarenessView: View {
                     CueBadgeView(
                         icon: "iphone.radiowaves.left.and.right",
                         label: "Haptics",
-                        style: .labeled
+                        style: .labeled,
+                        isActive: viewModel.isHapticAlertEnabled,
+                        action: viewModel.toggleHapticAlert
                     )
-                    CueBadgeView(icon: "airpods.max", label: "Sound", style: .labeled)
+                    CueBadgeView(
+                        icon: "airpods.max",
+                        label: "Sound",
+                        style: .labeled,
+                        isActive: viewModel.isAudioAlertEnabled,
+                        action: viewModel.toggleAudioAlert
+                    )
                 }
                 .padding(.top, -8)
             }
@@ -211,9 +225,17 @@ struct AwarenessView: View {
                 CueBadgeView(
                     icon: "iphone.radiowaves.left.and.right",
                     label: "Haptics",
-                    style: .compact
+                    style: .compact,
+                    isActive: viewModel.isHapticAlertEnabled,
+                    action: viewModel.toggleHapticAlert
                 )
-                CueBadgeView(icon: "airpods.max", label: "Sound", style: .compact)
+                CueBadgeView(
+                    icon: "airpods.max",
+                    label: "Sound",
+                    style: .compact,
+                    isActive: viewModel.isAudioAlertEnabled,
+                    action: viewModel.toggleAudioAlert
+                )
             }
             .frame(height: 47)
         }

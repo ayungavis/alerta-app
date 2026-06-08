@@ -19,6 +19,9 @@ final class AwarenessViewModel {
     private(set) var baselineProfile: FrequencyProfile?
     private(set) var rawDetectedSound: String = "No sound detected yet"
     private(set) var calibrationState: CalibrationState = .notStarted
+    private(set) var latestOutputError: AppError?
+    private(set) var isHapticAlertEnabled: Bool = true
+    private(set) var isAudioAlertEnabled: Bool = true
 
     var canStart: Bool {
         if isRunning { return false }
@@ -28,7 +31,7 @@ final class AwarenessViewModel {
 
     private let monitoringService: any AudioMonitoringProviding
     private let permissionProvider: any MicrophonePermissionProviding
-    private let feedbackService: CueFeedbackService
+    private let audioOutputService: any AudioOutputProviding
     private var cancellables = Set<AnyCancellable>()
     private let hapticService: HapticFeedbackProviding
     private var detectionDebounceTask: Task<Void, Never>?
@@ -36,12 +39,12 @@ final class AwarenessViewModel {
     init(
         monitoringService: any AudioMonitoringProviding,
         permissionProvider: any MicrophonePermissionProviding,
-        feedbackService: CueFeedbackService,
+        audioOutputService: any AudioOutputProviding,
         hapticService: HapticFeedbackProviding
     ) {
         self.monitoringService = monitoringService
         self.permissionProvider = permissionProvider
-        self.feedbackService = feedbackService
+        self.audioOutputService = audioOutputService
         self.hapticService = hapticService
     }
 
@@ -72,6 +75,7 @@ final class AwarenessViewModel {
                 .store(in: &cancellables)
 
             try monitoringService.start()
+            hapticService.prepare()
 
             monitoringService.detectionPublisher
                 .receive(on: RunLoop.main)
@@ -83,7 +87,7 @@ final class AwarenessViewModel {
                     latestSpectrum = event.frequencyInfo ?? .zero
                     latestDirection = event.direction
                     rawDetectedSound = event.rawIdentifier
-                    feedbackService.playHapticCue(for: event)
+                    playEnabledFeedback(for: event)
 
                     detectionDebounceTask = Task {
                         try? await Task.sleep(for: .seconds(4))
@@ -102,11 +106,21 @@ final class AwarenessViewModel {
         detectionDebounceTask?.cancel()
         cancellables.removeAll()
         monitoringService.stop()
+        hapticService.stop()
+        audioOutputService.stopSpeaking()
         isRunning = false
         baselineProfile = nil
         calibrationState = .notStarted
         latestEvent = nil
         latestSpectrum = .zero
+    }
+
+    func toggleHapticAlert() {
+        isHapticAlertEnabled.toggle()
+    }
+
+    func toggleAudioAlert() {
+        isAudioAlertEnabled.toggle()
     }
 
     func onDetectionEventReceived(_ event: DetectionEvent) {
@@ -119,5 +133,31 @@ final class AwarenessViewModel {
 
     func stopSession() {
         hapticService.stop()
+    }
+
+    private func playEnabledFeedback(for event: DetectionEvent) {
+        if isHapticAlertEnabled {
+            hapticService.playHaptic(for: event.urgency)
+        }
+
+        guard isAudioAlertEnabled else { return }
+
+        do {
+            try audioOutputService.play(event)
+            latestOutputError = nil
+        } catch let appError as AppError {
+            latestOutputError = appError
+            assertionFailure(outputErrorMessage(for: event, error: appError))
+        } catch {
+            let appError = AppError.audioOutput(.sessionActivationFailed(underlying: error))
+            latestOutputError = appError
+            assertionFailure(outputErrorMessage(for: event, error: appError))
+        }
+    }
+
+    private func outputErrorMessage(for event: DetectionEvent, error: AppError) -> String {
+        "Audio output failed for soundEvent=\(event.soundEvent.rawValue), " +
+            "urgency=\(event.urgency.displayName), rawIdentifier=\(event.rawIdentifier), " +
+            "error=\(error.localizedDescription)"
     }
 }
