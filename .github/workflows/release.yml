@@ -63,13 +63,41 @@ jobs:
 
           echo "Querying App Store Connect for latest build..."
 
-          APP_ID=$(curl -sf -H "Authorization: Bearer ${JWT}" \
-            "https://api.appstoreconnect.apple.com/v1/apps?filter[bundleId]=com.ayungavis.alerta&limit=1" \
-            | python3 -c "import json,sys; print(json.load(sys.stdin)['data'][0]['id'])")
+          if ! curl -sf --connect-timeout 10 "https://api.appstoreconnect.apple.com" > /dev/null 2>&1; then
+            echo "WARNING: Cannot reach api.appstoreconnect.apple.com (network issue). Falling back to pbxproj."
+            echo "latest=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-          LATEST=$(curl -sf -H "Authorization: Bearer ${JWT}" \
-            "https://api.appstoreconnect.apple.com/v1/builds?filter[app]=${APP_ID}&sort=-version&limit=1" \
-            | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['data'][0]['attributes']['version']) if d.get('data') else print('0')")
+          APPS_OUT=$(mktemp)
+          APPS_HTTP=$(curl -s -o "${APPS_OUT}" -w '%{http_code}' \
+            -H "Authorization: Bearer ${JWT}" \
+            "https://api.appstoreconnect.apple.com/v1/apps?filter%5BbundleId%5D=com.ayungavis.alerta&limit=1" || echo "000")
+
+          if [ "${APPS_HTTP}" != "200" ]; then
+            echo "WARNING: Could not fetch apps (HTTP ${APPS_HTTP}). Falling back to pbxproj."
+            head -c 500 "${APPS_OUT}" 2>/dev/null || true
+            echo "latest=0" >> "$GITHUB_OUTPUT"
+            echo "Latest TestFlight build: unknown"
+            exit 0
+          fi
+
+          APP_ID=$(python3 -c "import json,sys; d=json.load(sys.stdin); ds=d.get('data',[]); print(ds[0]['id']) if ds else sys.exit(1)" < "${APPS_OUT}")
+
+          BUILDS_OUT=$(mktemp)
+          BUILDS_HTTP=$(curl -s -o "${BUILDS_OUT}" -w '%{http_code}' \
+            -H "Authorization: Bearer ${JWT}" \
+            "https://api.appstoreconnect.apple.com/v1/builds?filter%5Bapp%5D=${APP_ID}&sort=-version&limit=1" || echo "000")
+
+          if [ "${BUILDS_HTTP}" != "200" ]; then
+            echo "WARNING: Could not fetch builds (HTTP ${BUILDS_HTTP}). Falling back to pbxproj."
+            head -c 500 "${BUILDS_OUT}" 2>/dev/null || true
+            echo "latest=0" >> "$GITHUB_OUTPUT"
+            echo "Latest TestFlight build: unknown"
+            exit 0
+          fi
+
+          LATEST=$(python3 -c "import json,sys; d=json.load(sys.stdin); ds=d.get('data',[]); print(ds[0]['attributes']['version']) if ds else print('0')" < "${BUILDS_OUT}")
 
           echo "latest=${LATEST}" >> "$GITHUB_OUTPUT"
           echo "Latest TestFlight build: ${LATEST}"
