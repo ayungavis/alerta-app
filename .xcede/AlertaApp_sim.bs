@@ -1,0 +1,1 @@
+{"fullProductName":"AlertaApp.app","executablePath":"AlertaApp.app\/AlertaApp","builtProductsDir":"\/Users\/ayungavis\/Library\/Developer\/Xcode\/DerivedData\/AlertaApp-bxrvggagyfkoalcfmwyqbtqhzndz\/Build\/Products\/Debug-iphonesimulator"}
