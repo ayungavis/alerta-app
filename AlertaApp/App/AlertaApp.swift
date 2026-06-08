@@ -21,7 +21,9 @@ struct AlertaApp: App {
                 if router.hasEnteredMainApp {
                     MainTabView(historyStore: sessionHistoryStore)
                 } else {
-                    WelcomeView()
+                    NavigationStack {
+                        WelcomeView()
+                    }
                 }
             }
             .environment(router)

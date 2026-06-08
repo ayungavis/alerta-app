@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct BestPracticesPhoneView: View {
+    @Environment(AppRouter.self) private var router
+
     var body: some View {
         ZStack {
             AppColors.backgroundPrimary.ignoresSafeArea()
@@ -130,8 +132,8 @@ struct BestPracticesPhoneView: View {
                     }
                 }
 
-                NavigationLink {
-                    AwarenessView()
+                Button {
+                    router.enterMainApp()
                 } label: {
                     Text("Next")
                         .soraFont(size: 17, weight: .semiBold)
