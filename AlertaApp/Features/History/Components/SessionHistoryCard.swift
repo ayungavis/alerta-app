@@ -65,7 +65,7 @@ struct SessionHistoryCard: View {
                                 .foregroundStyle(
                                     Color(AppColors.alertHigh)
                                 )
-                            Text("\(session.alertCount(for:.critical))")
+                            Text("\(session.alertCount(for:.high))")
                             Text("High")
                         }
                         .soraFont(

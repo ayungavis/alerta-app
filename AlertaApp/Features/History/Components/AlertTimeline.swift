@@ -20,7 +20,7 @@ struct AlertTimeLine: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .frame(height: UIScreen.main.bounds.height * 0.5)
             } else {
-                ForEach(Array(session.alerts.enumerated()), id: \.element.id) {
+                ForEach(Array(session.alerts.reversed().enumerated()), id: \.element.id) {
                     index,
                     alert in
                     HStack(alignment: .center, spacing: AppSpacing.medium) {
