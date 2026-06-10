@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct BestPracticesPhoneView: View {
+    @Environment(AppRouter.self) private var router
+
     var body: some View {
         ZStack {
             AppColors.backgroundPrimary.ignoresSafeArea()
@@ -59,7 +61,9 @@ struct BestPracticesPhoneView: View {
                             .padding(.leading, 8)
                         // swiftlint:disable:next line_length
                         Text(
-                            "Holding your phone provides the clearest access to surrounding sounds and helps " + "Alerta detect important events more reliably. This is the recommended option for the most consistent awareness support."
+                            "Holding your phone provides the clearest access to surrounding sounds and helps "
+                                + "Alerta detect important events more reliably. This is the recommended option "
+                                + "for the most consistent awareness support."
                         )
                         .soraFont(size: 13, weight: .regular)
                         .padding(.horizontal, 24)
@@ -128,8 +132,8 @@ struct BestPracticesPhoneView: View {
                     }
                 }
 
-                NavigationLink {
-                    AwarenessView()
+                Button {
+                    router.enterMainApp()
                 } label: {
                     Text("Next")
                         .soraFont(size: 17, weight: .semiBold)

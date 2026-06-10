@@ -11,7 +11,7 @@ on:
         default: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   release:
@@ -46,18 +46,79 @@ jobs:
       - name: Resolve build tools
         run: scripts/bootstrap.sh
 
+      - name: Fetch latest App Store Connect build number
+        id: asc_build
+        if: github.event_name == 'release' || inputs.bump_build
+        env:
+          KEY_BASE64: ${{ secrets.APPSTORE_API_KEY_BASE64 }}
+          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: |
+          mkdir -p "${HOME}/.appstoreconnect"
+          printf '%s' "${KEY_BASE64}" | base64 -d > "${HOME}/.appstoreconnect/AuthKey_${KEY_ID}.p8"
+          chmod 600 "${HOME}/.appstoreconnect/AuthKey_${KEY_ID}.p8"
+
+          source scripts/appstore-jwt.sh
+          JWT=$(jwt_token "${HOME}/.appstoreconnect/AuthKey_${KEY_ID}.p8" "${KEY_ID}" "${ISSUER_ID}")
+
+          echo "Querying App Store Connect for latest build..."
+
+          if ! curl -sf --connect-timeout 10 "https://api.appstoreconnect.apple.com" > /dev/null 2>&1; then
+            echo "WARNING: Cannot reach api.appstoreconnect.apple.com (network issue). Falling back to pbxproj."
+            echo "latest=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          APPS_OUT=$(mktemp)
+          APPS_HTTP=$(curl -s -o "${APPS_OUT}" -w '%{http_code}' \
+            -H "Authorization: Bearer ${JWT}" \
+            "https://api.appstoreconnect.apple.com/v1/apps?filter%5BbundleId%5D=com.ayungavis.alerta&limit=1" || echo "000")
+
+          if [ "${APPS_HTTP}" != "200" ]; then
+            echo "WARNING: Could not fetch apps (HTTP ${APPS_HTTP}). Falling back to pbxproj."
+            head -c 500 "${APPS_OUT}" 2>/dev/null || true
+            echo "latest=0" >> "$GITHUB_OUTPUT"
+            echo "Latest TestFlight build: unknown"
+            exit 0
+          fi
+
+          APP_ID=$(python3 -c "import json,sys; d=json.load(sys.stdin); ds=d.get('data',[]); print(ds[0]['id']) if ds else sys.exit(1)" < "${APPS_OUT}")
+
+          BUILDS_OUT=$(mktemp)
+          BUILDS_HTTP=$(curl -s -o "${BUILDS_OUT}" -w '%{http_code}' \
+            -H "Authorization: Bearer ${JWT}" \
+            "https://api.appstoreconnect.apple.com/v1/builds?filter%5Bapp%5D=${APP_ID}&sort=-version&limit=1" || echo "000")
+
+          if [ "${BUILDS_HTTP}" != "200" ]; then
+            echo "WARNING: Could not fetch builds (HTTP ${BUILDS_HTTP}). Falling back to pbxproj."
+            head -c 500 "${BUILDS_OUT}" 2>/dev/null || true
+            echo "latest=0" >> "$GITHUB_OUTPUT"
+            echo "Latest TestFlight build: unknown"
+            exit 0
+          fi
+
+          LATEST=$(python3 -c "import json,sys; d=json.load(sys.stdin); ds=d.get('data',[]); print(ds[0]['attributes']['version']) if ds else print('0')" < "${BUILDS_OUT}")
+
+          echo "latest=${LATEST}" >> "$GITHUB_OUTPUT"
+          echo "Latest TestFlight build: ${LATEST}"
+
       - name: Determine build number
         id: build_number
         run: |
-          CURRENT="$(xcrun agvtool what-version -terse 2>/dev/null || echo "1")"
-          if [[ "${{ inputs.bump_build }}" == "true" || "${{ github.event_name }}" == "release" ]]; then
-            NEW=$((CURRENT + 1))
+          PBX_VERSION="$(xcrun agvtool what-version -terse 2>/dev/null || echo "1")"
+          ASC_LATEST="${{ steps.asc_build.outputs.latest }}"
+          ASC_LATEST="${ASC_LATEST:-0}"
+
+          if [ "$ASC_LATEST" -gt "$PBX_VERSION" ]; then
+            BASE="$ASC_LATEST"
           else
-            NEW="$CURRENT"
+            BASE="$PBX_VERSION"
           fi
-          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
-          echo "next=$NEW" >> "$GITHUB_OUTPUT"
-          echo "Build number: $CURRENT → $NEW"
+          NEW=$((BASE + 1))
+
+          echo "current=${BASE}" >> "$GITHUB_OUTPUT"
+          echo "next=${NEW}" >> "$GITHUB_OUTPUT"
+          echo "Build number: pbx=${PBX_VERSION}, asc=${ASC_LATEST} → ${NEW}"
 
       - name: Write and validate App Store Connect API key
         id: api_key
@@ -87,21 +148,26 @@ jobs:
       - name: Run lint checks
         run: scripts/lint.sh
 
+      - name: Bump build number
+        env:
+          BUILD_NUMBER: ${{ steps.build_number.outputs.next }}
+        run: |
+          echo "Bumping build number to ${BUILD_NUMBER}..."
+          xcrun agvtool new-version -all "${BUILD_NUMBER}"
+
       - name: Archive and export
         env:
           KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
           ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           KEY_PATH: ${{ steps.api_key.outputs.path }}
-          BUILD_NUMBER: ${{ steps.build_number.outputs.next }}
         run: |
-          echo "Archiving with build number ${BUILD_NUMBER}..."
+          echo "Archiving with build number $(xcrun agvtool what-version -terse)..."
 
           xcodebuild archive \
             -project AlertaApp.xcodeproj \
             -scheme AlertaApp \
             -configuration Release \
             -archivePath build/AlertaApp.xcarchive \
-            CURRENT_PROJECT_VERSION="${BUILD_NUMBER}" \
             -allowProvisioningUpdates \
             -authenticationKeyIssuerID "${ISSUER_ID}" \
             -authenticationKeyID "${KEY_ID}" \
@@ -130,6 +196,18 @@ jobs:
             --type ios \
             --apiKey "${KEY_ID}" \
             --apiIssuer "${ISSUER_ID}"
+
+      - name: Sync build number to repository
+        if: success()
+        env:
+          BUILD_NUMBER: ${{ steps.build_number.outputs.next }}
+        run: |
+          xcrun agvtool new-version -all "${BUILD_NUMBER}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add AlertaApp.xcodeproj/project.pbxproj
+          git commit -m "ci: bump build number to ${BUILD_NUMBER}"
+          git push origin HEAD:main
 
       - name: Upload build artifacts
         if: always()

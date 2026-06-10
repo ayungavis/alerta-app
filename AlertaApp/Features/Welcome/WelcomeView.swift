@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @Environment(AppRouter.self) private var router
+
     var body: some View {
         ZStack {
-            Color("backgroundPrimary")
+            AppColors.backgroundPrimary
                 .ignoresSafeArea()
 
             Circle()
-                .fill(Color("primary").opacity(0.2))
+                .fill(AppColors.primary.opacity(0.2))
                 .frame(width: 320, height: 320)
                 .blur(radius: 60)
                 .offset(x: -136, y: -200)
 
             Circle()
-                .fill(Color("primaryDark").opacity(0.5))
+                .fill(AppColors.primaryDark.opacity(0.5))
                 .frame(width: 256, height: 256)
                 .blur(radius: 50)
                 .opacity(0.2)
@@ -31,11 +33,11 @@ struct WelcomeView: View {
 
                 Text("Welcome to")
                     .soraFont(size: 20, weight: .regular)
-                    .foregroundStyle(Color("primary"))
+                    .foregroundStyle(AppColors.primary)
 
                 Text("ALERTA")
                     .soraFont(size: 64, weight: .bold)
-                    .foregroundStyle(Color("primary"))
+                    .foregroundStyle(AppColors.primary)
                     .padding(.top, 41)
 
                 AudioBarsView()
@@ -43,8 +45,7 @@ struct WelcomeView: View {
 
                 Text("Stay alert. Stay safe.")
                     .soraFont(size: 22, weight: .semiBold)
-                    .foregroundStyle(Color("primary"))
-                    .padding(.top, 71)
+                    .foregroundStyle(AppColors.textPrimary)
 
                 Text(
                     "We detect important environmental sounds and instantly notify you about potential danger nearby."
@@ -62,10 +63,10 @@ struct WelcomeView: View {
                 } label: {
                     Text("Let\u{2019}s Rock!")
                         .soraFont(size: 17, weight: .semiBold)
-                        .foregroundStyle(Color("buttonText"))
+                        .foregroundStyle(AppColors.buttonText)
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
-                        .background(Color("buttonDefault"))
+                        .background(AppColors.buttonDefault)
                         .clipShape(Capsule())
                 }
                 .padding(.horizontal, 16)
@@ -79,5 +80,6 @@ struct WelcomeView: View {
 #Preview {
     NavigationStack {
         WelcomeView()
+            .environment(AppRouter())
     }
 }

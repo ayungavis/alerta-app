@@ -1,6 +1,6 @@
 import Foundation
 
-enum SoundEvent: String, CaseIterable, Identifiable {
+enum SoundEvent: String, CaseIterable, Codable, Identifiable {
     case approachingVehicle
     case bicycleOrScooter
     case horn
@@ -29,6 +29,23 @@ enum SoundEvent: String, CaseIterable, Identifiable {
         }
     }
 
+    var symbol: AppSymbol {
+        switch self {
+        case .approachingVehicle:
+            .vehicles
+        case .bicycleOrScooter:
+            .bicycleBell
+        case .horn:
+            .horn
+        case .nearbyPersonMovement:
+            .nearbyPerson
+        case .siren:
+            .siren
+        case .generalLoudSound:
+            .unknown
+        }
+    }
+
     var urgency: Urgency {
         switch self {
         case .siren: .critical
@@ -39,7 +56,7 @@ enum SoundEvent: String, CaseIterable, Identifiable {
     }
 }
 
-enum SoundDirection: String {
+enum SoundDirection: String, Codable {
     case frontLeft = "Front Left"
     case frontRight = "Front Right"
     case backLeft = "Back Left"
