@@ -19,7 +19,7 @@ enum AppSymbol: String {
         case .high: AppColors.alertHigh
         case .medium: AppColors.alertMedium
         case .low: AppColors.alertLow
-        case.record: AppColors.ButtonDestructive.default
+        case .record: AppColors.ButtonDestructive.default
         }
     }
 }

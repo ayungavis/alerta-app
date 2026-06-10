@@ -14,4 +14,3 @@ struct SessionEvent: Identifiable {
     let end: Date
     let events: [DetectionEvent]
 }
-

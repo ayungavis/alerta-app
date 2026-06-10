@@ -22,7 +22,6 @@ struct SessionHistoryCard: View {
                 alignment: .center,
                 spacing: AppSpacing.medium
             ) {
-
                 VStack(
                     alignment: .leading,
                     spacing: AppSpacing.small
@@ -58,14 +57,14 @@ struct SessionHistoryCard: View {
                                 .foregroundStyle(
                                     Color(AppColors.alertCritical)
                                 )
-                            Text("\(session.alertCount(for:.critical))")
+                            Text("\(session.alertCount(for: .critical))")
                             Text("Critical")
 
                             Image(.high)
                                 .foregroundStyle(
                                     Color(AppColors.alertHigh)
                                 )
-                            Text("\(session.alertCount(for:.high))")
+                            Text("\(session.alertCount(for: .high))")
                             Text("High")
                         }
                         .soraFont(
@@ -101,7 +100,6 @@ struct SessionHistoryCard: View {
                             color: AppColors.textSecondary
                         )
                 }
-
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
@@ -122,7 +120,6 @@ struct SessionHistoryCard: View {
             .padding(.leading, 3)
         }
         .frame(maxWidth: .infinity)
-
     }
 }
 

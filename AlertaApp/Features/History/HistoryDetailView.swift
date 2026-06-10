@@ -9,11 +9,9 @@ struct HistoryDetailView: View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: AppSpacing.medium) {
-
                     if session.isLive { DateHistoryDetail(session: session) }
 
                     HStack(alignment: .center) {
-
                         if session.isLive {
                             LiveNowHistoryDetail(session: session)
                         } else {
@@ -30,10 +28,8 @@ struct HistoryDetailView: View {
                         .soraFont(.headline)
 
                     AlertTimeLine(session: session)
-
                 }
                 .padding(.horizontal, AppSpacing.medium)
-
             }
 
             .listRowInsets(EdgeInsets())

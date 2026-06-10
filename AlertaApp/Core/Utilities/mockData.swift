@@ -8,7 +8,6 @@
 import Foundation
 
 extension AwarenessSessionRecord {
-
     // MARK: - Static Mocks
 
     static let mockLive: AwarenessSessionRecord = {
@@ -54,11 +53,41 @@ extension AwarenessSessionRecord {
             startedAt: startedAt,
             endedAt: startedAt.addingTimeInterval(1500),
             alerts: [
-                .mock(sessionId: id, soundEvent: .siren, urgency: .critical, direction: .frontLeft, timestamp: startedAt.addingTimeInterval(120)),
-                .mock(sessionId: id, soundEvent: .siren, urgency: .critical, direction: .backLeft, timestamp: startedAt.addingTimeInterval(300)),
-                .mock(sessionId: id, soundEvent: .approachingVehicle, urgency: .high, direction: .frontRight, timestamp: startedAt.addingTimeInterval(500)),
-                .mock(sessionId: id, soundEvent: .nearbyPersonMovement, urgency: .medium, direction: .right, timestamp: startedAt.addingTimeInterval(800)),
-                .mock(sessionId: id, soundEvent: .bicycleOrScooter, urgency: .low, direction: .nearby, timestamp: startedAt.addingTimeInterval(1200)),
+                .mock(
+                    sessionId: id,
+                    soundEvent: .siren,
+                    urgency: .critical,
+                    direction: .frontLeft,
+                    timestamp: startedAt.addingTimeInterval(120)
+                ),
+                .mock(
+                    sessionId: id,
+                    soundEvent: .siren,
+                    urgency: .critical,
+                    direction: .backLeft,
+                    timestamp: startedAt.addingTimeInterval(300)
+                ),
+                .mock(
+                    sessionId: id,
+                    soundEvent: .approachingVehicle,
+                    urgency: .high,
+                    direction: .frontRight,
+                    timestamp: startedAt.addingTimeInterval(500)
+                ),
+                .mock(
+                    sessionId: id,
+                    soundEvent: .nearbyPersonMovement,
+                    urgency: .medium,
+                    direction: .right,
+                    timestamp: startedAt.addingTimeInterval(800)
+                ),
+                .mock(
+                    sessionId: id,
+                    soundEvent: .bicycleOrScooter,
+                    urgency: .low,
+                    direction: .nearby,
+                    timestamp: startedAt.addingTimeInterval(1200)
+                )
             ]
         )
     }()
@@ -89,7 +118,6 @@ extension AwarenessSessionRecord {
 }
 
 extension AwarenessAlertRecord {
-
     // MARK: - Static Mocks
 
     static let mockLow = AwarenessAlertRecord(
@@ -184,7 +212,7 @@ extension AwarenessAlertRecord {
 
     static func mockList(sessionId: UUID, count: Int = 5) -> [AwarenessAlertRecord] {
         let urgencies: [Urgency] = [.low, .medium, .high, .critical]
-        return (0..<count).map { index in
+        return (0 ..< count).map { index in
             let urgency = urgencies[index % urgencies.count]
             let event = SoundEvent.allCases.first { $0.urgency == urgency } ?? .generalLoudSound
             return mock(
@@ -198,7 +226,6 @@ extension AwarenessAlertRecord {
 }
 
 extension DetectionEvent {
-
     // MARK: - Helpers
 
     private static func makeSpectrum(
@@ -232,7 +259,7 @@ extension DetectionEvent {
         urgency: .low,
         topCandidates: [
             DetectionCandidate(identifier: "bicycle", confidence: 0.61),
-            DetectionCandidate(identifier: "scooter", confidence: 0.22),
+            DetectionCandidate(identifier: "scooter", confidence: 0.22)
         ],
         rawIdentifier: "bicycle",
         timestamp: .now,
@@ -253,7 +280,7 @@ extension DetectionEvent {
         urgency: .medium,
         topCandidates: [
             DetectionCandidate(identifier: "dog_bark", confidence: 0.74),
-            DetectionCandidate(identifier: "animal", confidence: 0.18),
+            DetectionCandidate(identifier: "animal", confidence: 0.18)
         ],
         rawIdentifier: "dog_bark",
         timestamp: .now,
@@ -277,7 +304,7 @@ extension DetectionEvent {
                 identifier: "approaching_vehicle",
                 confidence: 0.88
             ),
-            DetectionCandidate(identifier: "car_engine", confidence: 0.09),
+            DetectionCandidate(identifier: "car_engine", confidence: 0.09)
         ],
         rawIdentifier: "approaching_vehicle",
         timestamp: .now,
@@ -299,7 +326,7 @@ extension DetectionEvent {
         urgency: .critical,
         topCandidates: [
             DetectionCandidate(identifier: "siren", confidence: 0.97),
-            DetectionCandidate(identifier: "horn", confidence: 0.02),
+            DetectionCandidate(identifier: "horn", confidence: 0.02)
         ],
         rawIdentifier: "siren",
         timestamp: .now,
@@ -352,7 +379,7 @@ extension DetectionEvent {
                 identifier: "approaching_vehicle",
                 confidence: 0.83
             ),
-            DetectionCandidate(identifier: "truck", confidence: 0.10),
+            DetectionCandidate(identifier: "truck", confidence: 0.10)
         ],
         rawIdentifier: "large_articulated_lorry",
         timestamp: .now,
@@ -422,7 +449,7 @@ extension DetectionEvent {
         Urgency.allCases.map { urgency in
             let event =
                 SoundEvent.allCases.first { $0.urgency == urgency }
-                ?? .generalLoudSound
+                    ?? .generalLoudSound
             return mock(soundEvent: event, urgency: urgency)
         }
     }
@@ -432,7 +459,7 @@ extension DetectionEvent {
     static var allDirections: [DetectionEvent] {
         [
             .frontLeft, .frontRight, .backLeft, .backRight, .left, .right,
-            .nearby, .unknown,
+            .nearby, .unknown
         ].map { direction in
             mock(
                 soundEvent: .approachingVehicle,

@@ -1,10 +1,10 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HistoryView: View {
     @Environment(\.modelContext) private var modelContext
-    @State var viewModel: HistoryViewModel =  HistoryViewModel()
-    
+    @State var viewModel: HistoryViewModel = .init()
+
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -63,10 +63,8 @@ struct HistoryView: View {
                         .font: UIFont(name: "Sora-Bold", size: 34)
                             ?? .systemFont(ofSize: 34, weight: .bold)
                     ] as [NSAttributedString.Key: Any]
-                
             }
         }
-
     }
 }
 

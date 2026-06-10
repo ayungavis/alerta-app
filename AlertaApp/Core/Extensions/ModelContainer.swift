@@ -5,8 +5,8 @@
 //  Created by Dimas Nugraha on 10/06/26.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 extension ModelContainer {
     static func appContainer() -> ModelContainer {

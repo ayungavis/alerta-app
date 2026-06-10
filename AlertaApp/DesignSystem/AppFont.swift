@@ -25,65 +25,65 @@ enum SoraWeight {
 }
 
 enum AppTextStyle {
-    case largeTitle  // 34/42
-    case title1  // 28/36
-    case title2  // 22/30
-    case title3  // 20/28
-    case headline  // 17/24
-    case body  // 17/24
-    case callout  // 16/23
-    case subheadline  // 15/22
-    case footnote  // 13/18
-    case caption1  // 12/16
-    case caption2  // 11/14
+    case largeTitle // 34/42
+    case title1 // 28/36
+    case title2 // 22/30
+    case title3 // 20/28
+    case headline // 17/24
+    case body // 17/24
+    case callout // 16/23
+    case subheadline // 15/22
+    case footnote // 13/18
+    case caption1 // 12/16
+    case caption2 // 11/14
 
     var size: CGFloat {
         switch self {
-        case .largeTitle: return 34
-        case .title1: return 28
-        case .title2: return 22
-        case .title3: return 20
-        case .headline: return 17
-        case .body: return 17
-        case .callout: return 16
-        case .subheadline: return 15
-        case .footnote: return 13
-        case .caption1: return 12
-        case .caption2: return 11
+        case .largeTitle: 34
+        case .title1: 28
+        case .title2: 22
+        case .title3: 20
+        case .headline: 17
+        case .body: 17
+        case .callout: 16
+        case .subheadline: 15
+        case .footnote: 13
+        case .caption1: 12
+        case .caption2: 11
         }
     }
 
     var lineHeight: CGFloat {
         switch self {
-        case .largeTitle: return 42
-        case .title1: return 36
-        case .title2: return 30
-        case .title3: return 28
-        case .headline: return 24
-        case .body: return 24
-        case .callout: return 23
-        case .subheadline: return 22
-        case .footnote: return 18
-        case .caption1: return 16
-        case .caption2: return 14
+        case .largeTitle: 42
+        case .title1: 36
+        case .title2: 30
+        case .title3: 28
+        case .headline: 24
+        case .body: 24
+        case .callout: 23
+        case .subheadline: 22
+        case .footnote: 18
+        case .caption1: 16
+        case .caption2: 14
         }
     }
 
     var regularWeight: SoraWeight {
         switch self {
-        case .largeTitle, .title1, .headline: return .semiBold
+        case .largeTitle, .title1, .headline: .semiBold
         case .title2, .title3, .body, .callout,
-            .subheadline, .footnote, .caption1, .caption2:
-            return .regular
+             .subheadline, .footnote, .caption1, .caption2:
+            .regular
         }
     }
 
     var emphasizedWeight: SoraWeight {
         switch self {
-        case .largeTitle, .title1, .headline: return .bold
+        case .largeTitle, .title1, .headline: .bold
         case .title2, .title3, .body, .callout,
-            .subheadline, .footnote, .caption1, .caption2:
-            return .semiBold
+             .subheadline, .footnote, .caption1, .caption2:
+            .semiBold
         }
     }
 

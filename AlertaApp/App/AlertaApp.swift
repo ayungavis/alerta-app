@@ -11,8 +11,8 @@ import SwiftUI
 @main
 struct AlertaApp: App {
     @State private var router = AppRouter()
-    let container: ModelContainer = ModelContainer.appContainer()
-    
+    let container: ModelContainer = .appContainer()
+
     //    @State private var sessionHistoryStore = SessionHistoryStore(
     //        fileURL: SessionHistoryStore.defaultFileURL(),
     //        fileManager: .default

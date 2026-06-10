@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DateHistoryDetail: View {
     let session: AwarenessSessionRecord
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.small) {
             Text("\(session.startedAt.longDate)")
@@ -30,4 +30,3 @@ struct DateHistoryDetail: View {
             .preferredColorScheme(.dark)
     }
 }
-

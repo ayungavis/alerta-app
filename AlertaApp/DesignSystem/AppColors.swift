@@ -42,16 +42,17 @@ enum AppColors {
         static let disabled: Color = .init(.buttonPrimaryDisabled)
         static let text: Color = .init(.buttonPrimaryText)
     }
-    //
-    //    enum ButtonSecondary {
-    //        static let `default`: Color = .init(.buttonSecondaryDefault)
-    //        static let pressed: Color   = .init(.buttonSecondaryPressed)
-    //        static let disabled: Color  = .init(.buttonSecondaryDisabled)
-    //    }
-    //
-        enum ButtonDestructive {
-            static let `default`: Color = .init(.buttonDestructiveDefault)
-            static let pressed: Color   = .init(.buttonDestructivePressed)
-            static let disabled: Color  = .init(.buttonDestructiveDisabled)
-        }
+
+    ///
+    ///    enum ButtonSecondary {
+    ///        static let `default`: Color = .init(.buttonSecondaryDefault)
+    ///        static let pressed: Color   = .init(.buttonSecondaryPressed)
+    ///        static let disabled: Color  = .init(.buttonSecondaryDisabled)
+    ///    }
+    ///
+    enum ButtonDestructive {
+        static let `default`: Color = .init(.buttonDestructiveDefault)
+        static let pressed: Color = .init(.buttonDestructivePressed)
+        static let disabled: Color = .init(.buttonDestructiveDisabled)
+    }
 }

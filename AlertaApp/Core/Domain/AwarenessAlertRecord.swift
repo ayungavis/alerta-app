@@ -21,7 +21,18 @@ final class AwarenessAlertRecord {
     var soundName: String?
     var soundLevelDecibels: Float?
 
-    init(id: UUID = UUID(), sessionId: UUID, soundEvent: SoundEvent, urgency: Urgency, direction: SoundDirection, confidence: Float, rawIdentifier: String, timestamp: Date, soundName: String? = nil, soundLevelDecibels: Float? = nil) {
+    init(
+        id: UUID = UUID(),
+        sessionId: UUID,
+        soundEvent: SoundEvent,
+        urgency: Urgency,
+        direction: SoundDirection,
+        confidence: Float,
+        rawIdentifier: String,
+        timestamp: Date,
+        soundName: String? = nil,
+        soundLevelDecibels: Float? = nil
+    ) {
         self.id = id
         self.sessionId = sessionId
         self.soundEvent = soundEvent

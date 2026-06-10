@@ -8,14 +8,13 @@
 import Foundation
 
 extension Date {
-
     var shortDate: String {
         formatted(.dateTime.day().month(.abbreviated).year())
     }
 
     var longDate: String {
         let calendar = Calendar.current
-        let formatted = self.formatted(
+        let formatted = formatted(
             .dateTime.day().month(.abbreviated).year()
         )
 
@@ -28,7 +27,7 @@ extension Date {
             return "\(day), \(formatted)"
         }
     }
-    
+
     var sectionHeader: String {
         let cal = Calendar.current
         if cal.isDateInToday(self) { return "Today" }
@@ -57,17 +56,17 @@ extension Date {
 
         let years = total / 31_536_000
         let months = (total % 31_536_000) / 2_592_000
-        let days = (total % 2_592_000) / 86_400
-        let hours = (total % 86_400) / 3_600
-        let minutes = (total % 3_600) / 60
+        let days = (total % 2_592_000) / 86400
+        let hours = (total % 86400) / 3600
+        let minutes = (total % 3600) / 60
 
         if years > 0 { return "\(years)y" }
         if months > 0 { return "\(months)mo" }
         if days > 0 { return "\(days)d" }
-        if hours > 0 && minutes > 0 { return "\(hours)h \(minutes)m" }
-        if hours > 0 && minutes == 0 { return "\(hours)h" }
+        if hours > 0, minutes > 0 { return "\(hours)h \(minutes)m" }
+        if hours > 0, minutes == 0 { return "\(hours)h" }
         if minutes > 0 { return "\(minutes) min" }
-        if live {return "\(total)s"}
+        if live { return "\(total)s" }
         return "Just Now"
     }
 }

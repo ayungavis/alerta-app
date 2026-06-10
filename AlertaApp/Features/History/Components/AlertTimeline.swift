@@ -24,7 +24,6 @@ struct AlertTimeLine: View {
                     index,
                     alert in
                     HStack(alignment: .center, spacing: AppSpacing.medium) {
-
                         // Timestamp
                         VStack(alignment: .leading, spacing: 0) {
                             Text(alert.timestamp.shortTime)
@@ -38,7 +37,6 @@ struct AlertTimeLine: View {
                         // Dot and line
                         ZStack(alignment: .center) {
                             VStack(spacing: 0) {
-
                                 Rectangle()
                                     .fill(
                                         index == 0

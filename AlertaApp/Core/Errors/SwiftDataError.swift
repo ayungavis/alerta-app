@@ -43,18 +43,14 @@ extension AppError {
 extension AppError.DataError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .containerInitializationFailed(let underlyingError):
-            return
-                "Failed to set up the local database. \(underlyingError.localizedDescription)"
-        case .fetchFailed(let underlyingError):
-            return
-                "Could not retrieve saved items. \(underlyingError.localizedDescription)"
-        case .saveFailed(let underlyingError):
-            return
-                "Could not save your changes. Your disk might be full. \(underlyingError.localizedDescription)"
-        case .unknown(let underlyingError):
-            return
-                "An unexpected database error occurred. \(underlyingError.localizedDescription)"
+        case let .containerInitializationFailed(underlyingError):
+            "Failed to set up the local database. \(underlyingError.localizedDescription)"
+        case let .fetchFailed(underlyingError):
+            "Could not retrieve saved items. \(underlyingError.localizedDescription)"
+        case let .saveFailed(underlyingError):
+            "Could not save your changes. Your disk might be full. \(underlyingError.localizedDescription)"
+        case let .unknown(underlyingError):
+            "An unexpected database error occurred. \(underlyingError.localizedDescription)"
         }
     }
 }

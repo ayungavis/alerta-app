@@ -18,7 +18,7 @@ struct AlertNumbersHistoryDetail: View {
                         (.critical, "Critical", session.alertCount(for: .critical)),
                         (.high, "High", session.alertCount(for: .high)),
                         (.medium, "Medium", session.alertCount(for: .medium)),
-                        (.low, "Low", session.alertCount(for: .low)),
+                        (.low, "Low", session.alertCount(for: .low))
                     ]
 
                     ForEach(priorities, id: \.1) {

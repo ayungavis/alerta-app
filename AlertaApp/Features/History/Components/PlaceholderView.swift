@@ -1,5 +1,5 @@
 //
-//  EmptyView.swift
+//  PlaceholderView.swift
 //  AlertaApp
 //
 //  Created by Dimas Nugraha on 10/06/26.
@@ -17,7 +17,7 @@ enum PlaceholderStyle {
         case .timeline: "waveform"
         }
     }
-    
+
     var systemImageSize: Font {
         switch self {
         case .main: Font.system(.largeTitle, weight: .semibold)
@@ -31,7 +31,7 @@ enum PlaceholderStyle {
         case .timeline: "No alerts detected yet"
         }
     }
-    
+
     var titleSize: AppTextStyle {
         switch self {
         case .main: .title3
@@ -45,7 +45,7 @@ enum PlaceholderStyle {
         case .timeline: "We're actively monitoring your surroundings alerts will appear here when important sounds are detected"
         }
     }
-    
+
     var subtitleSize: AppTextStyle {
         switch self {
         case .main: .body
@@ -56,9 +56,9 @@ enum PlaceholderStyle {
 
 struct PlaceholderView: View {
     var style: PlaceholderStyle = .main
-    
+
     var body: some View {
-        VStack{
+        VStack {
             VStack(alignment: .center, spacing: 8) {
                 VStack(alignment: .center, spacing: AppSpacing.medium) {
                     Image(systemName: style.systemImage)
@@ -68,7 +68,7 @@ struct PlaceholderView: View {
                         .background(AppColors.surfacePrimary)
                         .clipShape(Circle())
                 }
-                
+
                 Text(style.title)
                     .soraFont(style.titleSize, emphasized: true)
                 Text(style.subtitle)

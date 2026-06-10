@@ -15,8 +15,8 @@ final class SessionHistoryStore {
         let completedSessions: [AwarenessSessionRecord]
     }
 
-//    private let fileURL: URL
-//    private let fileManager: FileManager
+    ///    private let fileURL: URL
+    ///    private let fileManager: FileManager
     private let modelContext: ModelContext
 
     private(set) var liveSession: AwarenessSessionRecord?
@@ -25,7 +25,7 @@ final class SessionHistoryStore {
 
     init(modelContext: ModelContext
 //         , fileURL: URL, fileManager: FileManager
-    ){
+    ) {
         self.modelContext = modelContext
 //        self.fileURL = fileURL
 //        self.fileManager = fileManager
@@ -47,8 +47,8 @@ final class SessionHistoryStore {
 
         return
             applicationSupportURL
-            .appendingPathComponent("SessionHistory", isDirectory: true)
-            .appendingPathComponent("sessions.json", isDirectory: false)
+                .appendingPathComponent("SessionHistory", isDirectory: true)
+                .appendingPathComponent("sessions.json", isDirectory: false)
     }
 
     func startSession(at startedAt: Date) {
@@ -167,11 +167,11 @@ final class SessionHistoryStore {
         let hour = Calendar.current.component(.hour, from: date)
 
         switch hour {
-        case 5..<12:
+        case 5 ..< 12:
             return "Morning Session"
-        case 12..<17:
+        case 12 ..< 17:
             return "Afternoon Session"
-        case 17..<21:
+        case 17 ..< 21:
             return "Evening Session"
         default:
             return "Night Session"

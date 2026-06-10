@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LiveNowHistoryDetail: View {
     let session: AwarenessSessionRecord
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.small) {
             HStack(alignment: .center, spacing: AppSpacing.medium) {

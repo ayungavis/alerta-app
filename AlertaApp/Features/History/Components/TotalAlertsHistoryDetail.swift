@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TotalAlertsHistoryDetail: View {
     let session: AwarenessSessionRecord
-    
+
     var body: some View {
         VStack(alignment: .center, spacing: AppSpacing.small) {
             HStack(alignment: .center, spacing: AppSpacing.small) {
@@ -54,4 +54,3 @@ struct TotalAlertsHistoryDetail: View {
             .preferredColorScheme(.dark)
     }
 }
-

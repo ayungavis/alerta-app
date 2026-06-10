@@ -22,7 +22,6 @@ struct LiveNowSessionHistory: View {
                 alignment: .center,
                 spacing: AppSpacing.medium
             ) {
-
                 VStack(
                     alignment: .leading,
                     spacing: AppSpacing.small
@@ -53,7 +52,7 @@ struct LiveNowSessionHistory: View {
                                     .foregroundStyle(
                                         Color(AppColors.alertCritical)
                                     )
-                                Text("\(session.alertCount(for:.critical))")
+                                Text("\(session.alertCount(for: .critical))")
                                 Text("Critical")
                             }
                             HStack(spacing: AppSpacing.extraSmall) {
@@ -61,7 +60,7 @@ struct LiveNowSessionHistory: View {
                                     .foregroundStyle(
                                         Color(AppColors.alertHigh)
                                     )
-                                Text("\(session.alertCount(for:.critical))")
+                                Text("\(session.alertCount(for: .critical))")
                                 Text("High")
                             }
                         }
@@ -134,7 +133,6 @@ struct LiveNowSessionHistory: View {
                             color: AppColors.textSecondary
                         )
                 }
-
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
@@ -155,7 +153,6 @@ struct LiveNowSessionHistory: View {
             .padding(.leading, 3)
         }
         .frame(maxWidth: .infinity)
-
     }
 }
 
