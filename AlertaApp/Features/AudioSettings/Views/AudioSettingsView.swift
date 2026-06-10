@@ -19,8 +19,7 @@ struct AudioSettingsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("Voice Volume")
-                            .soraFont(size: 16, weight: .bold)
-                            .foregroundColor(AppColors.primary)
+                            .soraFont(.headline, emphasized: true, color: AppColors.secondary)
                         Spacer()
                         Text("\(Int(viewModel.voiceVolume * 100))%")
                             .soraFont(size: 14, weight: .regular)
@@ -41,14 +40,11 @@ struct AudioSettingsView: View {
                     }
                     .tint(AppColors.primary)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 24)
 
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("Voice Speed")
-                            .soraFont(size: 16, weight: .bold)
-                            .foregroundColor(AppColors.primary)
+                            .soraFont(.headline, emphasized: true, color: AppColors.secondary)
                         Spacer()
                         Text(speedLabel(viewModel.voiceSpeed))
                             .soraFont(size: 14, weight: .regular)
@@ -69,26 +65,28 @@ struct AudioSettingsView: View {
                     }
                     .tint(AppColors.primary)
                 }
-                .padding(.horizontal, 20)
 
                 Button(action: {
                     testVoice()
                 }) {
                     Text("Test Voice Settings")
-                        .soraFont(size: 16, weight: .semiBold)
-                        .foregroundColor(.black)
+                        .soraFont(.body, color: AppColors.buttonText)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 54)
-                        .background(AppColors.primary)
-                        .cornerRadius(30)
+                        .padding(16)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
+                .background(AppColors.primary)
+                .cornerRadius(30)
 
                 Spacer()
             }
+            .padding(AppSpacing.large)
         }
-        .navigationTitle("Audio Settings")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Audio Settings")
+                    .soraFont(.title2, emphasized: true)
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
     }
 

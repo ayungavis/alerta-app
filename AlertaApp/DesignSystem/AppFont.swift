@@ -112,8 +112,7 @@ struct SoraTextModifier: ViewModifier {
 enum AppFont {
     static func sora(
         _ size: CGFloat,
-        weight: SoraWeight = .regular,
-        color: Color = .primary
+        weight: SoraWeight = .regular
     ) -> Font {
         Font.custom(weight.fontName, size: size)
     }
@@ -137,7 +136,8 @@ extension View {
         weight: SoraWeight = .regular,
         color: Color = .primary
     ) -> some View {
-        font(AppFont.sora(size, weight: weight, color: color))
+        font(AppFont.sora(size, weight: weight))
+            .foregroundStyle(color)
     }
 
     func soraFont(
