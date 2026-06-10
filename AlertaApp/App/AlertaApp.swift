@@ -5,27 +5,35 @@
 //  Created by Wahyu Kurniawan on 20/05/26.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
 struct AlertaApp: App {
     @State private var router = AppRouter()
-    @State private var sessionHistoryStore = SessionHistoryStore(
-        fileURL: SessionHistoryStore.defaultFileURL(),
-        fileManager: .default
-    )
+    let container: ModelContainer = ModelContainer.appContainer()
+    
+    //    @State private var sessionHistoryStore = SessionHistoryStore(
+    //        fileURL: SessionHistoryStore.defaultFileURL(),
+    //        fileManager: .default
+    //    )
 
     var body: some Scene {
         WindowGroup {
             Group {
                 if router.hasEnteredMainApp {
-                    MainTabView(historyStore: sessionHistoryStore)
+                    MainTabView(
+                        historyStore: SessionHistoryStore(
+                            modelContext: container.mainContext
+                        )
+                    )
                 } else {
                     WelcomeView()
                 }
             }
             .environment(router)
-            .environment(sessionHistoryStore)
+            //            .environment(sessionHistoryStore)
         }
+        .modelContainer(container)
     }
 }

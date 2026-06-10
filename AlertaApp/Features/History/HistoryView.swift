@@ -1,8 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct HistoryView: View {
-    @State var viewModel: HistoryViewModel = HistoryViewModel()
-
+    @Environment(\.modelContext) private var modelContext
+    @State var viewModel: HistoryViewModel =  HistoryViewModel()
+    
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -54,12 +56,14 @@ struct HistoryView: View {
             }
             .navigationTitle("Session History")
             .navigationBarTitleDisplayMode(.large)
-            .onAppear {
+            .task {
+                viewModel.loadSessions(context: modelContext)
                 UINavigationBar.appearance().largeTitleTextAttributes =
                     [
                         .font: UIFont(name: "Sora-Bold", size: 34)
                             ?? .systemFont(ofSize: 34, weight: .bold)
                     ] as [NSAttributedString.Key: Any]
+                
             }
         }
 

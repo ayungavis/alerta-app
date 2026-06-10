@@ -1,4 +1,5 @@
 import CoreHaptics
+import SwiftData
 import SwiftUI
 
 struct AwarenessView: View {
@@ -284,13 +285,10 @@ private enum AwarenessPresentationState {
 }
 
 #Preview("Idle") {
+    let container = ModelContainer.appContainer()
+    let store = SessionHistoryStore(modelContext: container.mainContext)
+
     NavigationStack {
-        AwarenessView(
-            historyStore: SessionHistoryStore(
-                fileURL: FileManager.default.temporaryDirectory
-                    .appendingPathComponent("AlertaAppPreviewSessionHistory.json", isDirectory: false),
-                fileManager: .default
-            )
-        )
+        AwarenessView(historyStore: store)
     }
 }
