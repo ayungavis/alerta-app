@@ -95,7 +95,7 @@ struct LiveNowSessionHistory: View {
                             VStack(alignment: .center) {
                                 TimelineView(.periodic(from: .now, by: 1)) {
                                     _ in
-                                    Text(session.startedAt.duration(to: .now))
+                                    Text(session.startedAt.duration(to: .now, live: true))
                                         .soraFont(
                                             .title1,
                                             emphasized: true

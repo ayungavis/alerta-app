@@ -31,7 +31,7 @@ struct LiveNowHistoryDetail: View {
                         .soraFont(.caption2, color: .textSecondary)
 
                     TimelineView(.periodic(from: .now, by: 1)) { _ in
-                        Text("\(session.startedAt.duration(to: .now))")
+                        Text("\(session.startedAt.duration(to: .now, live: true))")
                             .soraFont(.title2, emphasized: true)
                     }
                 }

@@ -52,7 +52,7 @@ extension Date {
             .replacingOccurrences(of: "–", with: " – ")
     }
 
-    func duration(to end: Date) -> String {
+    func duration(to end: Date, live: Bool = false) -> String {
         let total = Int(end.timeIntervalSince(self))
 
         let years = total / 31_536_000
@@ -67,6 +67,7 @@ extension Date {
         if hours > 0 && minutes > 0 { return "\(hours)h \(minutes)m" }
         if hours > 0 && minutes == 0 { return "\(hours)h" }
         if minutes > 0 { return "\(minutes) min" }
+        if live {return "\(total)s"}
         return "Just Now"
     }
 }
