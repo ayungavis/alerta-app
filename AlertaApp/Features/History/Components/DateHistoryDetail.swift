@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct DateHistoryDetail: View {
+    let session: AwarenessSessionRecord
+    
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.small) {
-            Text("Today, 29 May 2026")
+            Text("\(session.startedAt.longDate)")
                 .soraFont(.headline)
             HStack(spacing: AppSpacing.small) {
-                Text("7:30 – 8:02 AM ")
+                Text("\(session.startedAt.timeRange(to: .now))")
                 Text("•")
-                Text("32 min")
+                Text("\(session.startedAt.duration(to: .now))")
             }
             .soraFont(.caption1, color: AppColors.textSecondary)
         }
@@ -23,5 +25,9 @@ struct DateHistoryDetail: View {
 }
 
 #Preview {
-    DateHistoryDetail()
+    NavigationStack {
+        HistoryDetailView(session: .mockLive)
+            .preferredColorScheme(.dark)
+    }
 }
+

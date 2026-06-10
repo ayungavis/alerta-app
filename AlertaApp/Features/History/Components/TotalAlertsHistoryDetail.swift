@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct TotalAlertsHistoryDetail: View {
+    let session: AwarenessSessionRecord
+    
     var body: some View {
         VStack(alignment: .center, spacing: AppSpacing.small) {
             HStack(alignment: .center, spacing: AppSpacing.small) {
@@ -24,7 +26,7 @@ struct TotalAlertsHistoryDetail: View {
                 .cornerRadius(.infinity)
 
                 VStack(alignment: .leading) {
-                    Text("14")
+                    Text("\(session.alertCount)")
                         .soraFont(.headline, emphasized: true)
                     Text("Total Alerts")
                         .soraFont(.caption2)
@@ -47,5 +49,9 @@ struct TotalAlertsHistoryDetail: View {
 }
 
 #Preview {
-    TotalAlertsHistoryDetail()
+    NavigationStack {
+        HistoryDetailView(session: .mockLive)
+            .preferredColorScheme(.dark)
+    }
 }
+

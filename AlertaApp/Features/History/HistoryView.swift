@@ -1,44 +1,65 @@
 import SwiftUI
 
 struct HistoryView: View {
-    @State  var viewModel: HistoryViewModel = HistoryViewModel()
+    @State var viewModel: HistoryViewModel = HistoryViewModel()
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.medium) {
-                    Text("LIVE NOW")
-                        .soraFont(
-                            .body,
-                            emphasized: true,
-                            color: AppColors.primary
-                        )
+                if viewModel.sessions.isEmpty {
+                    PlaceholderView(style: .main)
+                        .frame(width: UIScreen.main.bounds.width * 0.75)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .frame(height: UIScreen.main.bounds.height * 0.5)
+                } else {
+                    VStack(alignment: .leading, spacing: AppSpacing.medium) {
+                        if viewModel.isLive {
+                            Text("LIVE NOW")
+                                .soraFont(
+                                    .body,
+                                    emphasized: true,
+                                    color: AppColors.primary
+                                )
+                        }
+                        ForEach(viewModel.liveSessions) {
+                            session in
+                            NavigationLink(destination: HistoryDetailView(session: session)) {
+                                LiveNowSessionHistory(session: session)
+                            }
+                        }
 
-                    LiveNowSessionHistory()
+                        ForEach(viewModel.groupedSessions, id: \.0) {
+                            header,
+                            sessions in
+                            Text(header)
+                                .soraFont(
+                                    .body,
+                                    emphasized: true,
+                                    color: AppColors.textSecondary
+                                )
 
-                    Text("Today")
-                        .soraFont(
-                            .body,
-                            emphasized: true,
-                            color: AppColors.textSecondary
-                        )
-
-                    ForEach(viewModel.sessions) { session in
-                        NavigationLink(destination: HistoryDetailView()) {
-                            SessionHistoryCard(session: session)
+                            ForEach(sessions) { session in
+                                NavigationLink(
+                                    destination: HistoryDetailView(
+                                        session: session
+                                    )
+                                ) {
+                                    SessionHistoryCard(session: session)
+                                }
+                            }
                         }
                     }
+                    .padding()
                 }
-                .padding()
             }
             .navigationTitle("Session History")
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
-                let attrs: [NSAttributedString.Key: Any] = [
-                    .font: UIFont(name: "Sora-Bold", size: 34)
-                        ?? .systemFont(ofSize: 34, weight: .bold)
-                ]
-                UINavigationBar.appearance().largeTitleTextAttributes = attrs
+                UINavigationBar.appearance().largeTitleTextAttributes =
+                    [
+                        .font: UIFont(name: "Sora-Bold", size: 34)
+                            ?? .systemFont(ofSize: 34, weight: .bold)
+                    ] as [NSAttributedString.Key: Any]
             }
         }
 

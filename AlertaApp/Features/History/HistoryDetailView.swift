@@ -3,31 +3,39 @@ import SwiftUI
 struct HistoryDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
+    let session: AwarenessSessionRecord
+
     var body: some View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: AppSpacing.medium) {
-                    DateHistoryDetail()
+
+                    if session.isLive { DateHistoryDetail(session: session) }
 
                     HStack(alignment: .center) {
-                        LiveNowHistoryDetail()
+
+                        if session.isLive {
+                            LiveNowHistoryDetail(session: session)
+                        } else {
+                            DateHistoryDetail(session: session)
+                        }
                         Spacer()
-                        TotalAlertsHistoryDetail()
+                        TotalAlertsHistoryDetail(session: session)
                     }
                     .frame(maxWidth: .infinity)
 
-                    AlertNumbersHistoryDetail()
+                    AlertNumbersHistoryDetail(session: session)
 
                     Text("Alert Timeline")
                         .soraFont(.headline)
 
-                    AlertTimeLine()
-                    
+                    AlertTimeLine(session: session)
+
                 }
                 .padding(.horizontal, AppSpacing.medium)
-                
+
             }
-            
+
             .listRowInsets(EdgeInsets())
             .listRowSeparator(.hidden)
             .listSectionSeparator(.hidden)
@@ -44,7 +52,7 @@ struct HistoryDetailView: View {
 
 #Preview {
     NavigationStack {
-        HistoryDetailView()
+        HistoryDetailView(session: .mockLive)
             .preferredColorScheme(.dark)
     }
 }

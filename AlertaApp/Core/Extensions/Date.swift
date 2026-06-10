@@ -13,6 +13,38 @@ extension Date {
         formatted(.dateTime.day().month(.abbreviated).year())
     }
 
+    var longDate: String {
+        let calendar = Calendar.current
+        let formatted = self.formatted(
+            .dateTime.day().month(.abbreviated).year()
+        )
+
+        if calendar.isDateInToday(self) {
+            return "Today, \(formatted)"
+        } else if calendar.isDateInYesterday(self) {
+            return "Yesterday, \(formatted)"
+        } else {
+            let day = self.formatted(.dateTime.weekday(.wide))
+            return "\(day), \(formatted)"
+        }
+    }
+    
+    var sectionHeader: String {
+        let cal = Calendar.current
+        if cal.isDateInToday(self) { return "Today" }
+        if cal.isDateInYesterday(self) { return "Yesterday" }
+        if cal.isDate(self, equalTo: .now, toGranularity: .weekOfYear) {
+            return formatted(.dateTime.weekday(.wide))
+        }
+        return shortDate
+    }
+
+    var shortTime: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        return formatter.string(from: self)
+    }
+
     func timeRange(to end: Date, template: String = "h:mm a") -> String {
         let formatter = DateIntervalFormatter()
         formatter.dateTemplate = template

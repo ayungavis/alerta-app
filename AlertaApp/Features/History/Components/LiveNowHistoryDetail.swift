@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LiveNowHistoryDetail: View {
+    let session: AwarenessSessionRecord
+    
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.small) {
             HStack(alignment: .center, spacing: AppSpacing.medium) {
@@ -24,15 +26,18 @@ struct LiveNowHistoryDetail: View {
                         )
                 }
 
-                VStack(alignment: .center, spacing: AppSpacing.extraSmall) {
+                VStack(alignment: .center) {
                     Text("Ongoing")
                         .soraFont(.caption2, color: .textSecondary)
 
-                    Text("24h 41m")
-                        .soraFont(.title2, emphasized: true)
+                    TimelineView(.periodic(from: .now, by: 1)) { _ in
+                        Text("\(session.startedAt.duration(to: .now))")
+                            .soraFont(.title2, emphasized: true)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .center)
+            .padding(AppSpacing.extraSmall)
         }
         .padding(.horizontal, AppSpacing.medium)
         .padding(.vertical, AppSpacing.small)
@@ -48,5 +53,8 @@ struct LiveNowHistoryDetail: View {
 }
 
 #Preview {
-    LiveNowHistoryDetail()
+    NavigationStack {
+        HistoryDetailView(session: .mockLive)
+            .preferredColorScheme(.dark)
+    }
 }

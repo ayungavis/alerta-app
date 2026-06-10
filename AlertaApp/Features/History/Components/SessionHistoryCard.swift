@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SessionHistoryCard: View {
-    let session: SessionEvent
-    
+    let session: AwarenessSessionRecord
+
     var body: some View {
         ZStack(alignment: .trailing) {
             Rectangle()
@@ -27,15 +27,19 @@ struct SessionHistoryCard: View {
                     alignment: .leading,
                     spacing: AppSpacing.small
                 ) {
-                    Text(session.name)
+                    Text(session.title)
                         .soraFont(.headline, emphasized: true)
                     HStack(
                         alignment: .center,
                         spacing: AppSpacing.extraSmall
                     ) {
-                        Text(session.start.timeRange(to: session.end))
+                        Text(
+                            session.startedAt.timeRange(
+                                to: session.endedAt ?? .now
+                            )
+                        )
                         Text("•")
-                        Text(session.start.duration(to: session.end))
+                        Text(session.startedAt.duration(to: session.endedAt ?? .now))
                     }
                     .soraFont(
                         .caption1,
@@ -51,22 +55,22 @@ struct SessionHistoryCard: View {
                             spacing: AppSpacing.extraSmall
                         ) {
                             Image(.critical)
-                            .foregroundStyle(
-                                Color(AppColors.alertCritical)
-                            )
-                            Text("2")
+                                .foregroundStyle(
+                                    Color(AppColors.alertCritical)
+                                )
+                            Text("\(session.alertCount(for:.critical))")
                             Text("Critical")
-                            
+
                             Image(.high)
-                            .foregroundStyle(
-                                Color(AppColors.alertHigh)
-                            )
-                            Text("5")
+                                .foregroundStyle(
+                                    Color(AppColors.alertHigh)
+                                )
+                            Text("\(session.alertCount(for:.critical))")
                             Text("High")
                         }
                         .soraFont(
                             .caption2,
-                            color: AppColors.textTretiary
+                            color: AppColors.textTertiary
                         )
                     }
                 }
@@ -78,7 +82,7 @@ struct SessionHistoryCard: View {
 
                 HStack(spacing: AppSpacing.large) {
                     VStack(alignment: .center, spacing: 0) {
-                        Text("14")
+                        Text("\(session.alertCount)")
                             .soraFont(
                                 .title1,
                                 emphasized: true,

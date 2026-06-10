@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LiveNowSessionHistory: View {
+    let session: AwarenessSessionRecord
+
     var body: some View {
         ZStack(alignment: .trailing) {
             Rectangle()
@@ -25,13 +27,13 @@ struct LiveNowSessionHistory: View {
                     alignment: .leading,
                     spacing: AppSpacing.small
                 ) {
-                    Text("Evening Run")
+                    Text(session.title)
                         .soraFont(.headline, emphasized: true)
                     HStack(
                         alignment: .center,
                         spacing: AppSpacing.extraSmall
                     ) {
-                        Text("Started 7:30")
+                        Text("Started \(session.startedAt.shortTime)")
                     }
                     .soraFont(
                         .caption1,
@@ -51,7 +53,7 @@ struct LiveNowSessionHistory: View {
                                     .foregroundStyle(
                                         Color(AppColors.alertCritical)
                                     )
-                                Text("2")
+                                Text("\(session.alertCount(for:.critical))")
                                 Text("Critical")
                             }
                             HStack(spacing: AppSpacing.extraSmall) {
@@ -59,13 +61,13 @@ struct LiveNowSessionHistory: View {
                                     .foregroundStyle(
                                         Color(AppColors.alertHigh)
                                     )
-                                Text("5")
+                                Text("\(session.alertCount(for:.critical))")
                                 Text("High")
                             }
                         }
                         .soraFont(
                             .caption2,
-                            color: AppColors.textTretiary
+                            color: AppColors.textTertiary
                         )
                     }
                 }
@@ -91,11 +93,14 @@ struct LiveNowSessionHistory: View {
                         }
                         HStack(spacing: AppSpacing.medium) {
                             VStack(alignment: .center) {
-                                Text("24m")
-                                    .soraFont(
-                                        .title1,
-                                        emphasized: true
-                                    )
+                                TimelineView(.periodic(from: .now, by: 1)) {
+                                    _ in
+                                    Text(session.startedAt.duration(to: .now))
+                                        .soraFont(
+                                            .title1,
+                                            emphasized: true
+                                        )
+                                }
                                 Text("Ongoing")
                                     .soraFont(
                                         .caption1,
@@ -105,7 +110,7 @@ struct LiveNowSessionHistory: View {
                             .fixedSize()
 
                             VStack(alignment: .center) {
-                                Text("14")
+                                Text("\(session.alertCount)")
                                     .soraFont(
                                         .title1,
                                         emphasized: true,
@@ -120,7 +125,7 @@ struct LiveNowSessionHistory: View {
                             .fixedSize()
                         }
                     }
-                    .layoutPriority(1)
+                    .layoutPriority(2)
                     .lineLimit(1)
 
                     Image(systemName: "chevron.right")

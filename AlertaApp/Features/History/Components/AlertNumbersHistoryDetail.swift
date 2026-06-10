@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct AlertNumbersHistoryDetail: View {
+    let session: AwarenessSessionRecord
+
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
             HStack(alignment: .center, spacing: 8) {
                 HStack(alignment: .center) {
                     let priorities: [(AppSymbol, String, Int)] = [
-                        (.critical, "Critical", 2),
-                        (.high, "High", 2),
-                        (.medium, "Medium", 2),
-                        (.low, "Low", 2),
+                        (.critical, "Critical", session.alertCount(for: .critical)),
+                        (.high, "High", session.alertCount(for: .high)),
+                        (.medium, "Medium", session.alertCount(for: .medium)),
+                        (.low, "Low", session.alertCount(for: .low)),
                     ]
 
                     ForEach(priorities, id: \.1) {
@@ -70,5 +72,8 @@ struct AlertNumbersHistoryDetail: View {
 }
 
 #Preview {
-    AlertNumbersHistoryDetail()
+    NavigationStack {
+        HistoryDetailView(session: .mockLive)
+            .preferredColorScheme(.dark)
+    }
 }
