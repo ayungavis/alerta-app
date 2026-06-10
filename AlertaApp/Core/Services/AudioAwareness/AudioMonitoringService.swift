@@ -28,9 +28,6 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
     private let configuration: AudioMonitoringConfiguration
     private let directionEstimator = DirectionEstimator()
     private let frequenprimaryalyzer = Frequenprimaryalyzer()
-    private let audioService: AudioOutputProviding
-    private let hapticService: HapticFeedbackProviding
-
     private let headphoneMotionProvider = HeadphoneMotionProvider()
     private var headYaw: Double?
     private var headYawCancellable: AnyCancellable?
@@ -66,23 +63,11 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
         audioEngine: AVAudioEngine = AVAudioEngine(),
         configuration: AudioMonitoringConfiguration =
             AudioMonitoringConfiguration(),
-        audioService: AudioOutputProviding? = nil,
-        hapticService: HapticFeedbackProviding? = nil
+        audioService _: AudioOutputProviding? = nil,
+        hapticService _: HapticFeedbackProviding? = nil
     ) {
         self.audioEngine = audioEngine
         self.configuration = configuration
-        self.audioService =
-            audioService
-                ?? AudioOutputService(
-                    cooldown: configuration.cooldownAudioAndVibration,
-                    lastPlayedAt: lastPlayedAt
-                )
-        self.hapticService =
-            hapticService
-                ?? CoreHapticService(
-                    cooldown: configuration.cooldownAudioAndVibration,
-                    lastPlayedAt: lastPlayedAt
-                )
         super.init()
         observeInterruptions()
     }
@@ -122,12 +107,6 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                do {
-                    try audioService.play(event)
-                    hapticService.playHaptic(for: event.urgency)
-                } catch {
-                    print("Playback failed: \(error)")
-                }
                 subject.send(event)
             }
         }
@@ -171,8 +150,6 @@ final class AudioMonitoringService: NSObject, AudioMonitoringProviding {
 
         audioEngine.prepare()
         try audioEngine.start()
-
-        hapticService.prepare()
 
         startCalibration()
     }
