@@ -31,8 +31,6 @@ enum Urgency: Int, Codable, Comparable, CaseIterable {
     }
 }
 
-// MARK: - Audio properties for Urgency
-
 extension Urgency {
     var priority: Int {
         switch self {
@@ -62,10 +60,19 @@ extension Urgency {
 
     var color: Color {
         switch self {
-        case .low: AppColors.primary
-        case .medium: .yellow
-        case .high: .orange
-        case .critical: .red
+        case .low: AppColors.alertLow
+        case .medium: AppColors.alertMedium
+        case .high: AppColors.alertHigh
+        case .critical: AppColors.alertCritical
+        }
+    }
+
+    var symbol: AppSymbol {
+        switch self {
+        case .low: .low
+        case .medium: .medium
+        case .high: .high
+        case .critical: .critical
         }
     }
 }

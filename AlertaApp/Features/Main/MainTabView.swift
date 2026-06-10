@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct MainTabView: View {
@@ -13,7 +14,7 @@ struct MainTabView: View {
                 }
                 .tag(0)
 
-            Text("History Screen")
+            HistoryView()
                 .tabItem {
                     Image(systemName: "clock.arrow.circlepath")
                     Text("History")
@@ -32,11 +33,8 @@ struct MainTabView: View {
 }
 
 #Preview {
-    MainTabView(
-        historyStore: SessionHistoryStore(
-            fileURL: FileManager.default.temporaryDirectory
-                .appendingPathComponent("AlertaAppPreviewSessionHistory.json", isDirectory: false),
-            fileManager: .default
-        )
-    )
+    let container = ModelContainer.appContainer()
+    let store = SessionHistoryStore(modelContext: container.mainContext)
+
+    MainTabView(historyStore: store)
 }

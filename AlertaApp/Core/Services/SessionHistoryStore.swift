@@ -6,60 +6,76 @@
 //
 
 import Foundation
-import Observation
+import SwiftData
 
 @Observable
 @MainActor
 final class SessionHistoryStore {
-    private struct PersistedState: Codable {
+    private struct PersistedState {
         let completedSessions: [AwarenessSessionRecord]
     }
 
-    private let fileURL: URL
-    private let fileManager: FileManager
+    ///    private let fileURL: URL
+    ///    private let fileManager: FileManager
+    private let modelContext: ModelContext
 
     private(set) var liveSession: AwarenessSessionRecord?
     private(set) var completedSessions: [AwarenessSessionRecord]
     private(set) var latestPersistenceError: Error?
 
-    init(fileURL: URL, fileManager: FileManager) {
-        self.fileURL = fileURL
-        self.fileManager = fileManager
+    init(modelContext: ModelContext
+//         , fileURL: URL, fileManager: FileManager
+    ) {
+        self.modelContext = modelContext
+//        self.fileURL = fileURL
+//        self.fileManager = fileManager
         completedSessions = []
-        loadCompletedSessions()
+//        loadCompletedSessions()
     }
 
     static func defaultFileURL() -> URL {
-        guard let applicationSupportURL = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        ).first else {
-            preconditionFailure("Application Support directory is unavailable for session history storage.")
+        guard
+            let applicationSupportURL = FileManager.default.urls(
+                for: .applicationSupportDirectory,
+                in: .userDomainMask
+            ).first
+        else {
+            preconditionFailure(
+                "Application Support directory is unavailable for session history storage."
+            )
         }
 
-        return applicationSupportURL
-            .appendingPathComponent("SessionHistory", isDirectory: true)
-            .appendingPathComponent("sessions.json", isDirectory: false)
+        return
+            applicationSupportURL
+                .appendingPathComponent("SessionHistory", isDirectory: true)
+                .appendingPathComponent("sessions.json", isDirectory: false)
     }
 
     func startSession(at startedAt: Date) {
         guard liveSession == nil else {
-            assertionFailure("Cannot start a new awareness session while another session is live.")
+            assertionFailure(
+                "Cannot start a new awareness session while another session is live."
+            )
             return
         }
 
-        liveSession = AwarenessSessionRecord(
+        let session = AwarenessSessionRecord(
             id: UUID(),
             title: sessionTitle(for: startedAt),
             startedAt: startedAt,
             endedAt: nil,
             alerts: []
         )
+
+        modelContext.insert(session)
+        liveSession = session
     }
 
     func recordAlert(from event: DetectionEvent) {
-        guard var session = liveSession else {
-            assertionFailure("Cannot record an awareness alert without a live session.")
+        guard let session = liveSession else {
+            assertionFailure(
+                "Cannot record an awareness alert without a live session."
+            )
             return
         }
 
@@ -68,53 +84,71 @@ final class SessionHistoryStore {
     }
 
     func finishLiveSession(at endedAt: Date) {
-        guard var session = liveSession else {
+        guard let session = liveSession else {
             return
         }
 
         session.endedAt = endedAt
+
+        do {
+            try modelContext.save()
+        } catch {
+            print(AppError.dataError(.saveFailed(error)))
+        }
+
         completedSessions.insert(session, at: 0)
         liveSession = nil
-        persistCompletedSessions()
+//        persistCompletedSessions()
     }
 
-    private func loadCompletedSessions() {
-        guard fileManager.fileExists(atPath: fileURL.path) else {
-            return
-        }
+//    private func loadCompletedSessions() {
+//        guard fileManager.fileExists(atPath: fileURL.path) else {
+//            return
+//        }
+//
+//        do {
+//            let data = try Data(contentsOf: fileURL)
+//            let decodedState = try decoder().decode(
+//                PersistedState.self,
+//                from: data
+//            )
+//            completedSessions = decodedState.completedSessions.sorted {
+//                lhs,
+//                rhs in
+//                lhs.startedAt > rhs.startedAt
+//            }
+//            latestPersistenceError = nil
+//        } catch {
+//            latestPersistenceError = error
+//            assertionFailure(
+//                "Failed to load awareness session history from \(fileURL.path): \(error)"
+//            )
+//        }
+//    }
 
-        do {
-            let data = try Data(contentsOf: fileURL)
-            let decodedState = try decoder().decode(PersistedState.self, from: data)
-            completedSessions = decodedState.completedSessions.sorted { lhs, rhs in
-                lhs.startedAt > rhs.startedAt
-            }
-            latestPersistenceError = nil
-        } catch {
-            latestPersistenceError = error
-            assertionFailure("Failed to load awareness session history from \(fileURL.path): \(error)")
-        }
-    }
+//    private func persistCompletedSessions() {
+//        do {
+//            try fileManager.createDirectory(
+//                at: fileURL.deletingLastPathComponent(),
+//                withIntermediateDirectories: true,
+//                attributes: nil
+//            )
+//
+//            let state = PersistedState(completedSessions: completedSessions)
+//            let data = try encoder().encode(state)
+//            try data.write(to: fileURL, options: [.atomic])
+//            latestPersistenceError = nil
+//        } catch {
+//            latestPersistenceError = error
+//            assertionFailure(
+//                "Failed to persist awareness session history to \(fileURL.path): \(error)"
+//            )
+//        }
+//    }
 
-    private func persistCompletedSessions() {
-        do {
-            try fileManager.createDirectory(
-                at: fileURL.deletingLastPathComponent(),
-                withIntermediateDirectories: true,
-                attributes: nil
-            )
-
-            let state = PersistedState(completedSessions: completedSessions)
-            let data = try encoder().encode(state)
-            try data.write(to: fileURL, options: [.atomic])
-            latestPersistenceError = nil
-        } catch {
-            latestPersistenceError = error
-            assertionFailure("Failed to persist awareness session history to \(fileURL.path): \(error)")
-        }
-    }
-
-    private func alertRecord(from event: DetectionEvent, sessionId: UUID) -> AwarenessAlertRecord {
+    private func alertRecord(from event: DetectionEvent, sessionId: UUID)
+        -> AwarenessAlertRecord
+    {
         AwarenessAlertRecord(
             id: UUID(),
             sessionId: sessionId,

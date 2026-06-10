@@ -24,9 +24,9 @@ enum AppColors {
     static let buttonDestructive = Color("buttonDestructive")
 
     static let alertCritical = Color("alertCritical")
-    static let alertMedium = Color("alertMedium")
-    static let alertLow = Color("alertLow")
-    static let alertInfo = Color("alertInfo")
+    static let alertHigh = Color("alertMedium")
+    static let alertMedium = Color("alertLow")
+    static let alertLow = Color("alertInfo")
 
     static let systemSuccess = Color("systemSuccess")
     static let systemError = Color("systemError")
@@ -35,4 +35,24 @@ enum AppColors {
     static let surface = surfacePrimary
     static let cyan = primary
     static let card = surfaceElevated
+
+    enum ButtonPrimary {
+        static let `default`: Color = .init(.buttonPrimaryDefault)
+        static let pressed: Color = .init(.buttonPrimaryPressed)
+        static let disabled: Color = .init(.buttonPrimaryDisabled)
+        static let text: Color = .init(.buttonPrimaryText)
+    }
+
+    ///
+    ///    enum ButtonSecondary {
+    ///        static let `default`: Color = .init(.buttonSecondaryDefault)
+    ///        static let pressed: Color   = .init(.buttonSecondaryPressed)
+    ///        static let disabled: Color  = .init(.buttonSecondaryDisabled)
+    ///    }
+    ///
+    enum ButtonDestructive {
+        static let `default`: Color = .init(.buttonDestructiveDefault)
+        static let pressed: Color = .init(.buttonDestructivePressed)
+        static let disabled: Color = .init(.buttonDestructiveDisabled)
+    }
 }

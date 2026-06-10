@@ -1,4 +1,5 @@
 import CoreHaptics
+import SwiftData
 import SwiftUI
 
 struct AwarenessView: View {
@@ -41,9 +42,9 @@ struct AwarenessView: View {
     private var alertGlowColor: Color {
         guard let event = viewModel.latestEvent else { return .clear }
         switch event.urgency {
-        case .low: return AppColors.alertInfo.opacity(0.16)
-        case .medium: return AppColors.alertLow.opacity(0.16)
-        case .high: return AppColors.alertMedium.opacity(0.16)
+        case .low: return AppColors.alertLow.opacity(0.16)
+        case .medium: return AppColors.alertMedium.opacity(0.16)
+        case .high: return AppColors.alertHigh.opacity(0.16)
         case .critical: return AppColors.alertCritical.opacity(0.16)
         }
     }
@@ -284,13 +285,10 @@ private enum AwarenessPresentationState {
 }
 
 #Preview("Idle") {
+    let container = ModelContainer.appContainer()
+    let store = SessionHistoryStore(modelContext: container.mainContext)
+
     NavigationStack {
-        AwarenessView(
-            historyStore: SessionHistoryStore(
-                fileURL: FileManager.default.temporaryDirectory
-                    .appendingPathComponent("AlertaAppPreviewSessionHistory.json", isDirectory: false),
-                fileManager: .default
-            )
-        )
+        AwarenessView(historyStore: store)
     }
 }

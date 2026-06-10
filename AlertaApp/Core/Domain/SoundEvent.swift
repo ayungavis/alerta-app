@@ -29,6 +29,23 @@ enum SoundEvent: String, CaseIterable, Codable, Identifiable {
         }
     }
 
+    var symbol: AppSymbol {
+        switch self {
+        case .approachingVehicle:
+            .vehicles
+        case .bicycleOrScooter:
+            .bicycleBell
+        case .horn:
+            .horn
+        case .nearbyPersonMovement:
+            .nearbyPerson
+        case .siren:
+            .siren
+        case .generalLoudSound:
+            .unknown
+        }
+    }
+
     var urgency: Urgency {
         switch self {
         case .siren: .critical

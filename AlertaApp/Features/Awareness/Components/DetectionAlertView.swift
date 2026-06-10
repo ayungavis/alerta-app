@@ -99,9 +99,9 @@ struct DetectionAlertView: View {
 
     private var urgencyColor: Color {
         switch event.urgency {
-        case .low: AppColors.alertInfo
-        case .medium: AppColors.alertLow
-        case .high: AppColors.alertMedium
+        case .low: AppColors.alertLow
+        case .medium: AppColors.alertMedium
+        case .high: AppColors.alertHigh
         case .critical: AppColors.alertCritical
         }
     }
