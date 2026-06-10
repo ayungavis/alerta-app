@@ -168,7 +168,7 @@ struct AwarenessView: View {
             monitoringMainContent(mode: .monitoring, topPadding: 157)
         case .listening:
             monitoringMainContent(mode: .processing, topPadding: 157)
-        case .alert(let event):
+        case let .alert(event):
             DetectionAlertView(
                 event: event,
                 isHapticAlertEnabled: viewModel.isHapticAlertEnabled,
