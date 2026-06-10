@@ -23,7 +23,7 @@ struct DetectionAlertView: View {
                 .frame(height: 48)
 
             HStack(spacing: 0) {
-                sideBars(reversed: false)
+                sideBars(reversed: true)
 
                 Spacer()
 
@@ -33,7 +33,7 @@ struct DetectionAlertView: View {
 
                 Spacer()
 
-                sideBars(reversed: true)
+                sideBars(reversed: false)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 73)
@@ -136,12 +136,8 @@ struct DetectionAlertView: View {
     }
 
     private var eventDisplayName: String {
-        if let soundName = event.soundName, !soundName.isEmpty {
+        if let soundName = event.soundName, !soundName.isEmpty, event.soundName != "Unknown" {
             return soundName
-        }
-
-        if !event.rawIdentifier.isEmpty {
-            return event.rawIdentifier
         }
 
         switch event.soundEvent {
@@ -157,6 +153,8 @@ struct DetectionAlertView: View {
             return "Movement Detected"
         case .generalLoudSound:
             return "Loud Sound Detected"
+        default:
+            !event.rawIdentifier.isEmpty ? event.rawIdentifier : "Unknown Sound"
         }
     }
 

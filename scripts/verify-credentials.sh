@@ -83,84 +83,14 @@ fi
 echo ""
 echo "--- JWT + API authentication ---"
 
-TMP_DIR="$(mktemp -d)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=scripts/appstore-jwt.sh
+source "${SCRIPT_DIR}/appstore-jwt.sh"
 
-base64url() {
-    base64 | tr '+/' '-_' | tr -d '=' | tr -d '\n'
-}
-
-HEADER="$(printf '{"alg":"ES256","kid":"%s","typ":"JWT"}' "${APPSTORE_KEY_ID}" | base64url)"
-NOW="$(date +%s)"
-EXP="$((NOW + 600))"
-PAYLOAD="$(printf '{"iss":"%s","iat":%d,"exp":%d,"aud":"appstoreconnect-v1"}' \
-    "${APPSTORE_ISSUER_ID}" "${NOW}" "${EXP}" | base64url)"
-
-SIGNING_INPUT="${HEADER}.${PAYLOAD}"
-
-printf '%s' "${SIGNING_INPUT}" | openssl dgst -sha256 -binary -sign "${KEY_PATH}" > "${TMP_DIR}/sig.der"
-
-# DER-encoded ECDSA P-256: 30 <totalLen> 02 <rLen> <r> 02 <sLen> <s>
-# Extract R and S raw bytes, each padded to 32 bytes.
-SIG_FILE="${TMP_DIR}/sig.der"
-offset=2  # skip 0x30
-remlen=$(dd if="${SIG_FILE}" bs=1 skip=1 count=1 2>/dev/null | od -A n -t u1 | tr -d ' \n')
-# remlen is the byte value, not relevant for fixed parsing
-
-# R: skip 0x02
-r_seq="$(dd if="${SIG_FILE}" bs=1 skip=2 count=1 2>/dev/null | od -A n -t x1 | tr -d ' \n')"
-if [[ "$r_seq" != "02" ]]; then
-    fail "Invalid DER signature: expected 0x02 at byte 2, got 0x${r_seq}"
-    exit 1
-fi
-r_orig_len=$(dd if="${SIG_FILE}" bs=1 skip=3 count=1 2>/dev/null | od -A n -t u1 | tr -d ' \n')
-r_start=4
-r_byte_len="${r_orig_len}"
-if [[ "$r_orig_len" -eq 33 ]]; then
-    r_start=5
-    r_byte_len=32
-fi
-dd if="${SIG_FILE}" bs=1 skip="${r_start}" count="${r_byte_len}" of="${TMP_DIR}/r.bin" 2>/dev/null
-R_RAW="${TMP_DIR}/r.bin"
-R_PAD="${TMP_DIR}/r_pad.bin"
-# Ensure exactly 32 bytes (pad left with zeros if short)
-R_SIZE=$(wc -c < "${R_RAW}" | tr -d ' ')
-if [ "$R_SIZE" -lt 32 ]; then
-    dd if=/dev/zero bs=1 count=$((32 - R_SIZE)) 2>/dev/null > "${R_PAD}"
-    cat "${R_RAW}" >> "${R_PAD}"
-else
-    cp "${R_RAW}" "${R_PAD}"
-fi
-
-# S: skip past R (02 tag (1) + length byte (1) + r original bytes)
-r_total=$((2 + r_orig_len))
-s_offset=$((2 + r_total))
-
-s_seq="$(dd if="${SIG_FILE}" bs=1 skip="${s_offset}" count=1 2>/dev/null | od -A n -t x1 | tr -d ' \n')"
-if [[ "$s_seq" != "02" ]]; then
-    fail "Invalid DER signature: expected 0x02 for S, got 0x${s_seq}"
-    exit 1
-fi
-s_len=$(dd if="${SIG_FILE}" bs=1 skip=$((s_offset + 1)) count=1 2>/dev/null | od -A n -t u1 | tr -d ' \n')
-s_start=$((s_offset + 2))
-if [[ "$s_len" -eq 33 ]]; then
-    s_start=$((s_start + 1))
-    s_len=32
-fi
-dd if="${SIG_FILE}" bs=1 skip="${s_start}" count="${s_len}" of="${TMP_DIR}/s.bin" 2>/dev/null
-S_RAW="${TMP_DIR}/s.bin"
-S_PAD="${TMP_DIR}/s_pad.bin"
-S_SIZE=$(wc -c < "${S_RAW}" | tr -d ' ')
-if [ "$S_SIZE" -lt 32 ]; then
-    dd if=/dev/zero bs=1 count=$((32 - S_SIZE)) 2>/dev/null > "${S_PAD}"
-    cat "${S_RAW}" >> "${S_PAD}"
-else
-    cp "${S_RAW}" "${S_PAD}"
-fi
-
-SIGNATURE=$(cat "${R_PAD}" "${S_PAD}" | base64url)
-JWT="${HEADER}.${PAYLOAD}.${SIGNATURE}"
-
+JWT=$(jwt_token "${KEY_PATH}" "${APPSTORE_KEY_ID}" "${APPSTORE_ISSUER_ID}")
 pass "JWT generated"
+
+TMP_DIR="$(mktemp -d)"
 
 # ── Test authentication via App Store Connect API ───────────
 HTTP_CODE=$(curl -s -o "${TMP_DIR}/response.json" -w '%{http_code}' \

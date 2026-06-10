@@ -1,5 +1,4 @@
 import CoreHaptics
-import Observation
 
 @Observable
 class CoreHapticService {
