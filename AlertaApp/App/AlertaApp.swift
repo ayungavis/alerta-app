@@ -30,9 +30,9 @@ struct AlertaApp: App {
                         )
                     )
                 } else {
-                    NavigationStack {
+                   
                         WelcomeView()
-                    }
+                    
                 }
             }
             .environment(router)
