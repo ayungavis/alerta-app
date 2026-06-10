@@ -43,7 +43,6 @@ struct LiveNowHistoryDetail: View {
         .padding(.vertical, AppSpacing.small)
         .background(AppColors.surfacePrimary)
         .cornerRadius(AppSpacing.medium)
-        .shadow(color: .black.opacity(0.16), radius: 9, x: 0, y: 8)
         .overlay(
             RoundedRectangle(cornerRadius: AppSpacing.medium)
                 .inset(by: 0.5)

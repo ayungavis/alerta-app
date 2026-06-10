@@ -19,7 +19,7 @@ enum AppSymbol: String {
     case siren = "light.beacon.max.fill"
     case horn = "horn.blast.fill"
     case vehicles = "car.2"
-    case bicycleBell = "event.bicycle.bell"
+    case bicycleBell = "event.bike.bell"
     case carhorn = "event.car.horn"
     case traffic = "event.traffic"
     case nearbyPerson = "figure.walk"
@@ -50,7 +50,11 @@ enum AppSymbol: String {
 extension Image {
     /// Image(.critical)
     init(_ symbol: AppSymbol) {
-        self.init(systemName: symbol.rawValue)
+        if UIImage(named: symbol.rawValue) != nil {
+            self.init(symbol.rawValue)
+        } else {
+            self.init(systemName: symbol.rawValue)
+        }
     }
 }
 

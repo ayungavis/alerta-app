@@ -39,7 +39,6 @@ struct TotalAlertsHistoryDetail: View {
         .frame(alignment: .center)
         .background(AppColors.surfacePrimary)
         .cornerRadius(16)
-        .shadow(color: .black.opacity(0.16), radius: 9, x: 0, y: 8)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .inset(by: 0.5)
