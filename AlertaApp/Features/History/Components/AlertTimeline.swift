@@ -64,17 +64,17 @@ struct AlertTimeLine: View {
 
                         // Card
                         HStack(alignment: .center, spacing: 8) {
-                            Image(systemName: "light.beacon.max.fill")
+                            Image(alert.soundEvent.symbol)
                                 .soraFont(.headline, color: alert.urgency.color)
                                 .padding(8)
                                 .background(AppColors.surfaceElevated)
-                                .cornerRadius(.infinity)
+                                .clipShape(Circle())
 
                             VStack(
                                 alignment: .leading,
                                 spacing: AppSpacing.extraSmall
                             ) {
-                                Text(alert.soundName ?? "")
+                                Text(alert.soundEvent.displayName)
                                     .soraFont(.subheadline)
 
                                 HStack(
