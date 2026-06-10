@@ -12,6 +12,7 @@ import SwiftUI
 struct AlertaApp: App {
     @State private var router = AppRouter()
     let container: ModelContainer = .appContainer()
+    private let monitoringConfiguration = AudioMonitoringConfiguration()
 
     //    @State private var sessionHistoryStore = SessionHistoryStore(
     //        fileURL: SessionHistoryStore.defaultFileURL(),
@@ -24,7 +25,8 @@ struct AlertaApp: App {
                 if router.hasEnteredMainApp {
                     MainTabView(
                         historyStore: SessionHistoryStore(
-                            modelContext: container.mainContext
+                            modelContext: container.mainContext,
+                            detectionCooldown: monitoringConfiguration.detectionCooldown
                         )
                     )
                 } else {

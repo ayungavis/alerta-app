@@ -340,7 +340,11 @@ private enum AwarenessPresentationState {
 
 #Preview("Idle") {
     let container = ModelContainer.appContainer()
-    let store = SessionHistoryStore(modelContext: container.mainContext)
+    let monitoringConfiguration = AudioMonitoringConfiguration()
+    let store = SessionHistoryStore(
+        modelContext: container.mainContext,
+        detectionCooldown: monitoringConfiguration.detectionCooldown
+    )
 
     NavigationStack {
         AwarenessView(historyStore: store)

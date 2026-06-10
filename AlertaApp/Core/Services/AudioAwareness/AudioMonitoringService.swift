@@ -20,7 +20,7 @@ struct AudioMonitoringConfiguration {
     var bufferSize: AVAudioFrameCount = 8192
     var directionThreshold: Float = 0.02
     var calibrationDuration: TimeInterval = 3.0
-    var cooldownAudioAndVibration: TimeInterval = 10.0
+    var detectionCooldown: TimeInterval = 10.0
 }
 
 final class AudioMonitoringService: NSObject, AudioMonitoringProviding {

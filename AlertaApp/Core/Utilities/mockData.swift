@@ -130,7 +130,10 @@ extension AwarenessAlertRecord {
         rawIdentifier: "bicycle",
         timestamp: .now,
         soundName: "bicycle_sound",
-        soundLevelDecibels: 52.0
+        soundLevelDecibels: 52.0,
+        occurrenceCount: 1,
+        firstDetectedAt: .now,
+        lastDetectedAt: .now
     )
 
     static let mockMedium = AwarenessAlertRecord(
@@ -143,7 +146,10 @@ extension AwarenessAlertRecord {
         rawIdentifier: "dog_bark",
         timestamp: .now,
         soundName: "dog_bark_sound",
-        soundLevelDecibels: 68.0
+        soundLevelDecibels: 68.0,
+        occurrenceCount: 1,
+        firstDetectedAt: .now,
+        lastDetectedAt: .now
     )
 
     static let mockHigh = AwarenessAlertRecord(
@@ -156,7 +162,10 @@ extension AwarenessAlertRecord {
         rawIdentifier: "approaching_vehicle",
         timestamp: .now,
         soundName: "vehicle_sound",
-        soundLevelDecibels: 78.0
+        soundLevelDecibels: 78.0,
+        occurrenceCount: 1,
+        firstDetectedAt: .now,
+        lastDetectedAt: .now
     )
 
     static let mockCritical = AwarenessAlertRecord(
@@ -169,7 +178,10 @@ extension AwarenessAlertRecord {
         rawIdentifier: "siren",
         timestamp: .now,
         soundName: "siren_sound",
-        soundLevelDecibels: 95.0
+        soundLevelDecibels: 95.0,
+        occurrenceCount: 1,
+        firstDetectedAt: .now,
+        lastDetectedAt: .now
     )
 
     // MARK: - Factory
@@ -183,7 +195,10 @@ extension AwarenessAlertRecord {
         rawIdentifier: String = "object",
         timestamp: Date = .now,
         soundName: String? = "test",
-        soundLevelDecibels: Float? = 65.0
+        soundLevelDecibels: Float? = 65.0,
+        occurrenceCount: Int = 1,
+        firstDetectedAt: Date? = nil,
+        lastDetectedAt: Date? = nil
     ) -> AwarenessAlertRecord {
         AwarenessAlertRecord(
             id: UUID(),
@@ -195,7 +210,10 @@ extension AwarenessAlertRecord {
             rawIdentifier: rawIdentifier,
             timestamp: timestamp,
             soundName: soundName,
-            soundLevelDecibels: soundLevelDecibels
+            soundLevelDecibels: soundLevelDecibels,
+            occurrenceCount: occurrenceCount,
+            firstDetectedAt: firstDetectedAt ?? timestamp,
+            lastDetectedAt: lastDetectedAt ?? timestamp
         )
     }
 
