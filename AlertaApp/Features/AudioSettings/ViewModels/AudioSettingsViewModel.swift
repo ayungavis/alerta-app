@@ -2,24 +2,65 @@
 //  AudioSettingsViewModel.swift
 //  AlertaApp
 //
-//  Created by Kyky on 07/06/26.
-//
 
 import Foundation
-import Observation
+import SwiftData
 
 @Observable
+@MainActor
 class AudioSettingsViewModel {
     var voiceVolume: Float {
-        didSet { UserDefaults.standard.set(voiceVolume, forKey: "voiceVolume") }
+        didSet {
+            settingsRecord?.voiceVolume = voiceVolume
+            UserDefaults.standard.set(voiceVolume, forKey: "voiceVolume")
+            save()
+        }
     }
 
     var voiceSpeed: Float {
-        didSet { UserDefaults.standard.set(voiceSpeed, forKey: "voiceSpeed") }
+        didSet {
+            settingsRecord?.voiceSpeed = voiceSpeed
+            UserDefaults.standard.set(voiceSpeed, forKey: "voiceSpeed")
+            save()
+        }
     }
 
-    init() {
-        voiceVolume = UserDefaults.standard.object(forKey: "voiceVolume") as? Float ?? 1.0
-        voiceSpeed = UserDefaults.standard.object(forKey: "voiceSpeed") as? Float ?? 0.5
+    private let modelContext: ModelContext
+    private var settingsRecord: UserSettingsModel?
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+
+        // Defaults — will be overwritten by loadSettings()
+        self.voiceVolume = 1.0
+        self.voiceSpeed = 0.5
+        loadSettings()
+    }
+
+    private func loadSettings() {
+        let descriptor = FetchDescriptor<UserSettingsModel>()
+        let records = try? modelContext.fetch(descriptor)
+
+        if let record = records?.first {
+            settingsRecord = record
+            voiceVolume = record.voiceVolume
+            voiceSpeed = record.voiceSpeed
+        } else {
+            // First launch — create the record with defaults
+            let newRecord = UserSettingsModel()
+            modelContext.insert(newRecord)
+            settingsRecord = newRecord
+            voiceVolume = newRecord.voiceVolume
+            voiceSpeed = newRecord.voiceSpeed
+            save()
+        }
+
+        // Keep UserDefaults in sync so AudioOutputService picks them up
+        UserDefaults.standard.set(voiceVolume, forKey: "voiceVolume")
+        UserDefaults.standard.set(voiceSpeed, forKey: "voiceSpeed")
+    }
+
+    private func save() {
+        try? modelContext.save()
     }
 }

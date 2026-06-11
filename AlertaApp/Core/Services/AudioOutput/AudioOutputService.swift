@@ -71,7 +71,9 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
         let utterance = utteranceBuilder.build(from: event)
 
         let savedSpeed = UserDefaults.standard.object(forKey: "voiceSpeed") as? Float ?? 0.5
+        print("Using speech rate: \(savedSpeed)")
         let savedVolume = UserDefaults.standard.object(forKey: "voiceVolume") as? Float ?? 1.0
+        print("Using speech rate: \(savedSpeed)")
 
         utterance.rate = savedSpeed
         utterance.volume = savedVolume
