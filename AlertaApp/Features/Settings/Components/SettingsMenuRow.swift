@@ -42,6 +42,6 @@ struct SettingsMenuRow: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(hapticService: CoreHapticService())
         .preferredColorScheme(.dark)
 }

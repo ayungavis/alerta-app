@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct HapticsLevelView: View {
@@ -66,7 +67,12 @@ struct HapticsLevelView: View {
 #Preview {
     NavigationStack {
         HapticsLevelView(
-            viewModel: HapticsSettingsViewModel(),
+            viewModel: HapticsSettingsViewModel(
+                modelContext: try! ModelContainer(
+                    for: UserSettingsModel.self,
+                    CustomPatternModel.self
+                ).mainContext
+            ),
             manager: CoreHapticService()
         )
     }

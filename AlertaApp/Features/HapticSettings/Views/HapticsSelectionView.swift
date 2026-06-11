@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HapticsSelectionView: View {
     let level: Urgency
@@ -127,7 +128,10 @@ struct HapticsSelectionView: View {
     NavigationStack {
         HapticsSelectionView(
             level: .medium,
-            viewModel: HapticsSettingsViewModel(),
+            viewModel: HapticsSettingsViewModel(modelContext: try! ModelContainer(
+                for: UserSettingsModel.self,
+                CustomPatternModel.self
+            ).mainContext),
             manager: CoreHapticService()
         )
     }

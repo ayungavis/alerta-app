@@ -4,10 +4,11 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab = 0
     let historyStore: SessionHistoryStore
+    let hapticService: CoreHapticService
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            AwarenessView(historyStore: historyStore)
+            AwarenessView(historyStore: historyStore, hapticService: hapticService)
                 .tabItem {
                     Image(systemName: "waveform")
                     Text("Home")
@@ -21,7 +22,7 @@ struct MainTabView: View {
                 }
                 .tag(1)
 
-            SettingsView()
+            SettingsView(hapticService: hapticService)
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     Text("Settings")
@@ -36,5 +37,6 @@ struct MainTabView: View {
     let container = ModelContainer.appContainer()
     let store = SessionHistoryStore(modelContext: container.mainContext)
 
-    MainTabView(historyStore: store)
+    MainTabView(historyStore: store, hapticService: CoreHapticService())
+        
 }

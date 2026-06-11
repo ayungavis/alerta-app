@@ -7,24 +7,19 @@ struct AwarenessView: View {
     @State private var isStopping = false
     @State private var stopTransitionTask: Task<Void, Never>?
 
-    init(historyStore: SessionHistoryStore) {
+    init(
+        historyStore: SessionHistoryStore,
+        hapticService: HapticFeedbackProviding
+    ) {
         _viewModel = State(
             initialValue: AwarenessViewModel(
                 monitoringService: AudioMonitoringService(),
                 permissionProvider: SystemMicrophonePermissionProvider(),
                 audioOutputService: AudioOutputService(),
-                hapticService: Self.makeHapticService(),
+                hapticService: hapticService,
                 historyStore: historyStore
             )
         )
-    }
-
-    private static func makeHapticService() -> HapticFeedbackProviding {
-        if CHHapticEngine.capabilitiesForHardware().supportsHaptics {
-            return CoreHapticService()
-        }
-
-        return FallbackHapticService()
     }
 
     private var isMonitoring: Bool {
@@ -34,7 +29,9 @@ struct AwarenessView: View {
     private var presentationState: AwarenessPresentationState {
         if isStopping { return .stopping }
         if let event = viewModel.latestEvent { return .alert(event) }
-        if case .calibrating = viewModel.calibrationState { return .calibrating }
+        if case .calibrating = viewModel.calibrationState {
+            return .calibrating
+        }
         if isMonitoring { return .listening }
         return .idle
     }
@@ -64,7 +61,13 @@ struct AwarenessView: View {
 
             alertGlowLayer
 
-            Stack(direction: .vertical, align: .center, spacing: 0, width: .fill, height: .fill) {
+            Stack(
+                direction: .vertical,
+                align: .center,
+                spacing: 0,
+                width: .fill,
+                height: .fill
+            ) {
                 Text("ALERTA")
                     .font(AppFont.soraBold(28))
                     .foregroundStyle(headerColor)
@@ -78,8 +81,14 @@ struct AwarenessView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, reservedBottomContentHeight)
             .animation(.easeInOut(duration: 0.3), value: viewModel.isRunning)
-            .animation(.easeInOut(duration: 0.3), value: viewModel.latestEvent?.id)
-            .animation(.easeInOut(duration: 0.3), value: viewModel.calibrationState)
+            .animation(
+                .easeInOut(duration: 0.3),
+                value: viewModel.latestEvent?.id
+            )
+            .animation(
+                .easeInOut(duration: 0.3),
+                value: viewModel.calibrationState
+            )
             .animation(.easeInOut(duration: 0.2), value: isStopping)
 
             bottomContent
@@ -109,7 +118,11 @@ struct AwarenessView: View {
                         .blur(radius: 60)
                         .position(x: geometry.size.width + 11, y: 351)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .topLeading
+                )
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
             }
@@ -125,7 +138,7 @@ struct AwarenessView: View {
             monitoringMainContent(mode: .monitoring, topPadding: 157)
         case .listening:
             monitoringMainContent(mode: .processing, topPadding: 157)
-        case let .alert(event):
+        case .alert(let event):
             DetectionAlertView(
                 event: event,
                 isHapticAlertEnabled: viewModel.isHapticAlertEnabled,
@@ -136,16 +149,27 @@ struct AwarenessView: View {
             .padding(.top, 90)
             .transition(.scale.combined(with: .opacity))
         case .stopping:
-            AudioBarsVisualizer(bands: FrequencySpectrum.zero.bands, mode: .stopping)
-                .padding(.top, 171)
+            AudioBarsVisualizer(
+                bands: FrequencySpectrum.zero.bands,
+                mode: .stopping
+            )
+            .padding(.top, 171)
         }
     }
 
     private var idleMainContent: some View {
         Stack(direction: .vertical, align: .center, spacing: 76, width: .fill) {
-            AudioBarsVisualizer(bands: FrequencySpectrum.zero.bands, mode: .idle)
+            AudioBarsVisualizer(
+                bands: FrequencySpectrum.zero.bands,
+                mode: .idle
+            )
 
-            Stack(direction: .vertical, align: .center, spacing: 0, width: .fill) {
+            Stack(
+                direction: .vertical,
+                align: .center,
+                spacing: 0,
+                width: .fill
+            ) {
                 Text("Alerta will notify you through these cues.")
                     .font(AppFont.soraRegular(16))
                     .foregroundStyle(AppColors.textSecondary)
@@ -177,9 +201,15 @@ struct AwarenessView: View {
         .padding(.top, 76)
     }
 
-    private func monitoringMainContent(mode: AudioBarsVisualizer.Mode, topPadding: CGFloat) -> some View {
+    private func monitoringMainContent(
+        mode: AudioBarsVisualizer.Mode,
+        topPadding: CGFloat
+    ) -> some View {
         Stack(direction: .vertical, align: .center, spacing: 35, width: .fill) {
-            AudioBarsVisualizer(bands: viewModel.latestSpectrum.bands, mode: mode)
+            AudioBarsVisualizer(
+                bands: viewModel.latestSpectrum.bands,
+                mode: mode
+            )
 
             HStack(spacing: 15) {
                 CueBadgeView(
@@ -206,10 +236,15 @@ struct AwarenessView: View {
     private var bottomContent: some View {
         switch presentationState {
         case .idle:
-            Stack(direction: .vertical, align: .center, spacing: 16, width: .fill) {
+            Stack(
+                direction: .vertical,
+                align: .center,
+                spacing: 16,
+                width: .fill
+            ) {
                 Text(
-                    "Alerts may be incorrect, delayed, or not detected at all. " +
-                        "Do not rely solely on this app for your safety."
+                    "Alerts may be incorrect, delayed, or not detected at all. "
+                        + "Do not rely solely on this app for your safety."
                 )
                 .font(AppFont.soraRegular(11))
                 .foregroundStyle(AppColors.textTertiary)
@@ -265,7 +300,9 @@ struct AwarenessView: View {
             } catch is CancellationError {
                 return
             } catch {
-                assertionFailure("Unexpected stop transition sleep error: \(error)")
+                assertionFailure(
+                    "Unexpected stop transition sleep error: \(error)"
+                )
                 return
             }
 
@@ -289,6 +326,6 @@ private enum AwarenessPresentationState {
     let store = SessionHistoryStore(modelContext: container.mainContext)
 
     NavigationStack {
-        AwarenessView(historyStore: store)
+        AwarenessView(historyStore: store, hapticService: CoreHapticService())
     }
 }

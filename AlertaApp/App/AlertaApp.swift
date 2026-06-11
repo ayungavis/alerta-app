@@ -13,6 +13,8 @@ struct AlertaApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = true
 
     @State private var router = AppRouter()
+    @State private var hapticService = CoreHapticService()
+    
     let container: ModelContainer = .appContainer()
 
     //    @State private var sessionHistoryStore = SessionHistoryStore(
@@ -26,8 +28,8 @@ struct AlertaApp: App {
                 if router.hasEnteredMainApp {
                     MainTabView(
                         historyStore: SessionHistoryStore(
-                            modelContext: container.mainContext
-                        )
+                            modelContext: container.mainContext,
+                        ), hapticService: hapticService
                     )
                 } else {
                     WelcomeView()

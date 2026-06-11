@@ -11,9 +11,16 @@ import SwiftData
 extension ModelContainer {
     static func appContainer() -> ModelContainer {
         do {
-            return try ModelContainer(for: AwarenessSessionRecord.self)
+            return try ModelContainer(
+                for: AwarenessSessionRecord.self,
+                UserSettingsModel.self,
+                CustomPatternModel.self
+            )
         } catch {
-            fatalError(AppError.dataError(.containerInitializationFailed(error)).localizedDescription)
+            fatalError(
+                AppError.dataError(.containerInitializationFailed(error))
+                    .localizedDescription
+            )
         }
     }
 }

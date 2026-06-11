@@ -12,7 +12,16 @@ class CoreHapticService {
     private var currentTouchDownTime: Date?
 
     private var lastPlayedAt: [Urgency: Date]
-    private let cooldown: TimeInterval // seconds
+    private let cooldown: TimeInterval
+
+    var selections: [Urgency: String] = [
+        .low: "Steady Alert",
+        .medium: "Rapid Pulse",
+        .high: "Heartbeat",
+        .critical: "S.O.S.",
+    ]
+    
+    var customPatterns: [CustomPattern] = []
 
     init(
         cooldown: TimeInterval = 10.0,
@@ -48,7 +57,7 @@ class CoreHapticService {
     func playHaptic(events: [CHHapticEvent]) {
         try? previewPlayer?.stop(atTime: 0)
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics,
-              !events.isEmpty
+            !events.isEmpty
         else { return }
 
         do {
@@ -89,7 +98,7 @@ class CoreHapticService {
                 CHHapticEventParameter(
                     parameterID: .hapticSharpness,
                     value: 0.5
-                )
+                ),
             ],
             relativeTime: 0,
             duration: 100
@@ -138,7 +147,7 @@ class CoreHapticService {
                     CHHapticEventParameter(
                         parameterID: .hapticSharpness,
                         value: isTransient ? 0.8 : 0.5
-                    )
+                    ),
                 ],
                 relativeTime: currentTime,
                 duration: isTransient ? 0 : step.duration
@@ -165,7 +174,7 @@ class CoreHapticService {
                         CHHapticEventParameter(
                             parameterID: .hapticSharpness,
                             value: 0.8
-                        )
+                        ),
                     ],
                     relativeTime: t
                 )
@@ -183,7 +192,7 @@ class CoreHapticService {
                         CHHapticEventParameter(
                             parameterID: .hapticSharpness,
                             value: 0.5
-                        )
+                        ),
                     ],
                     relativeTime: t,
                     duration: duration
@@ -236,9 +245,39 @@ class CoreHapticService {
                 addTransient()
                 t += 0.5
             }
-        default: break
+        case "Staccato":
+            while t < 2.0 {
+                addTransient()
+                t += 0.1
+                addTransient()
+                t += 0.1
+                addTransient()
+                t += 0.3
+            }
+        default:
+            // Fall back to custom pattern steps if name matches
+            if let custom = customPatterns.first(where: {
+                $0.name == patternName
+            }) {
+                return getEvents(fromSteps: custom.steps)
+            }
         }
         return events
+    }
+
+    private func getEvents(for urgency: Urgency) -> [CHHapticEvent] {
+        let patternName = selections[urgency] ?? urgency.defaultPatternName
+
+        print("[CoreHapticService] selections dump: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted())")
+        print("[CoreHapticService] urgency=\(urgency.storageKey) → resolved='\(patternName)'")
+
+        if let custom = customPatterns.first(where: { $0.name == patternName }) {
+            print("[CoreHapticService] → playing CUSTOM pattern '\(custom.name)' (\(custom.steps.count) steps)")
+            return getEvents(fromSteps: custom.steps)
+        }
+
+        print("[CoreHapticService] → playing PRESET '\(patternName)'")
+        return getEvents(forPreset: patternName)
     }
 }
 
@@ -246,24 +285,19 @@ extension CoreHapticService: HapticFeedbackProviding {
     func prepare() {}
 
     func playHaptic(for urgency: Urgency) {
-        let patternName =
-            switch urgency {
-            case .low: "Steady Alert"
-            case .medium: "Rapid Pulse"
-            case .high: "Heartbeat"
-            case .critical: "S.O.S."
-            }
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
+            return
+        }
 
-        // Skip if same urgency played within cooldown window
         if let lastPlayed = lastPlayedAt[urgency],
-           Date().timeIntervalSince(lastPlayed) < cooldown
+            Date().timeIntervalSince(lastPlayed) < cooldown
         {
             return
         }
 
         lastPlayedAt[urgency] = Date()
 
-        let events = getEvents(forPreset: patternName)
+        let events = getEvents(for: urgency)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.playHaptic(events: events)
         }

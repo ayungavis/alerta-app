@@ -2,9 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("isDarkMode") private var isDarkMode = true
-
-    @State private var viewModel = HapticsSettingsViewModel()
-    @State private var hapticManager = CoreHapticService()
+    let hapticService: CoreHapticService
 
     var body: some View {
         NavigationStack {
@@ -23,15 +21,9 @@ struct SettingsView: View {
                                     )
 
                                 VStack(spacing: 12) {
-                                    NavigationLink(
-                                        destination: HapticsLevelView(
-                                            viewModel: viewModel,
-                                            manager: hapticManager
-                                        )
-                                    ) {
+                                    NavigationLink(destination: HapticsSettingsView(hapticService: hapticService)) {
                                         SettingsMenuRow(
-                                            icon:
-                                            "iphone.gen3.radiowaves.left.and.right",
+                                            icon: "iphone.gen3.radiowaves.left.and.right",
                                             title: "Haptics"
                                         )
                                     }
@@ -71,10 +63,7 @@ struct SettingsView: View {
 
                                     ZStack {
                                         Capsule()
-                                            .stroke(
-                                                AppColors.primary,
-                                                lineWidth: 1
-                                            )
+                                            .stroke(AppColors.primary, lineWidth: 1)
                                             .frame(width: 166, height: 32)
 
                                         HStack(spacing: 0) {
@@ -84,16 +73,12 @@ struct SettingsView: View {
                                             .soraFont(
                                                 size: 12,
                                                 weight: .semiBold,
-                                                color:
-                                                isDarkMode
+                                                color: isDarkMode
                                                     ? AppColors.buttonText
                                                     : AppColors.buttonDisabled
                                             )
                                             .frame(width: 83, height: 32)
-                                            .background(
-                                                isDarkMode
-                                                    ? AppColors.primary : .clear
-                                            )
+                                            .background(isDarkMode ? AppColors.primary : .clear)
                                             .clipShape(Capsule())
 
                                             Button("LIGHT") {
@@ -107,10 +92,7 @@ struct SettingsView: View {
                                                     : AppColors.buttonDisabled
                                             )
                                             .frame(width: 83, height: 32)
-                                            .background(
-                                                !isDarkMode
-                                                    ? AppColors.primary : .clear
-                                            )
+                                            .background(!isDarkMode ? AppColors.primary : .clear)
                                             .clipShape(Capsule())
                                         }
                                     }
@@ -140,6 +122,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(hapticService: CoreHapticService())
         .preferredColorScheme(.dark)
 }
