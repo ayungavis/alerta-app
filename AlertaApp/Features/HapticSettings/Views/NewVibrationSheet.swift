@@ -14,7 +14,7 @@ struct NewVibrationSheet: View {
 
             VStack(spacing: AppSpacing.large) {
                 HStack(alignment: .center) {
-                    HStack{
+                    HStack {
                         Button(action: { dismiss() }) {
                             Image(systemName: "xmark").font(.title2)
                                 .foregroundStyle(
@@ -29,7 +29,7 @@ struct NewVibrationSheet: View {
                     Spacer()
                     Button(action: {
                         if !manager.recordedPattern.isEmpty,
-                            !patternName.isEmpty
+                           !patternName.isEmpty
                         {
                             let newPattern = CustomPattern(
                                 name: patternName,
@@ -47,9 +47,9 @@ struct NewVibrationSheet: View {
                                 patternName.isEmpty
                                     || manager.recordedPattern.isEmpty
                                     ? AppColors
-                                        .textTertiary
+                                    .textTertiary
                                     : AppColors
-                                        .cyan
+                                    .cyan
                             ).cornerRadius(.infinity)
                     }
                     .disabled(
@@ -96,7 +96,7 @@ struct NewVibrationSheet: View {
                             .overlay(
                                 Image(
                                     systemName:
-                                        "iphone.radiowaves.left.and.right"
+                                    "iphone.radiowaves.left.and.right"
                                 )
                                 .font(.system(size: 32))
                                 .foregroundStyle(
@@ -163,7 +163,7 @@ struct NewVibrationSheet: View {
                             manager.recordedPattern.isEmpty
                                 ? AppColors.textTertiary
                                 : AppColors
-                                    .textPrimary
+                                .textPrimary
                         )
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(AppColors.card).cornerRadius(16)

@@ -31,7 +31,7 @@ struct SettingsView: View {
                                     ) {
                                         SettingsMenuRow(
                                             icon:
-                                                "iphone.gen3.radiowaves.left.and.right",
+                                            "iphone.gen3.radiowaves.left.and.right",
                                             title: "Haptics"
                                         )
                                     }
@@ -85,7 +85,7 @@ struct SettingsView: View {
                                                 size: 12,
                                                 weight: .semiBold,
                                                 color:
-                                                    isDarkMode
+                                                isDarkMode
                                                     ? AppColors.buttonText
                                                     : AppColors.buttonDisabled
                                             )

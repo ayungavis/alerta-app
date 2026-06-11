@@ -12,20 +12,20 @@ struct BestPracticesEarphoneView: View {
         NavigationStack {
             ZStack {
                 AppColors.backgroundPrimary.ignoresSafeArea()
-                
+
                 Circle()
                     .fill(Color("primary").opacity(0.2))
                     .frame(width: 320, height: 320)
                     .blur(radius: 60)
                     .offset(x: -136, y: -200)
-                
+
                 Circle()
                     .fill(Color("primaryDark").opacity(0.5))
                     .frame(width: 256, height: 256)
                     .blur(radius: 50)
                     .opacity(0.2)
                     .offset(x: 100, y: UIScreen.main.bounds.height / 2 - 150)
-                
+
                 ZStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("Best Practices")
@@ -33,11 +33,11 @@ struct BestPracticesEarphoneView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 22)
                             .padding(.bottom, 16)
-                        
+
                         Text("Use earphones for the best experience")
                             .soraFont(size: 20, weight: .semiBold)
                             .padding(.leading, 24)
-                        
+
                         LoopingVideoPlayer(videoName: "earphoneIllustration", videoExt: "mp4")
                             .frame(width: 357, height: 188)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -46,28 +46,28 @@ struct BestPracticesEarphoneView: View {
                         // swiftlint:disable:next line_length
                         Text(
                             "For the best experience, connect your headphones before starting a session. "
-                            + "This allows Alerta to deliver audio cues that help you stay informed "
-                            + "about important sounds detected around you."
+                                + "This allows Alerta to deliver audio cues that help you stay informed "
+                                + "about important sounds detected around you."
                         )
                         .soraFont(size: 17, weight: .regular)
                         .padding(.horizontal, 24)
                         .foregroundColor(AppColors.textSecondary)
                         .padding(.bottom, 24)
                     }
-                    
+
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    
+
                     LinearGradient(
                         colors: [
                             AppColors.backgroundPrimary.opacity(0),
-                            AppColors.backgroundPrimary,
+                            AppColors.backgroundPrimary
                         ],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                     .frame(height: 200)
                     .allowsHitTesting(false)
-                    
+
                     NavigationLink {
                         BestPracticesPhoneView()
                     } label: {

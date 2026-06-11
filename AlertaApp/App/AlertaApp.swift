@@ -11,7 +11,7 @@ import SwiftUI
 @main
 struct AlertaApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = true
-    
+
     @State private var router = AppRouter()
     let container: ModelContainer = .appContainer()
 
@@ -30,9 +30,7 @@ struct AlertaApp: App {
                         )
                     )
                 } else {
-                   
-                        WelcomeView()
-                    
+                    WelcomeView()
                 }
             }
             .environment(router)

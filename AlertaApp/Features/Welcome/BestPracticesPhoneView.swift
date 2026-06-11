@@ -30,7 +30,6 @@ struct BestPracticesPhoneView: View {
 
                 // No. 1
                 ZStack(alignment: .bottom) {
-
                     ScrollView {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("Best Practices")
@@ -139,7 +138,7 @@ struct BestPracticesPhoneView: View {
                     LinearGradient(
                         colors: [
                             AppColors.backgroundPrimary.opacity(0),
-                            AppColors.backgroundPrimary,
+                            AppColors.backgroundPrimary
                         ],
                         startPoint: .top,
                         endPoint: .bottom
