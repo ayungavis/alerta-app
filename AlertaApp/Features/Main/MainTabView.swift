@@ -34,7 +34,11 @@ struct MainTabView: View {
 
 #Preview {
     let container = ModelContainer.appContainer()
-    let store = SessionHistoryStore(modelContext: container.mainContext)
+    let monitoringConfiguration = AudioMonitoringConfiguration()
+    let store = SessionHistoryStore(
+        modelContext: container.mainContext,
+        detectionCooldown: monitoringConfiguration.detectionCooldown
+    )
 
     MainTabView(historyStore: store)
 }

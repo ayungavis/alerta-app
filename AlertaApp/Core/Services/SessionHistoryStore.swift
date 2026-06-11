@@ -11,6 +11,12 @@ import SwiftData
 @Observable
 @MainActor
 final class SessionHistoryStore {
+    private struct AlertIdentity: Equatable {
+        let soundEvent: SoundEvent
+        let direction: SoundDirection
+        let urgency: Urgency
+    }
+
     private struct PersistedState {
         let completedSessions: [AwarenessSessionRecord]
     }
@@ -18,15 +24,19 @@ final class SessionHistoryStore {
     ///    private let fileURL: URL
     ///    private let fileManager: FileManager
     private let modelContext: ModelContext
+    private let detectionCooldown: TimeInterval
 
     private(set) var liveSession: AwarenessSessionRecord?
     private(set) var completedSessions: [AwarenessSessionRecord]
     private(set) var latestPersistenceError: Error?
 
-    init(modelContext: ModelContext
+    init(
+        modelContext: ModelContext,
+        detectionCooldown: TimeInterval
 //         , fileURL: URL, fileManager: FileManager
     ) {
         self.modelContext = modelContext
+        self.detectionCooldown = detectionCooldown
 //        self.fileURL = fileURL
 //        self.fileManager = fileManager
         completedSessions = []
@@ -79,7 +89,12 @@ final class SessionHistoryStore {
             return
         }
 
-        session.alerts.append(alertRecord(from: event, sessionId: session.id))
+        if let existingAlert = matchingAlert(in: session, for: event) {
+            merge(existingAlert: existingAlert, with: event)
+        } else {
+            session.alerts.append(alertRecord(from: event, sessionId: session.id))
+        }
+
         liveSession = session
     }
 
@@ -146,9 +161,10 @@ final class SessionHistoryStore {
 //        }
 //    }
 
-    private func alertRecord(from event: DetectionEvent, sessionId: UUID)
-        -> AwarenessAlertRecord
-    {
+    private func alertRecord(
+        from event: DetectionEvent,
+        sessionId: UUID
+    ) -> AwarenessAlertRecord {
         AwarenessAlertRecord(
             id: UUID(),
             sessionId: sessionId,
@@ -159,7 +175,58 @@ final class SessionHistoryStore {
             rawIdentifier: event.rawIdentifier,
             timestamp: event.timestamp,
             soundName: event.soundName,
-            soundLevelDecibels: nil
+            soundLevelDecibels: event.frequencyInfo?.soundLevelDecibels,
+            occurrenceCount: 1,
+            firstDetectedAt: event.timestamp,
+            lastDetectedAt: event.timestamp
+        )
+    }
+
+    private func matchingAlert(
+        in session: AwarenessSessionRecord,
+        for event: DetectionEvent
+    ) -> AwarenessAlertRecord? {
+        let eventIdentity = identity(for: event)
+
+        return session.alerts.reversed().first { alert in
+            let alertIdentity = identity(for: alert)
+            let isSameIdentity = alertIdentity == eventIdentity
+            let elapsedSinceLastDetection =
+                event.timestamp.timeIntervalSince(alert.lastDetectedAt)
+            let isWithinCooldown =
+                elapsedSinceLastDetection >= 0 &&
+                elapsedSinceLastDetection <= detectionCooldown
+
+            return isSameIdentity && isWithinCooldown
+        }
+    }
+
+    private func merge(existingAlert: AwarenessAlertRecord, with event: DetectionEvent) {
+        existingAlert.occurrenceCount += 1
+        existingAlert.lastDetectedAt = event.timestamp
+        existingAlert.timestamp = event.timestamp
+        existingAlert.rawIdentifier = event.rawIdentifier
+        existingAlert.soundName = event.soundName
+        existingAlert.soundLevelDecibels = event.frequencyInfo?.soundLevelDecibels
+
+        if event.confidence > existingAlert.confidence {
+            existingAlert.confidence = event.confidence
+        }
+    }
+
+    private func identity(for event: DetectionEvent) -> AlertIdentity {
+        AlertIdentity(
+            soundEvent: event.soundEvent,
+            direction: event.direction,
+            urgency: event.urgency
+        )
+    }
+
+    private func identity(for alert: AwarenessAlertRecord) -> AlertIdentity {
+        AlertIdentity(
+            soundEvent: alert.soundEvent,
+            direction: alert.direction,
+            urgency: alert.urgency
         )
     }
 

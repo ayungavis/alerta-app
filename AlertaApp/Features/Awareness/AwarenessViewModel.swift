@@ -91,10 +91,18 @@ final class AwarenessViewModel {
 
     func toggleHapticAlert() {
         isHapticAlertEnabled.toggle()
+
+        if !isHapticAlertEnabled {
+            hapticService.stop()
+        }
     }
 
     func toggleAudioAlert() {
         isAudioAlertEnabled.toggle()
+
+        if !isAudioAlertEnabled {
+            audioOutputService.stopSpeaking()
+        }
     }
 
     func onDetectionEventReceived(_ event: DetectionEvent) {

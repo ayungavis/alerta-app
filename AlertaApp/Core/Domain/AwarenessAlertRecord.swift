@@ -20,6 +20,9 @@ final class AwarenessAlertRecord {
     var timestamp: Date
     var soundName: String?
     var soundLevelDecibels: Float?
+    var occurrenceCount: Int
+    var firstDetectedAt: Date
+    var lastDetectedAt: Date
 
     init(
         id: UUID = UUID(),
@@ -31,7 +34,10 @@ final class AwarenessAlertRecord {
         rawIdentifier: String,
         timestamp: Date,
         soundName: String? = nil,
-        soundLevelDecibels: Float? = nil
+        soundLevelDecibels: Float? = nil,
+        occurrenceCount: Int,
+        firstDetectedAt: Date,
+        lastDetectedAt: Date
     ) {
         self.id = id
         self.sessionId = sessionId
@@ -43,5 +49,8 @@ final class AwarenessAlertRecord {
         self.timestamp = timestamp
         self.soundName = soundName
         self.soundLevelDecibels = soundLevelDecibels
+        self.occurrenceCount = occurrenceCount
+        self.firstDetectedAt = firstDetectedAt
+        self.lastDetectedAt = lastDetectedAt
     }
 }
