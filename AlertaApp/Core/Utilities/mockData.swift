@@ -254,7 +254,8 @@ extension DetectionEvent {
         highMid: Float = 0.01,
         high: Float = 0.01,
         dominant: Float = 440,
-        centroid: Float = 500
+        centroid: Float = 500,
+        soundLevelDecibels: Float? = -24
     ) -> FrequencySpectrum {
         let energies = [subBass, bass, lowMid, mid, highMid, high]
         let bands = zip(FrequencyBand.defaultBands, energies).map {
@@ -263,7 +264,8 @@ extension DetectionEvent {
         return FrequencySpectrum(
             bands: bands,
             dominantFrequency: dominant,
-            spectralCentroid: centroid
+            spectralCentroid: centroid,
+            soundLevelDecibels: soundLevelDecibels
         )
     }
 

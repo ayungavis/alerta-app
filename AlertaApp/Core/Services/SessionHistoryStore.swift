@@ -175,7 +175,7 @@ final class SessionHistoryStore {
             rawIdentifier: event.rawIdentifier,
             timestamp: event.timestamp,
             soundName: event.soundName,
-            soundLevelDecibels: nil,
+            soundLevelDecibels: event.frequencyInfo?.soundLevelDecibels,
             occurrenceCount: 1,
             firstDetectedAt: event.timestamp,
             lastDetectedAt: event.timestamp
@@ -207,6 +207,7 @@ final class SessionHistoryStore {
         existingAlert.timestamp = event.timestamp
         existingAlert.rawIdentifier = event.rawIdentifier
         existingAlert.soundName = event.soundName
+        existingAlert.soundLevelDecibels = event.frequencyInfo?.soundLevelDecibels
 
         if event.confidence > existingAlert.confidence {
             existingAlert.confidence = event.confidence
