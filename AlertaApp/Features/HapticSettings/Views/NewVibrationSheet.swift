@@ -201,14 +201,13 @@ struct NewVibrationSheet: View {
 }
 
 #Preview {
+    let previewContainer = ModelContainer.previewSettingsContainer()
+
     NavigationStack {
         NewVibrationSheet(
             manager: CoreHapticService(),
             viewModel: HapticsSettingsViewModel(
-                modelContext: try! ModelContainer(
-                    for: UserSettingsModel.self,
-                    CustomPatternModel.self
-                ).mainContext
+                modelContext: previewContainer.mainContext
             )
         )
     }

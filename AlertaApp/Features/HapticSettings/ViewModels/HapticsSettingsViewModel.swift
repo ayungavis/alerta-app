@@ -75,8 +75,13 @@ final class HapticsSettingsViewModel {
     private func pushToService(_ service: CoreHapticService) {
         service.selections = selections
         service.customPatterns = customPatterns
+        let selectionSummary = selections.map {
+            "\($0.key.storageKey)=\($0.value)"
+        }.sorted()
+        let customPatternNames = customPatterns.map(\.name)
         print(
-            "[HapticsSettingsViewModel] pushed to service — selections: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted()), customPatterns: \(customPatterns.map(\.name))"
+            "[HapticsSettingsViewModel] pushed to service — selections: \(selectionSummary), " +
+                "customPatterns: \(customPatternNames)"
         )
     }
 

@@ -65,13 +65,12 @@ struct HapticsLevelView: View {
 }
 
 #Preview {
+    let previewContainer = ModelContainer.previewSettingsContainer()
+
     NavigationStack {
         HapticsLevelView(
             viewModel: HapticsSettingsViewModel(
-                modelContext: try! ModelContainer(
-                    for: UserSettingsModel.self,
-                    CustomPatternModel.self
-                ).mainContext
+                modelContext: previewContainer.mainContext
             ),
             manager: CoreHapticService()
         )

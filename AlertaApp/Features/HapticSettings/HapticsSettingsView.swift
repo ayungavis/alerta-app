@@ -26,6 +26,6 @@ struct HapticsSettingsView: View {
     NavigationStack {
         HapticsSettingsView(hapticService: CoreHapticService())
             .preferredColorScheme(.dark)
-            .modelContainer(try! ModelContainer(for: UserSettingsModel.self, CustomPatternModel.self))
+            .modelContainer(ModelContainer.previewSettingsContainer())
     }
 }

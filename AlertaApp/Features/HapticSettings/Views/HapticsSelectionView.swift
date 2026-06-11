@@ -125,13 +125,14 @@ struct HapticsSelectionView: View {
 }
 
 #Preview {
+    let previewContainer = ModelContainer.previewSettingsContainer()
+
     NavigationStack {
         HapticsSelectionView(
             level: .medium,
-            viewModel: HapticsSettingsViewModel(modelContext: try! ModelContainer(
-                for: UserSettingsModel.self,
-                CustomPatternModel.self
-            ).mainContext),
+            viewModel: HapticsSettingsViewModel(
+                modelContext: previewContainer.mainContext
+            ),
             manager: CoreHapticService()
         )
     }

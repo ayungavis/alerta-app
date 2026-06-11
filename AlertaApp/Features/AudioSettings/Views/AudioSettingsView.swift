@@ -129,11 +129,6 @@ struct AudioSettingsView: View {
     NavigationStack {
         AudioSettingsView(manager: AudioOutputService())
             .preferredColorScheme(.dark)
-            .modelContainer(
-                try! ModelContainer(
-                    for: UserSettingsModel.self,
-                    CustomPatternModel.self
-                )
-            )
+            .modelContainer(ModelContainer.previewSettingsContainer())
     }
 }
