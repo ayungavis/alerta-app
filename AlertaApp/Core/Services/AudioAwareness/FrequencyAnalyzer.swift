@@ -12,6 +12,8 @@ import Foundation
 struct Frequenprimaryalyzer {
     private let fftSize: Int = 2048
     private let fft: FFTAccelerator
+    private let minimumAmplitude: Float = 0.0001
+    private let minimumDecibels: Float = -80
 
     init() {
         fft = FFTAccelerator(fftSize: fftSize)
@@ -35,7 +37,8 @@ struct Frequenprimaryalyzer {
         let baseline = FrequencySpectrum(
             bands: averagedBands,
             dominantFrequency: dominantFrequency(from: averagedBands),
-            spectralCentroid: computeCentroid(bands: averagedBands)
+            spectralCentroid: computeCentroid(bands: averagedBands),
+            soundLevelDecibels: averagedSoundLevel(from: buffers)
         )
 
         return FrequencyProfile(baseline: baseline)
@@ -64,8 +67,49 @@ struct Frequenprimaryalyzer {
         return FrequencySpectrum(
             bands: bands,
             dominantFrequency: dominantFrequency(from: bands),
-            spectralCentroid: computeCentroid(bands: bands)
+            spectralCentroid: computeCentroid(bands: bands),
+            soundLevelDecibels: computeSoundLevelDecibels(
+                samples: channelData[0],
+                frameLength: frameLength
+            )
         )
+    }
+
+    private func averagedSoundLevel(from buffers: [AVAudioPCMBuffer]) -> Float? {
+        let soundLevels = buffers.compactMap { buffer -> Float? in
+            guard let channelData = buffer.floatChannelData else {
+                return nil
+            }
+
+            return computeSoundLevelDecibels(
+                samples: channelData[0],
+                frameLength: Int(buffer.frameLength)
+            )
+        }
+
+        guard !soundLevels.isEmpty else {
+            return nil
+        }
+
+        let total = soundLevels.reduce(0, +)
+        return total / Float(soundLevels.count)
+    }
+
+    private func computeSoundLevelDecibels(
+        samples: UnsafePointer<Float>,
+        frameLength: Int
+    ) -> Float? {
+        guard frameLength > 0 else {
+            return nil
+        }
+
+        var rootMeanSquare: Float = 0
+        vDSP_rmsqv(samples, 1, &rootMeanSquare, vDSP_Length(frameLength))
+
+        let normalizedAmplitude = max(rootMeanSquare, minimumAmplitude)
+        let decibels = 20 * log10(normalizedAmplitude)
+
+        return max(decibels, minimumDecibels)
     }
 
     private func computeBandEnergy(magnitudes: [Float], sampleRate: Float, range: ClosedRange<Float>) -> Float {

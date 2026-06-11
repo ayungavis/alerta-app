@@ -4,11 +4,13 @@ struct FrequencySpectrum: Equatable {
     let bands: [FrequencyBand]
     let dominantFrequency: Float
     let spectralCentroid: Float
+    let soundLevelDecibels: Float?
 
     static let zero = FrequencySpectrum(
         bands: FrequencyBand.defaultBands.map { FrequencyBand(name: $0.name, range: $0.range, energy: 0) },
         dominantFrequency: 0,
-        spectralCentroid: 0
+        spectralCentroid: 0,
+        soundLevelDecibels: nil
     )
 }
 

@@ -90,9 +90,7 @@ struct AlertTimeLine: View {
                                         Text(alert.urgency.displayName)
                                     }
                                     Text("•")
-                                    Text(
-                                        "\(Int(alert.soundLevelDecibels ?? 0.0)) dB"
-                                    )
+                                    Text(soundLevelText(for: alert))
                                 }
                                 .soraFont(
                                     .caption2,
@@ -115,6 +113,14 @@ struct AlertTimeLine: View {
                 }
             }
         }
+    }
+
+    private func soundLevelText(for alert: AwarenessAlertRecord) -> String {
+        guard let soundLevelDecibels = alert.soundLevelDecibels else {
+            return "-- dBFS"
+        }
+
+        return "\(Int(soundLevelDecibels.rounded())) dBFS"
     }
 }
 

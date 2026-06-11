@@ -5,6 +5,8 @@ import SwiftUI
 struct AwarenessView: View {
     @State private var viewModel: AwarenessViewModel
     @State private var isStopping = false
+    @State private var isShowingHelpMenuSheet = false
+    @State private var selectedHelpContent: AwarenessHelpContent?
     @State private var stopTransitionTask: Task<Void, Never>?
 
     init(
@@ -61,13 +63,11 @@ struct AwarenessView: View {
 
             alertGlowLayer
 
-            Stack(
-                direction: .vertical,
-                align: .center,
-                spacing: 0,
-                width: .fill,
-                height: .fill
-            ) {
+            helpButton
+
+            helpButton
+
+            Stack(direction: .vertical, align: .center, spacing: 0, width: .fill, height: .fill) {
                 Text("ALERTA")
                     .font(AppFont.soraBold(28))
                     .foregroundStyle(headerColor)
@@ -98,8 +98,47 @@ struct AwarenessView: View {
         .onDisappear {
             stopTransitionTask?.cancel()
         }
+        .sheet(isPresented: $isShowingHelpMenuSheet) {
+            AwarenessHelpMenuSheet { content in
+                presentHelpContent(content)
+            }
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $selectedHelpContent) { content in
+            AwarenessHelpDetailView(content: content)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var helpButton: some View {
+        VStack {
+            HStack {
+                Spacer()
+
+                Button {
+                    isShowingHelpMenuSheet = true
+                } label: {
+                    Image(systemName: "questionmark")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(AppColors.primary)
+                        .frame(width: 24, height: 24)
+                        .overlay {
+                            Circle()
+                                .stroke(AppColors.primary, lineWidth: 2)
+                        }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Help")
+            }
+
+            Spacer()
+        }
+        .padding(.top, 16)
+        .padding(.horizontal, 28)
     }
 
     private var alertGlowLayer: some View {
@@ -204,7 +243,9 @@ struct AwarenessView: View {
     private func monitoringMainContent(
         mode: AudioBarsVisualizer.Mode,
         topPadding: CGFloat
-    ) -> some View {
+    )
+        -> some View
+    {
         Stack(direction: .vertical, align: .center, spacing: 35, width: .fill) {
             AudioBarsVisualizer(
                 bands: viewModel.latestSpectrum.bands,
@@ -311,6 +352,15 @@ struct AwarenessView: View {
             }
         }
     }
+
+    private func presentHelpContent(_ content: AwarenessHelpContent) {
+        isShowingHelpMenuSheet = false
+
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(200))
+            selectedHelpContent = content
+        }
+    }
 }
 
 private enum AwarenessPresentationState {
@@ -323,7 +373,11 @@ private enum AwarenessPresentationState {
 
 #Preview("Idle") {
     let container = ModelContainer.appContainer()
-    let store = SessionHistoryStore(modelContext: container.mainContext)
+    let monitoringConfiguration = AudioMonitoringConfiguration()
+    let store = SessionHistoryStore(
+        modelContext: container.mainContext,
+        detectionCooldown: monitoringConfiguration.detectionCooldown
+    )
 
     NavigationStack {
         AwarenessView(historyStore: store, hapticService: CoreHapticService())
