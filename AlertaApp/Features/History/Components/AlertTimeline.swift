@@ -55,6 +55,7 @@ struct AlertTimeLine: View {
                                     .frame(width: 2)
                                     .frame(maxHeight: .infinity)
                             }
+                            .padding(.vertical, -8)
 
                             Circle()
                                 .foregroundStyle(alert.urgency.color)
@@ -102,12 +103,6 @@ struct AlertTimeLine: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(AppColors.surfacePrimary)
                         .cornerRadius(16)
-                        .shadow(
-                            color: .black.opacity(0.16),
-                            radius: 9,
-                            x: 0,
-                            y: 8
-                        )
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .inset(by: 0.5)

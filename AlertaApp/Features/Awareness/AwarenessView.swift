@@ -275,7 +275,7 @@ struct AwarenessView: View {
             }
             .frame(maxWidth: 354)
         case .stopping:
-            PlaceholderView()
+            EmptyView()
         }
     }
 

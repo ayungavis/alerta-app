@@ -106,12 +106,6 @@ struct SessionHistoryCard: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(AppColors.surfacePrimary)
             .cornerRadius(AppSpacing.medium)
-            .shadow(
-                color: .black.opacity(0.18),
-                radius: 12,
-                x: 0,
-                y: 8
-            )
             .overlay(
                 RoundedRectangle(cornerRadius: AppSpacing.medium)
                     .inset(by: 0.5)
