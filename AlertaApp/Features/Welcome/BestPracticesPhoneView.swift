@@ -30,14 +30,12 @@ struct BestPracticesPhoneView: View {
 
                 // No. 1
                 ZStack(alignment: .bottom) {
-                    ScrollView {
-                        BestPracticesPhoneContentView()
-                    }
+                    BestPracticesPhoneContentView()
 
                     LinearGradient(
                         colors: [
                             AppColors.backgroundPrimary.opacity(0),
-                            AppColors.backgroundPrimary,
+                            AppColors.backgroundPrimary
                         ],
                         startPoint: .top,
                         endPoint: .bottom

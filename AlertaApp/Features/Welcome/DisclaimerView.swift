@@ -9,11 +9,24 @@ import SwiftUI
 
 struct DisclaimerView: View {
     var body: some View {
-        WelcomeInfoBackground {
-            VStack(alignment: .leading, spacing: 0) {
-                DisclaimerContentView()
+        NavigationStack {
+            ZStack(alignment: .bottom) {
+                AppColors.backgroundPrimary.ignoresSafeArea()
 
-                Spacer()
+                Circle()
+                    .fill(Color("primary").opacity(0.2))
+                    .frame(width: 320, height: 320)
+                    .blur(radius: 60)
+                    .offset(x: -136, y: -200)
+
+                Circle()
+                    .fill(Color("primaryDark").opacity(0.5))
+                    .frame(width: 256, height: 256)
+                    .blur(radius: 50)
+                    .opacity(0.2)
+                    .offset(x: 100, y: UIScreen.main.bounds.height / 2 - 150)
+
+                DisclaimerContentView()
 
                 NavigationLink {
                     BestPracticesEarphoneView()

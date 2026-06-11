@@ -33,7 +33,7 @@ struct BestPracticesEarphoneView: View {
                     LinearGradient(
                         colors: [
                             AppColors.backgroundPrimary.opacity(0),
-                            AppColors.backgroundPrimary,
+                            AppColors.backgroundPrimary
                         ],
                         startPoint: .top,
                         endPoint: .bottom
