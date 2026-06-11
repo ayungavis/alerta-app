@@ -10,6 +10,8 @@ import SwiftUI
 
 @main
 struct AlertaApp: App {
+    @AppStorage("isDarkMode") private var isDarkMode = true
+
     @State private var router = AppRouter()
     let container: ModelContainer = .appContainer()
     private let monitoringConfiguration = AudioMonitoringConfiguration()
@@ -30,12 +32,11 @@ struct AlertaApp: App {
                         )
                     )
                 } else {
-                    NavigationStack {
-                        WelcomeView()
-                    }
+                    WelcomeView()
                 }
             }
             .environment(router)
+            .preferredColorScheme(isDarkMode ? .dark : .light)
             //            .environment(sessionHistoryStore)
         }
         .modelContainer(container)

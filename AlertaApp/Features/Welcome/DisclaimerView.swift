@@ -19,18 +19,20 @@ struct DisclaimerView: View {
                     BestPracticesEarphoneView()
                 } label: {
                     Text("I Understand")
-                        .soraFont(size: 17, weight: .semiBold)
-                        .foregroundStyle(AppColors.buttonText)
+                        .soraFont(
+                            .body,
+                            emphasized: true,
+                            color: AppColors.buttonText
+                        )
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
                         .background(AppColors.buttonDefault)
                         .clipShape(Capsule())
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
-
-                Spacer()
+                .padding(AppSpacing.large)
+                .padding(.bottom, 30)
             }
+            .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 }

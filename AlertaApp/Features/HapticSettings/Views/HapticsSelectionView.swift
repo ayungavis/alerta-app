@@ -20,30 +20,25 @@ struct HapticsSelectionView: View {
 
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: AppSpacing.large) {
+                    VStack(alignment: .leading, spacing: AppSpacing.medium) {
                         HStack {
                             Text("Alert Level:")
-                                .soraFont(size: 20, weight: .regular)
-                                .foregroundColor(.white)
+                                .soraFont(.title3, color: .textPrimary)
 
                             Text(level.displayName)
-                                .soraFont(size: 20, weight: .semiBold)
-                                .foregroundColor(level.color)
+                                .soraFont(.title3, emphasized: true, color: level.color)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 6)
-                                .background(AppColors.card)
+                                .background(AppColors.surfacePrimary)
                                 .cornerRadius(20)
                         }
                         .padding(.top, 10)
 
-                        Text("Choose how your device vibrates")
-                            .soraFont(size: 17, weight: .regular)
-                            .foregroundColor(.white)
-
-                        VStack(alignment: .leading, spacing: 16) {
+                        VStack(alignment: .leading, spacing: AppSpacing.small) {
+                            Text("Choose how your device vibrates")
+                                .soraFont(.body, color: .textPrimary)
                             Text("Vibration Patterns")
-                                .soraFont(size: 17, weight: .regular)
-                                .foregroundColor(AppColors.primary)
+                                .soraFont(.body, emphasized: true, color: AppColors.secondary)
 
                             VStack(spacing: 12) {
                                 ForEach(viewModel.availablePatterns, id: \.self) { pattern in
@@ -94,8 +89,8 @@ struct HapticsSelectionView: View {
                         HStack {
                             Image(systemName: "plus")
                             Text("Create New Pattern")
-                                .soraFont(size: 17, weight: .regular)
                         }
+                        .soraFont(.body, color: AppColors.buttonText)
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)

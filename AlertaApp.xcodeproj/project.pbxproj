@@ -1,218 +1,218 @@
 // !$*UTF8*$!
 {
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 77;
-	objects = {
+    archiveVersion = 1;
+    classes = {
+    };
+    objectVersion = 77;
+    objects = {
 
 /* Begin PBXContainerItemProxy section */
-		11EFC4AF2FD14F2000A7DAD7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A2BB0BC52FC5682D007B9484 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A2BB0BCC2FC5682D007B9484;
-			remoteInfo = AlertaApp;
-		};
+        11EFC4AF2FD14F2000A7DAD7 /* PBXContainerItemProxy */ = {
+            isa = PBXContainerItemProxy;
+            containerPortal = A2BB0BC52FC5682D007B9484 /* Project object */;
+            proxyType = 1;
+            remoteGlobalIDString = A2BB0BCC2FC5682D007B9484;
+            remoteInfo = AlertaApp;
+        };
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		11EFC4AB2FD14F2000A7DAD7 /* AlertaAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AlertaAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlertaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+        11EFC4AB2FD14F2000A7DAD7 /* AlertaAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AlertaAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+        A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlertaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A2BB0BDD2FC5682F007B9484 /* Exceptions for "AlertaApp" folder in "AlertaApp" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Core/Extensions/.gitkeep,
-				Core/Services/.gitkeep,
-				Core/Utilities/.gitkeep,
-				Info.plist,
-			);
-			target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
-		};
+        A2BB0BDD2FC5682F007B9484 /* Exceptions for "AlertaApp" folder in "AlertaApp" target */ = {
+            isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+            membershipExceptions = (
+                Core/Extensions/.gitkeep,
+                Core/Services/.gitkeep,
+                Core/Utilities/.gitkeep,
+                Info.plist,
+            );
+            target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
+        };
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		11EFC4AC2FD14F2000A7DAD7 /* AlertaAppTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AlertaAppTests;
-			sourceTree = "<group>";
-		};
-		A2BB0BCF2FC5682D007B9484 /* AlertaApp */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				A2BB0BDD2FC5682F007B9484 /* Exceptions for "AlertaApp" folder in "AlertaApp" target */,
-			);
-			path = AlertaApp;
-			sourceTree = "<group>";
-		};
+        11EFC4AC2FD14F2000A7DAD7 /* AlertaAppTests */ = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            path = AlertaAppTests;
+            sourceTree = "<group>";
+        };
+        A2BB0BCF2FC5682D007B9484 /* AlertaApp */ = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            exceptions = (
+                A2BB0BDD2FC5682F007B9484 /* Exceptions for "AlertaApp" folder in "AlertaApp" target */,
+            );
+            path = AlertaApp;
+            sourceTree = "<group>";
+        };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		11EFC4A82FD14F2000A7DAD7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A2BB0BCA2FC5682D007B9484 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+        11EFC4A82FD14F2000A7DAD7 /* Frameworks */ = {
+            isa = PBXFrameworksBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        A2BB0BCA2FC5682D007B9484 /* Frameworks */ = {
+            isa = PBXFrameworksBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A2BB0BC42FC5682D007B9484 = {
-			isa = PBXGroup;
-			children = (
-				A2BB0BCF2FC5682D007B9484 /* AlertaApp */,
-				11EFC4AC2FD14F2000A7DAD7 /* AlertaAppTests */,
-				A2BB0BCE2FC5682D007B9484 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		A2BB0BCE2FC5682D007B9484 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */,
-				11EFC4AB2FD14F2000A7DAD7 /* AlertaAppTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
+        A2BB0BC42FC5682D007B9484 = {
+            isa = PBXGroup;
+            children = (
+                A2BB0BCF2FC5682D007B9484 /* AlertaApp */,
+                11EFC4AC2FD14F2000A7DAD7 /* AlertaAppTests */,
+                A2BB0BCE2FC5682D007B9484 /* Products */,
+            );
+            sourceTree = "<group>";
+        };
+        A2BB0BCE2FC5682D007B9484 /* Products */ = {
+            isa = PBXGroup;
+            children = (
+                A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */,
+                11EFC4AB2FD14F2000A7DAD7 /* AlertaAppTests.xctest */,
+            );
+            name = Products;
+            sourceTree = "<group>";
+        };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		11EFC4AA2FD14F2000A7DAD7 /* AlertaAppTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 11EFC4B12FD14F2000A7DAD7 /* Build configuration list for PBXNativeTarget "AlertaAppTests" */;
-			buildPhases = (
-				11EFC4A72FD14F2000A7DAD7 /* Sources */,
-				11EFC4A82FD14F2000A7DAD7 /* Frameworks */,
-				11EFC4A92FD14F2000A7DAD7 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				11EFC4B02FD14F2000A7DAD7 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				11EFC4AC2FD14F2000A7DAD7 /* AlertaAppTests */,
-			);
-			name = AlertaAppTests;
-			packageProductDependencies = (
-			);
-			productName = AlertaAppTests;
-			productReference = 11EFC4AB2FD14F2000A7DAD7 /* AlertaAppTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		A2BB0BCC2FC5682D007B9484 /* AlertaApp */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A2BB0BDA2FC5682F007B9484 /* Build configuration list for PBXNativeTarget "AlertaApp" */;
-			buildPhases = (
-				A2BB0BC92FC5682D007B9484 /* Sources */,
-				A2BB0BCA2FC5682D007B9484 /* Frameworks */,
-				A2BB0BCB2FC5682D007B9484 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				A2BB0BCF2FC5682D007B9484 /* AlertaApp */,
-			);
-			name = AlertaApp;
-			packageProductDependencies = (
-			);
-			productName = AlertaApp;
-			productReference = A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */;
-			productType = "com.apple.product-type.application";
-		};
+        11EFC4AA2FD14F2000A7DAD7 /* AlertaAppTests */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = 11EFC4B12FD14F2000A7DAD7 /* Build configuration list for PBXNativeTarget "AlertaAppTests" */;
+            buildPhases = (
+                11EFC4A72FD14F2000A7DAD7 /* Sources */,
+                11EFC4A82FD14F2000A7DAD7 /* Frameworks */,
+                11EFC4A92FD14F2000A7DAD7 /* Resources */,
+            );
+            buildRules = (
+            );
+            dependencies = (
+                11EFC4B02FD14F2000A7DAD7 /* PBXTargetDependency */,
+            );
+            fileSystemSynchronizedGroups = (
+                11EFC4AC2FD14F2000A7DAD7 /* AlertaAppTests */,
+            );
+            name = AlertaAppTests;
+            packageProductDependencies = (
+            );
+            productName = AlertaAppTests;
+            productReference = 11EFC4AB2FD14F2000A7DAD7 /* AlertaAppTests.xctest */;
+            productType = "com.apple.product-type.bundle.unit-test";
+        };
+        A2BB0BCC2FC5682D007B9484 /* AlertaApp */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = A2BB0BDA2FC5682F007B9484 /* Build configuration list for PBXNativeTarget "AlertaApp" */;
+            buildPhases = (
+                A2BB0BC92FC5682D007B9484 /* Sources */,
+                A2BB0BCA2FC5682D007B9484 /* Frameworks */,
+                A2BB0BCB2FC5682D007B9484 /* Resources */,
+            );
+            buildRules = (
+            );
+            dependencies = (
+            );
+            fileSystemSynchronizedGroups = (
+                A2BB0BCF2FC5682D007B9484 /* AlertaApp */,
+            );
+            name = AlertaApp;
+            packageProductDependencies = (
+            );
+            productName = AlertaApp;
+            productReference = A2BB0BCD2FC5682D007B9484 /* AlertaApp.app */;
+            productType = "com.apple.product-type.application";
+        };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A2BB0BC52FC5682D007B9484 /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2650;
-				LastUpgradeCheck = 2650;
-				TargetAttributes = {
-					11EFC4AA2FD14F2000A7DAD7 = {
-						CreatedOnToolsVersion = 26.5;
-						TestTargetID = A2BB0BCC2FC5682D007B9484;
-					};
-					A2BB0BCC2FC5682D007B9484 = {
-						CreatedOnToolsVersion = 26.5;
-					};
-				};
-			};
-			buildConfigurationList = A2BB0BC82FC5682D007B9484 /* Build configuration list for PBXProject "AlertaApp" */;
-			developmentRegion = en;
-			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
-			mainGroup = A2BB0BC42FC5682D007B9484;
-			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = A2BB0BCE2FC5682D007B9484 /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
-			targets = (
-				A2BB0BCC2FC5682D007B9484 /* AlertaApp */,
-				11EFC4AA2FD14F2000A7DAD7 /* AlertaAppTests */,
-			);
-		};
+        A2BB0BC52FC5682D007B9484 /* Project object */ = {
+            isa = PBXProject;
+            attributes = {
+                BuildIndependentTargetsInParallel = 1;
+                LastSwiftUpdateCheck = 2650;
+                LastUpgradeCheck = 2650;
+                TargetAttributes = {
+                    11EFC4AA2FD14F2000A7DAD7 = {
+                        CreatedOnToolsVersion = 26.5;
+                        TestTargetID = A2BB0BCC2FC5682D007B9484;
+                    };
+                    A2BB0BCC2FC5682D007B9484 = {
+                        CreatedOnToolsVersion = 26.5;
+                    };
+                };
+            };
+            buildConfigurationList = A2BB0BC82FC5682D007B9484 /* Build configuration list for PBXProject "AlertaApp" */;
+            developmentRegion = en;
+            hasScannedForEncodings = 0;
+            knownRegions = (
+                en,
+                Base,
+            );
+            mainGroup = A2BB0BC42FC5682D007B9484;
+            minimizedProjectReferenceProxies = 1;
+            preferredProjectObjectVersion = 77;
+            productRefGroup = A2BB0BCE2FC5682D007B9484 /* Products */;
+            projectDirPath = "";
+            projectRoot = "";
+            targets = (
+                A2BB0BCC2FC5682D007B9484 /* AlertaApp */,
+                11EFC4AA2FD14F2000A7DAD7 /* AlertaAppTests */,
+            );
+        };
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		11EFC4A92FD14F2000A7DAD7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A2BB0BCB2FC5682D007B9484 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+        11EFC4A92FD14F2000A7DAD7 /* Resources */ = {
+            isa = PBXResourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        A2BB0BCB2FC5682D007B9484 /* Resources */ = {
+            isa = PBXResourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		11EFC4A72FD14F2000A7DAD7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A2BB0BC92FC5682D007B9484 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+        11EFC4A72FD14F2000A7DAD7 /* Sources */ = {
+            isa = PBXSourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        A2BB0BC92FC5682D007B9484 /* Sources */ = {
+            isa = PBXSourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		11EFC4B02FD14F2000A7DAD7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
-			targetProxy = 11EFC4AF2FD14F2000A7DAD7 /* PBXContainerItemProxy */;
-		};
+        11EFC4B02FD14F2000A7DAD7 /* PBXTargetDependency */ = {
+            isa = PBXTargetDependency;
+            target = A2BB0BCC2FC5682D007B9484 /* AlertaApp */;
+            targetProxy = 11EFC4AF2FD14F2000A7DAD7 /* PBXContainerItemProxy */;
+        };
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -452,34 +452,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		11EFC4B12FD14F2000A7DAD7 /* Build configuration list for PBXNativeTarget "AlertaAppTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				11EFC4B22FD14F2000A7DAD7 /* Debug */,
-				11EFC4B32FD14F2000A7DAD7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A2BB0BC82FC5682D007B9484 /* Build configuration list for PBXProject "AlertaApp" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A2BB0BD82FC5682F007B9484 /* Debug */,
-				A2BB0BD92FC5682F007B9484 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A2BB0BDA2FC5682F007B9484 /* Build configuration list for PBXNativeTarget "AlertaApp" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A2BB0BDB2FC5682F007B9484 /* Debug */,
-				A2BB0BDC2FC5682F007B9484 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
+        11EFC4B12FD14F2000A7DAD7 /* Build configuration list for PBXNativeTarget "AlertaAppTests" */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (
+                11EFC4B22FD14F2000A7DAD7 /* Debug */,
+                11EFC4B32FD14F2000A7DAD7 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
+        A2BB0BC82FC5682D007B9484 /* Build configuration list for PBXProject "AlertaApp" */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (
+                A2BB0BD82FC5682F007B9484 /* Debug */,
+                A2BB0BD92FC5682F007B9484 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
+        A2BB0BDA2FC5682F007B9484 /* Build configuration list for PBXNativeTarget "AlertaApp" */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (
+                A2BB0BDB2FC5682F007B9484 /* Debug */,
+                A2BB0BDC2FC5682F007B9484 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
 /* End XCConfigurationList section */
-	};
-	rootObject = A2BB0BC52FC5682D007B9484 /* Project object */;
+    };
+    rootObject = A2BB0BC52FC5682D007B9484 /* Project object */;
 }
