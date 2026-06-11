@@ -5,8 +5,8 @@
 //  Created by Kyky on 04/06/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HapticsSelectionView: View {
     let level: Urgency

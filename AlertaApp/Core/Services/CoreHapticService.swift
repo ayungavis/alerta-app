@@ -18,9 +18,9 @@ class CoreHapticService {
         .low: "Steady Alert",
         .medium: "Rapid Pulse",
         .high: "Heartbeat",
-        .critical: "S.O.S.",
+        .critical: "S.O.S."
     ]
-    
+
     var customPatterns: [CustomPattern] = []
 
     init(
@@ -57,7 +57,7 @@ class CoreHapticService {
     func playHaptic(events: [CHHapticEvent]) {
         try? previewPlayer?.stop(atTime: 0)
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics,
-            !events.isEmpty
+              !events.isEmpty
         else { return }
 
         do {
@@ -98,7 +98,7 @@ class CoreHapticService {
                 CHHapticEventParameter(
                     parameterID: .hapticSharpness,
                     value: 0.5
-                ),
+                )
             ],
             relativeTime: 0,
             duration: 100
@@ -147,7 +147,7 @@ class CoreHapticService {
                     CHHapticEventParameter(
                         parameterID: .hapticSharpness,
                         value: isTransient ? 0.8 : 0.5
-                    ),
+                    )
                 ],
                 relativeTime: currentTime,
                 duration: isTransient ? 0 : step.duration
@@ -174,7 +174,7 @@ class CoreHapticService {
                         CHHapticEventParameter(
                             parameterID: .hapticSharpness,
                             value: 0.8
-                        ),
+                        )
                     ],
                     relativeTime: t
                 )
@@ -192,7 +192,7 @@ class CoreHapticService {
                         CHHapticEventParameter(
                             parameterID: .hapticSharpness,
                             value: 0.5
-                        ),
+                        )
                     ],
                     relativeTime: t,
                     duration: duration
@@ -290,7 +290,7 @@ extension CoreHapticService: HapticFeedbackProviding {
         }
 
         if let lastPlayed = lastPlayedAt[urgency],
-            Date().timeIntervalSince(lastPlayed) < cooldown
+           Date().timeIntervalSince(lastPlayed) < cooldown
         {
             return
         }

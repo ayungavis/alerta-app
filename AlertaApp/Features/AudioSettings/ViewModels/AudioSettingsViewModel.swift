@@ -32,8 +32,8 @@ class AudioSettingsViewModel {
         self.modelContext = modelContext
 
         // Defaults — will be overwritten by loadSettings()
-        self.voiceVolume = 1.0
-        self.voiceSpeed = 0.5
+        voiceVolume = 1.0
+        voiceSpeed = 0.5
         loadSettings()
     }
 

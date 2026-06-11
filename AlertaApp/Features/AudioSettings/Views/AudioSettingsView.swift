@@ -32,7 +32,6 @@ struct AudioSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    @ViewBuilder
     private func contentView(viewModel: AudioSettingsViewModel) -> some View {
         VStack(spacing: 32) {
             VStack(alignment: .leading, spacing: 12) {
@@ -54,7 +53,7 @@ struct AudioSettingsView: View {
                         get: { viewModel.voiceVolume },
                         set: { viewModel.voiceVolume = $0 }
                     ),
-                    in: 0.0...1.0,
+                    in: 0.0 ... 1.0,
                     minimumValueLabel: Image(systemName: "speaker.fill")
                         .foregroundColor(.gray)
                         .frame(width: 30),
@@ -86,7 +85,7 @@ struct AudioSettingsView: View {
                         get: { viewModel.voiceSpeed },
                         set: { viewModel.voiceSpeed = $0 }
                     ),
-                    in: 0.0...1.0,
+                    in: 0.0 ... 1.0,
                     minimumValueLabel: Image(systemName: "tortoise.fill")
                         .foregroundColor(.gray)
                         .frame(width: 30),

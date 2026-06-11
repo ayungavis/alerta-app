@@ -38,5 +38,4 @@ struct MainTabView: View {
     let store = SessionHistoryStore(modelContext: container.mainContext)
 
     MainTabView(historyStore: store, hapticService: CoreHapticService())
-        
 }

@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct NewVibrationSheet: View {
     @Environment(\.dismiss) var dismiss
@@ -28,7 +28,7 @@ struct NewVibrationSheet: View {
                     Spacer()
                     Button(action: {
                         if !manager.recordedPattern.isEmpty,
-                            !patternName.isEmpty
+                           !patternName.isEmpty
                         {
                             // Persists to SwiftData and updates customPatterns in one call
                             viewModel.addCustomPattern(
@@ -94,7 +94,7 @@ struct NewVibrationSheet: View {
                             .overlay(
                                 Image(
                                     systemName:
-                                        "iphone.radiowaves.left.and.right"
+                                    "iphone.radiowaves.left.and.right"
                                 )
                                 .font(.system(size: 32))
                                 .foregroundStyle(

@@ -66,14 +66,18 @@ final class HapticsSettingsViewModel {
         if let service = boundService {
             pushToService(service)
         } else {
-            print("[HapticsSettingsViewModel] syncBoundService called but boundService is nil — bind(to:) was never called or service was deallocated")
+            print(
+                "[HapticsSettingsViewModel] syncBoundService called but boundService is nil — bind(to:) was never called or service was deallocated"
+            )
         }
     }
 
     private func pushToService(_ service: CoreHapticService) {
         service.selections = selections
         service.customPatterns = customPatterns
-        print("[HapticsSettingsViewModel] pushed to service — selections: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted()), customPatterns: \(customPatterns.map(\.name))")
+        print(
+            "[HapticsSettingsViewModel] pushed to service — selections: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted()), customPatterns: \(customPatterns.map(\.name))"
+        )
     }
 
     private func loadSettings() {
@@ -109,7 +113,9 @@ final class HapticsSettingsViewModel {
             CustomPattern(id: $0.id, name: $0.name, steps: $0.steps)
         }
 
-        print("[HapticsSettingsViewModel] loadSettings complete — selections: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted())")
+        print(
+            "[HapticsSettingsViewModel] loadSettings complete — selections: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted())"
+        )
     }
 
     private func save() {
