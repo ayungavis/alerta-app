@@ -62,9 +62,21 @@ final class AudioOutputService: NSObject, AudioOutputProviding {
         AudioServicesPlaySystemSound(SystemSoundID.id(for: event.urgency))
     }
 
+//    private func speak(_ event: DetectionEvent) {
+//        let utterance = utteranceBuilder.build(from: event)
+//        synthesiser.speak(utterance) // must be on main thread
+//    }
+
     private func speak(_ event: DetectionEvent) {
         let utterance = utteranceBuilder.build(from: event)
-        synthesiser.speak(utterance) // must be on main thread
+
+        let savedSpeed = UserDefaults.standard.object(forKey: "voiceSpeed") as? Float ?? 0.5
+        let savedVolume = UserDefaults.standard.object(forKey: "voiceVolume") as? Float ?? 1.0
+
+        utterance.rate = savedSpeed
+        utterance.volume = savedVolume
+
+        synthesiser.speak(utterance)
     }
 
     func stopSpeaking() {
@@ -117,6 +129,15 @@ extension AudioOutputService: AVSpeechSynthesizerDelegate {
         didCancel utterance: AVSpeechUtterance
     ) {
         isSpeaking = false
+    }
+
+    func playTestVoice(speed: Float, volume: Float) {
+        let testUtterance = AVSpeechUtterance(string: "This is how I will sound.")
+        testUtterance.rate = speed
+        testUtterance.volume = volume
+        testUtterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+
+        synthesiser.speak(testUtterance)
     }
 }
 

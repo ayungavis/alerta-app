@@ -24,8 +24,8 @@ struct SettingsMenuRow: View {
             .frame(width: 44)
 
             Text(title)
-                .soraFont(size: 17, weight: .regular)
-                .foregroundColor(.white)
+                .soraFont(.body)
+                .foregroundColor(AppColors.textPrimary)
                 .padding(.leading, 16)
 
             Spacer()

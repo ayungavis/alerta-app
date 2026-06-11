@@ -13,39 +13,48 @@ struct NewVibrationSheet: View {
             AppColors.backgroundPrimary.ignoresSafeArea()
 
             VStack(spacing: AppSpacing.large) {
-                HStack {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark").font(.title2).foregroundStyle(
-                            AppColors.textPrimary
-                        )
+                HStack(alignment: .center) {
+                    HStack {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark").font(.title2)
+                                .foregroundStyle(
+                                    AppColors.textPrimary
+                                )
+                        }
+                        Text("New Vibration").font(.title3).fontWeight(.semibold)
+                            .foregroundStyle(
+                                AppColors.textPrimary
+                            )
                     }
                     Spacer()
-                    Text("New Vibration").font(.title3).fontWeight(.semibold).foregroundStyle(
-                        AppColors.textPrimary
-                    )
-                    Spacer()
                     Button(action: {
-                        if !manager.recordedPattern.isEmpty, !patternName.isEmpty {
+                        if !manager.recordedPattern.isEmpty,
+                           !patternName.isEmpty
+                        {
                             let newPattern = CustomPattern(
-                                name: patternName, steps: manager.recordedPattern
+                                name: patternName,
+                                steps: manager.recordedPattern
                             )
                             viewModel.customPatterns.append(newPattern)
                         }
                         dismiss()
                     }) {
-                        Text("SAVE")
-                            .soraFont(size: 12, weight: .bold)
+                        Text("Save")
+                            .soraFont(.body, emphasized: true)
                             .foregroundStyle(AppColors.buttonText)
-                            .padding(.horizontal, 16).padding(.vertical, 8)
+                            .padding(AppSpacing.medium)
                             .background(
-                                patternName.isEmpty || manager.recordedPattern.isEmpty
+                                patternName.isEmpty
+                                    || manager.recordedPattern.isEmpty
                                     ? AppColors
                                     .textTertiary
                                     : AppColors
                                     .cyan
-                            ).cornerRadius(20)
+                            ).cornerRadius(.infinity)
                     }
-                    .disabled(patternName.isEmpty || manager.recordedPattern.isEmpty)
+                    .disabled(
+                        patternName.isEmpty || manager.recordedPattern.isEmpty
+                    )
                 }
                 .padding(.horizontal).padding(.top, 24)
 
@@ -59,7 +68,8 @@ struct NewVibrationSheet: View {
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(
                                 patternName.isEmpty
-                                    ? AppColors.textTertiary.opacity(0.3) : AppColors.cyan,
+                                    ? AppColors.textTertiary.opacity(0.3)
+                                    : AppColors.cyan,
                                 lineWidth: 1
                             )
                     )
@@ -67,11 +77,15 @@ struct NewVibrationSheet: View {
 
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(isTouching ? AppColors.primary.opacity(0.15) : Color.clear)
+                        .fill(
+                            isTouching
+                                ? AppColors.primary.opacity(0.15) : Color.clear
+                        )
 
                     RoundedRectangle(cornerRadius: 16)
                         .strokeBorder(
-                            manager.isRecording ? AppColors.systemError : AppColors.cyan,
+                            manager.isRecording
+                                ? AppColors.systemError : AppColors.cyan,
                             style: StrokeStyle(lineWidth: 1, dash: [6])
                         )
 
@@ -80,24 +94,31 @@ struct NewVibrationSheet: View {
                             .fill(Color(white: 0.2))
                             .frame(width: 80, height: 80)
                             .overlay(
-                                Image(systemName: "iphone.radiowaves.left.and.right")
-                                    .font(.system(size: 32))
-                                    .foregroundStyle(
-                                        manager.isRecording ? AppColors.systemError : AppColors.cyan
-                                    )
+                                Image(
+                                    systemName:
+                                    "iphone.radiowaves.left.and.right"
+                                )
+                                .font(.system(size: 32))
+                                .foregroundStyle(
+                                    manager.isRecording
+                                        ? AppColors.systemError : AppColors.cyan
+                                )
                             )
 
                         VStack(spacing: 8) {
-                            Text(manager.isRecording ? "RECORDING..." : "TAP TO CREATE VIBRATION")
-                                .font(.system(size: 14, design: .monospaced))
-                                .foregroundStyle(
-                                    manager.isRecording
-                                        ? AppColors.systemError : AppColors.textPrimary
-                                )
+                            Text(
+                                manager.isRecording
+                                    ? "Recording..." : "Tap to create vibration"
+                            )
+                            .soraFont(.title3, emphasized: true)
+                            .foregroundStyle(
+                                manager.isRecording
+                                    ? AppColors.systemError
+                                    : AppColors.textPrimary
+                            )
 
-                            Text("TAP OR HOLD ANYWHERE")
-                                .font(.system(size: 14, weight: .bold, design: .monospaced))
-                                .foregroundStyle(AppColors.cyan)
+                            Text("Tap or hold anywhere")
+                                .soraFont(.body, color: AppColors.textSecondary)
                         }
                     }
                 }
@@ -122,12 +143,21 @@ struct NewVibrationSheet: View {
 
                 HStack(spacing: 16) {
                     Button(action: {
-                        let events = manager.getEvents(fromSteps: manager.recordedPattern)
+                        let events = manager.getEvents(
+                            fromSteps: manager.recordedPattern
+                        )
                         manager.playHaptic(events: events)
                     }) {
                         HStack {
                             Image(systemName: "play")
-                            Text("PLAY").font(.system(size: 14, design: .monospaced))
+                            Text("Play")
+                                .soraFont(
+                                    .body,
+                                    emphasized: true,
+                                    color: manager.recordedPattern.isEmpty
+                                        ? AppColors.textTertiary
+                                        : AppColors.textPrimary
+                                )
                         }
                         .foregroundStyle(
                             manager.recordedPattern.isEmpty
@@ -138,7 +168,9 @@ struct NewVibrationSheet: View {
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(AppColors.card).cornerRadius(16)
                     }
-                    .disabled(manager.recordedPattern.isEmpty || manager.isRecording)
+                    .disabled(
+                        manager.recordedPattern.isEmpty || manager.isRecording
+                    )
 
                     Button(action: {
                         if manager.isRecording {
@@ -154,12 +186,15 @@ struct NewVibrationSheet: View {
                                     .frame(width: 12, height: 12)
                             } else {
                                 Circle()
-                                    .fill(Color(red: 1.0, green: 0.7, blue: 0.7))
+                                    .fill(Color.red)
                                     .frame(width: 12, height: 12)
                             }
 
-                            Text(manager.isRecording ? "STOP" : "RECORD")
-                                .soraFont(size: 14, weight: .semiBold)
+                            Text(manager.isRecording ? "Stop" : "Record")
+                                .soraFont(
+                                    .body,
+                                    emphasized: true
+                                )
                         }
                         .foregroundStyle(AppColors.textPrimary)
                         .frame(maxWidth: .infinity).frame(height: 56)

@@ -10,30 +10,34 @@ struct HapticsLevelView: View {
 
             VStack(alignment: .leading, spacing: 16) {
                 Text("Alert Level")
-                    .soraFont(size: 17, weight: .semiBold)
-                    .foregroundColor(AppColors.textSecondary)
+                    .soraFont(
+                        .headline,
+                        emphasized: true,
+                        color: AppColors.secondary
+                    )
                     .padding(.top, 20)
 
                 VStack(spacing: 12) {
                     ForEach(Urgency.allCases, id: \.rawValue) { level in
-                        NavigationLink(destination: HapticsSelectionView(
-                            level: level,
-                            viewModel: viewModel,
-                            manager: manager
-                        )) {
+                        NavigationLink(
+                            destination: HapticsSelectionView(
+                                level: level,
+                                viewModel: viewModel,
+                                manager: manager
+                            )
+                        ) {
                             HStack {
                                 Text(level.displayName)
-                                    .soraFont(size: 16, weight: .regular)
-                                    .foregroundColor(level.color)
+                                    .soraFont(.callout, color: level.color)
 
                                 Spacer()
 
                                 Text(viewModel.selections[level] ?? "")
-                                    .soraFont(size: 12, weight: .regular)
+                                    .soraFont(.caption1)
                                     .foregroundColor(.textSecondary)
 
                                 Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.textTertiary)
                                     .font(.system(size: 14, weight: .bold))
                                     .padding(.leading, 8)
                             }
@@ -52,7 +56,7 @@ struct HapticsLevelView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text("Haptics")
-                    .soraFont(size: 22, weight: .bold)
+                    .soraFont(.title2, emphasized: true)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
