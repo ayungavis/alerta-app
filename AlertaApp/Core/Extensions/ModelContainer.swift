@@ -27,10 +27,8 @@ extension ModelContainer {
 
             guard isIncompatibleStoreError(nsError) else {
                 fatalError(
-                    
-                AppError.dataError(.containerInitializationFailed(error))
-                    .localizedDescription
-            
+                    AppError.dataError(.containerInitializationFailed(error))
+                        .localizedDescription
                 )
             }
 
