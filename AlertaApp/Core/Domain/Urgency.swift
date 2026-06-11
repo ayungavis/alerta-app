@@ -29,6 +29,18 @@ enum Urgency: Int, Codable, Comparable, CaseIterable {
         case .critical: "Critical"
         }
     }
+
+    /// Stable lowercase string key used for dictionary storage and persistence (e.g. SwiftData, UserDefaults).
+    /// Prefer this over `rawValue` (Int) wherever a String key is needed, so stored data stays readable
+    /// and survives any future reordering of enum cases.
+    var storageKey: String {
+        switch self {
+        case .low: "low"
+        case .medium: "medium"
+        case .high: "high"
+        case .critical: "critical"
+        }
+    }
 }
 
 extension Urgency {
@@ -73,6 +85,18 @@ extension Urgency {
         case .medium: .medium
         case .high: .high
         case .critical: .critical
+        }
+    }
+}
+
+extension Urgency {
+    /// Fallback built-in pattern name used when no user selection is saved.
+    var defaultPatternName: String {
+        switch self {
+        case .low: "Steady Alert"
+        case .medium: "Rapid Pulse"
+        case .high: "Heartbeat"
+        case .critical: "S.O.S."
         }
     }
 }

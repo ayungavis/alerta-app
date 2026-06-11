@@ -12,7 +12,16 @@ class CoreHapticService {
     private var currentTouchDownTime: Date?
 
     private var lastPlayedAt: [Urgency: Date]
-    private let cooldown: TimeInterval // seconds
+    private let cooldown: TimeInterval
+
+    var selections: [Urgency: String] = [
+        .low: "Steady Alert",
+        .medium: "Rapid Pulse",
+        .high: "Heartbeat",
+        .critical: "S.O.S."
+    ]
+
+    var customPatterns: [CustomPattern] = []
 
     init(
         cooldown: TimeInterval = 10.0,
@@ -151,94 +160,161 @@ class CoreHapticService {
 
     func getEvents(forPreset patternName: String) -> [CHHapticEvent] {
         var events = [CHHapticEvent]()
-        var t: TimeInterval = 0
-
-        func addTransient() {
-            events.append(
-                CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(
-                            parameterID: .hapticIntensity,
-                            value: 0.8
-                        ),
-                        CHHapticEventParameter(
-                            parameterID: .hapticSharpness,
-                            value: 0.8
-                        )
-                    ],
-                    relativeTime: t
-                )
-            )
-        }
-        func addContinuous(duration: TimeInterval) {
-            events.append(
-                CHHapticEvent(
-                    eventType: .hapticContinuous,
-                    parameters: [
-                        CHHapticEventParameter(
-                            parameterID: .hapticIntensity,
-                            value: 1.0
-                        ),
-                        CHHapticEventParameter(
-                            parameterID: .hapticSharpness,
-                            value: 0.5
-                        )
-                    ],
-                    relativeTime: t,
-                    duration: duration
-                )
-            )
-        }
 
         switch patternName {
         case "Steady Alert":
-            while t < 2.0 {
-                addTransient()
-                t += 0.15
-                addTransient()
-                t += 0.15
-                addContinuous(duration: 0.3)
-                t += 0.45
-            }
+            appendSteadyAlertEvents(to: &events)
         case "Rapid Pulse":
-            while t < 3.0 {
-                addTransient()
-                t += 0.15
-                addTransient()
-                t += 0.15
-                addContinuous(duration: 0.3)
-                t += 0.45
-                addContinuous(duration: 0.3)
-                t += 0.45
-            }
+            appendRapidPulseEvents(to: &events)
         case "Heartbeat":
-            while t < 4.0 {
-                addContinuous(duration: 0.3)
-                t += 0.45
-                addContinuous(duration: 0.3)
-                t += 0.45
-                addTransient()
-                t += 0.15
-            }
+            appendHeartbeatEvents(to: &events)
         case "S.O.S.":
-            while t < 6.0 {
-                addContinuous(duration: 0.3)
-                t += 0.45
-                addTransient()
-                t += 0.15
-                addTransient()
-                t += 0.15
-                addContinuous(duration: 0.3)
-                t += 0.45
-                addContinuous(duration: 0.3)
-                t += 0.45
-                addTransient()
-                t += 0.5
+            appendSosEvents(to: &events)
+        case "Staccato":
+            appendStaccatoEvents(to: &events)
+        default:
+            // Fall back to custom pattern steps if name matches
+            if let custom = customPatterns.first(where: {
+                $0.name == patternName
+            }) {
+                return getEvents(fromSteps: custom.steps)
             }
-        default: break
         }
         return events
+    }
+
+    private func appendSteadyAlertEvents(to events: inout [CHHapticEvent]) {
+        var currentTime: TimeInterval = 0
+
+        while currentTime < 2.0 {
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+        }
+    }
+
+    private func appendRapidPulseEvents(to events: inout [CHHapticEvent]) {
+        var currentTime: TimeInterval = 0
+
+        while currentTime < 3.0 {
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+        }
+    }
+
+    private func appendHeartbeatEvents(to events: inout [CHHapticEvent]) {
+        var currentTime: TimeInterval = 0
+
+        while currentTime < 4.0 {
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+        }
+    }
+
+    private func appendSosEvents(to events: inout [CHHapticEvent]) {
+        var currentTime: TimeInterval = 0
+
+        while currentTime < 6.0 {
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.15
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+            appendContinuous(to: &events, at: currentTime, duration: 0.3)
+            currentTime += 0.45
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.5
+        }
+    }
+
+    private func appendStaccatoEvents(to events: inout [CHHapticEvent]) {
+        var currentTime: TimeInterval = 0
+
+        while currentTime < 2.0 {
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.1
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.1
+            appendTransient(to: &events, at: currentTime)
+            currentTime += 0.3
+        }
+    }
+
+    private func appendTransient(
+        to events: inout [CHHapticEvent],
+        at time: TimeInterval
+    ) {
+        events.append(
+            CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: [
+                    CHHapticEventParameter(
+                        parameterID: .hapticIntensity,
+                        value: 0.8
+                    ),
+                    CHHapticEventParameter(
+                        parameterID: .hapticSharpness,
+                        value: 0.8
+                    )
+                ],
+                relativeTime: time
+            )
+        )
+    }
+
+    private func appendContinuous(
+        to events: inout [CHHapticEvent],
+        at time: TimeInterval,
+        duration: TimeInterval
+    ) {
+        events.append(
+            CHHapticEvent(
+                eventType: .hapticContinuous,
+                parameters: [
+                    CHHapticEventParameter(
+                        parameterID: .hapticIntensity,
+                        value: 1.0
+                    ),
+                    CHHapticEventParameter(
+                        parameterID: .hapticSharpness,
+                        value: 0.5
+                    )
+                ],
+                relativeTime: time,
+                duration: duration
+            )
+        )
+    }
+
+    private func getEvents(for urgency: Urgency) -> [CHHapticEvent] {
+        let patternName = selections[urgency] ?? urgency.defaultPatternName
+
+        print("[CoreHapticService] selections dump: \(selections.map { "\($0.key.storageKey)=\($0.value)" }.sorted())")
+        print("[CoreHapticService] urgency=\(urgency.storageKey) → resolved='\(patternName)'")
+
+        if let custom = customPatterns.first(where: { $0.name == patternName }) {
+            print("[CoreHapticService] → playing CUSTOM pattern '\(custom.name)' (\(custom.steps.count) steps)")
+            return getEvents(fromSteps: custom.steps)
+        }
+
+        print("[CoreHapticService] → playing PRESET '\(patternName)'")
+        return getEvents(forPreset: patternName)
     }
 }
 
@@ -246,15 +322,10 @@ extension CoreHapticService: HapticFeedbackProviding {
     func prepare() {}
 
     func playHaptic(for urgency: Urgency) {
-        let patternName =
-            switch urgency {
-            case .low: "Steady Alert"
-            case .medium: "Rapid Pulse"
-            case .high: "Heartbeat"
-            case .critical: "S.O.S."
-            }
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
+            return
+        }
 
-        // Skip if same urgency played within cooldown window
         if let lastPlayed = lastPlayedAt[urgency],
            Date().timeIntervalSince(lastPlayed) < cooldown
         {
@@ -263,7 +334,7 @@ extension CoreHapticService: HapticFeedbackProviding {
 
         lastPlayedAt[urgency] = Date()
 
-        let events = getEvents(forPreset: patternName)
+        let events = getEvents(for: urgency)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.playHaptic(events: events)
         }

@@ -17,13 +17,14 @@ extension ModelContainer {
         )
 
         do {
-            return try ModelContainer(for: AwarenessSessionRecord.self)
+            return try makeAppContainer()
         } catch {
             let nsError = error as NSError
 
             guard isIncompatibleStoreError(nsError) else {
                 fatalError(
-                    AppError.dataError(.containerInitializationFailed(error)).localizedDescription
+                    AppError.dataError(.containerInitializationFailed(error))
+                        .localizedDescription
                 )
             }
 
@@ -41,12 +42,23 @@ extension ModelContainer {
                 logger.error(
                     "Deleted SwiftData store url=\(storePath, privacy: .public)"
                 )
-                return try ModelContainer(for: AwarenessSessionRecord.self)
+                return try makeAppContainer()
             } catch {
                 fatalError(
                     AppError.dataError(.containerInitializationFailed(error)).localizedDescription
                 )
             }
+        }
+    }
+
+    static func previewSettingsContainer() -> ModelContainer {
+        do {
+            return try makeSettingsContainer()
+        } catch {
+            preconditionFailure(
+                AppError.dataError(.containerInitializationFailed(error))
+                    .localizedDescription
+            )
         }
     }
 
@@ -94,5 +106,20 @@ extension ModelContainer {
         for url in relatedURLs where fileManager.fileExists(atPath: url.path) {
             try fileManager.removeItem(at: url)
         }
+    }
+
+    private static func makeAppContainer() throws -> ModelContainer {
+        try ModelContainer(
+            for: AwarenessSessionRecord.self,
+            UserSettingsModel.self,
+            CustomPatternModel.self
+        )
+    }
+
+    private static func makeSettingsContainer() throws -> ModelContainer {
+        try ModelContainer(
+            for: UserSettingsModel.self,
+            CustomPatternModel.self
+        )
     }
 }

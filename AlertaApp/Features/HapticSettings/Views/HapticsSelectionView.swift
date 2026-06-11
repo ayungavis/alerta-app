@@ -5,6 +5,7 @@
 //  Created by Kyky on 04/06/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct HapticsSelectionView: View {
@@ -124,10 +125,14 @@ struct HapticsSelectionView: View {
 }
 
 #Preview {
+    let previewContainer = ModelContainer.previewSettingsContainer()
+
     NavigationStack {
         HapticsSelectionView(
             level: .medium,
-            viewModel: HapticsSettingsViewModel(),
+            viewModel: HapticsSettingsViewModel(
+                modelContext: previewContainer.mainContext
+            ),
             manager: CoreHapticService()
         )
     }

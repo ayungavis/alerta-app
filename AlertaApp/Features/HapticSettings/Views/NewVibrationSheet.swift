@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct NewVibrationSheet: View {
@@ -17,25 +18,23 @@ struct NewVibrationSheet: View {
                     HStack {
                         Button(action: { dismiss() }) {
                             Image(systemName: "xmark").font(.title2)
-                                .foregroundStyle(
-                                    AppColors.textPrimary
-                                )
+                                .foregroundStyle(AppColors.textPrimary)
                         }
-                        Text("New Vibration").font(.title3).fontWeight(.semibold)
-                            .foregroundStyle(
-                                AppColors.textPrimary
-                            )
+                        Text("New Vibration").font(.title3).fontWeight(
+                            .semibold
+                        )
+                        .foregroundStyle(AppColors.textPrimary)
                     }
                     Spacer()
                     Button(action: {
                         if !manager.recordedPattern.isEmpty,
                            !patternName.isEmpty
                         {
-                            let newPattern = CustomPattern(
+                            // Persists to SwiftData and updates customPatterns in one call
+                            viewModel.addCustomPattern(
                                 name: patternName,
                                 steps: manager.recordedPattern
                             )
-                            viewModel.customPatterns.append(newPattern)
                         }
                         dismiss()
                     }) {
@@ -46,11 +45,10 @@ struct NewVibrationSheet: View {
                             .background(
                                 patternName.isEmpty
                                     || manager.recordedPattern.isEmpty
-                                    ? AppColors
-                                    .textTertiary
-                                    : AppColors
-                                    .cyan
-                            ).cornerRadius(.infinity)
+                                    ? AppColors.textTertiary
+                                    : AppColors.cyan
+                            )
+                            .cornerRadius(.infinity)
                     }
                     .disabled(
                         patternName.isEmpty || manager.recordedPattern.isEmpty
@@ -162,8 +160,7 @@ struct NewVibrationSheet: View {
                         .foregroundStyle(
                             manager.recordedPattern.isEmpty
                                 ? AppColors.textTertiary
-                                : AppColors
-                                .textPrimary
+                                : AppColors.textPrimary
                         )
                         .frame(maxWidth: .infinity).frame(height: 56)
                         .background(AppColors.card).cornerRadius(16)
@@ -189,12 +186,8 @@ struct NewVibrationSheet: View {
                                     .fill(Color.red)
                                     .frame(width: 12, height: 12)
                             }
-
                             Text(manager.isRecording ? "Stop" : "Record")
-                                .soraFont(
-                                    .body,
-                                    emphasized: true
-                                )
+                                .soraFont(.body, emphasized: true)
                         }
                         .foregroundStyle(AppColors.textPrimary)
                         .frame(maxWidth: .infinity).frame(height: 56)
@@ -208,10 +201,14 @@ struct NewVibrationSheet: View {
 }
 
 #Preview {
+    let previewContainer = ModelContainer.previewSettingsContainer()
+
     NavigationStack {
         NewVibrationSheet(
             manager: CoreHapticService(),
-            viewModel: HapticsSettingsViewModel()
+            viewModel: HapticsSettingsViewModel(
+                modelContext: previewContainer.mainContext
+            )
         )
     }
     .preferredColorScheme(.dark)

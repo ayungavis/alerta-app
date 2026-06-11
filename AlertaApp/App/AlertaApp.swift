@@ -13,6 +13,8 @@ struct AlertaApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = true
 
     @State private var router = AppRouter()
+    @State private var hapticService = CoreHapticService()
+
     let container: ModelContainer = .appContainer()
     private let monitoringConfiguration = AudioMonitoringConfiguration()
 
@@ -29,7 +31,7 @@ struct AlertaApp: App {
                         historyStore: SessionHistoryStore(
                             modelContext: container.mainContext,
                             detectionCooldown: monitoringConfiguration.detectionCooldown
-                        )
+                        ), hapticService: hapticService
                     )
                 } else {
                     WelcomeView()
